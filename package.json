@@ -1,0 +1,22 @@
+{
+  "name": "yukigo",
+  "packageManager": "yarn@4.6.0",
+  "dependencies": {
+    "fs": "^0.0.1-security",
+    "moo": "^0.5.2",
+    "moo-ignore": "^2.5.3",
+    "nearley": "^2.20.1"
+  },
+  "scripts": {
+    "parse": "nearleyc ./src/langs/javascript/grammar.ne -o ./src/langs/javascript/grammar.ts && npx tsc && node ./dist/parser.js"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.28.0",
+    "@types/nearley": "^2",
+    "@types/node": "^22.15.29",
+    "eslint": "^9.28.0",
+    "globals": "^16.2.0",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.33.1"
+  }
+}
