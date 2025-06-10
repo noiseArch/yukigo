@@ -1,7 +1,8 @@
 import moo from "moo";
 import { keywords } from "./definition";
-
+import { makeLexer } from "moo-ignore";
 export const JavascriptLexerConfig = {
+  EOF: "__EOF__",
   WS: /[ \t]+/,
   comment: /\/\/.*?$|\/\*[\s\S]*?\*\//,
   number:
@@ -20,6 +21,13 @@ export const JavascriptLexerConfig = {
   semicolon: ";",
   colon: ":",
   question: "?",
+  arrow: "=>",
+  strictEquals: "===",
+  notEquals: "!==",
+  lessThanEquals: "<=",
+  lessThan: "<",
+  greaterThan: ">",
+  equals: "==",
   assign: "=",
   op: /[+\-*/%&|^!~<>]=?|={2,3}|!==?|&&|\|\||\?\?/,
   identifier: {
@@ -31,4 +39,4 @@ export const JavascriptLexerConfig = {
   NL: { match: /\r?\n/, lineBreaks: true },
 };
 
-export const JSLexer = moo.compile(JavascriptLexerConfig);
+export const JSLexer = makeLexer(JavascriptLexerConfig, [ "WS", "NL" ,"comment" ], { eof: true });;

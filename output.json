@@ -1,0 +1,995 @@
+[
+  [
+    [
+      [
+        [
+          [
+            [
+              {
+                "type": "keyword",
+                "value": "const",
+                "text": "const",
+                "offset": 0,
+                "lineBreaks": 0,
+                "line": 1,
+                "col": 1
+              },
+              {
+                "type": "identifier",
+                "value": "accountHolder",
+                "text": "accountHolder",
+                "offset": 6,
+                "lineBreaks": 0,
+                "line": 1,
+                "col": 7
+              },
+              {
+                "type": "assign",
+                "value": "=",
+                "text": "=",
+                "offset": 20,
+                "lineBreaks": 0,
+                "line": 1,
+                "col": 21
+              },
+              [
+                {
+                  "type": "string",
+                  "value": "\"Alice\"",
+                  "text": "\"Alice\"",
+                  "offset": 22,
+                  "lineBreaks": 0,
+                  "line": 1,
+                  "col": 23
+                }
+              ],
+              {
+                "type": "semicolon",
+                "value": ";",
+                "text": ";",
+                "offset": 29,
+                "lineBreaks": 0,
+                "line": 1,
+                "col": 30
+              }
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              {
+                "type": "keyword",
+                "value": "let",
+                "text": "let",
+                "offset": 31,
+                "lineBreaks": 0,
+                "line": 2,
+                "col": 1
+              },
+              {
+                "type": "identifier",
+                "value": "accountBalance",
+                "text": "accountBalance",
+                "offset": 35,
+                "lineBreaks": 0,
+                "line": 2,
+                "col": 5
+              },
+              {
+                "type": "assign",
+                "value": "=",
+                "text": "=",
+                "offset": 50,
+                "lineBreaks": 0,
+                "line": 2,
+                "col": 20
+              },
+              [
+                {
+                  "type": "number",
+                  "value": "1500.75",
+                  "text": "1500.75",
+                  "offset": 52,
+                  "lineBreaks": 0,
+                  "line": 2,
+                  "col": 22
+                }
+              ],
+              {
+                "type": "semicolon",
+                "value": ";",
+                "text": ";",
+                "offset": 59,
+                "lineBreaks": 0,
+                "line": 2,
+                "col": 29
+              }
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              {
+                "type": "keyword",
+                "value": "let",
+                "text": "let",
+                "offset": 61,
+                "lineBreaks": 0,
+                "line": 3,
+                "col": 1
+              },
+              {
+                "type": "identifier",
+                "value": "depositAmount",
+                "text": "depositAmount",
+                "offset": 65,
+                "lineBreaks": 0,
+                "line": 3,
+                "col": 5
+              },
+              {
+                "type": "assign",
+                "value": "=",
+                "text": "=",
+                "offset": 79,
+                "lineBreaks": 0,
+                "line": 3,
+                "col": 19
+              },
+              [
+                {
+                  "type": "number",
+                  "value": "250",
+                  "text": "250",
+                  "offset": 81,
+                  "lineBreaks": 0,
+                  "line": 3,
+                  "col": 21
+                }
+              ],
+              {
+                "type": "semicolon",
+                "value": ";",
+                "text": ";",
+                "offset": 84,
+                "lineBreaks": 0,
+                "line": 3,
+                "col": 24
+              }
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              {
+                "type": "keyword",
+                "value": "let",
+                "text": "let",
+                "offset": 86,
+                "lineBreaks": 0,
+                "line": 4,
+                "col": 1
+              },
+              {
+                "type": "identifier",
+                "value": "withdrawalAmount",
+                "text": "withdrawalAmount",
+                "offset": 90,
+                "lineBreaks": 0,
+                "line": 4,
+                "col": 5
+              },
+              {
+                "type": "assign",
+                "value": "=",
+                "text": "=",
+                "offset": 107,
+                "lineBreaks": 0,
+                "line": 4,
+                "col": 22
+              },
+              [
+                {
+                  "type": "number",
+                  "value": "100",
+                  "text": "100",
+                  "offset": 109,
+                  "lineBreaks": 0,
+                  "line": 4,
+                  "col": 24
+                }
+              ],
+              {
+                "type": "semicolon",
+                "value": ";",
+                "text": ";",
+                "offset": 112,
+                "lineBreaks": 0,
+                "line": 4,
+                "col": 27
+              }
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              {
+                "type": "identifier",
+                "value": "accountBalance",
+                "text": "accountBalance",
+                "offset": 114,
+                "lineBreaks": 0,
+                "line": 5,
+                "col": 1
+              },
+              {
+                "type": "assign",
+                "value": "=",
+                "text": "=",
+                "offset": 129,
+                "lineBreaks": 0,
+                "line": 5,
+                "col": 16
+              },
+              [
+                [
+                  {
+                    "type": "identifier",
+                    "value": "accountBalance",
+                    "text": "accountBalance",
+                    "offset": 131,
+                    "lineBreaks": 0,
+                    "line": 5,
+                    "col": 18
+                  }
+                ],
+                {
+                  "type": "op",
+                  "value": "+",
+                  "text": "+",
+                  "offset": 146,
+                  "lineBreaks": 0,
+                  "line": 5,
+                  "col": 33
+                },
+                [
+                  {
+                    "type": "identifier",
+                    "value": "depositAmount",
+                    "text": "depositAmount",
+                    "offset": 148,
+                    "lineBreaks": 0,
+                    "line": 5,
+                    "col": 35
+                  }
+                ]
+              ]
+            ],
+            {
+              "type": "semicolon",
+              "value": ";",
+              "text": ";",
+              "offset": 161,
+              "lineBreaks": 0,
+              "line": 5,
+              "col": 48
+            }
+          ]
+        ],
+        [
+          [
+            [
+              {
+                "type": "identifier",
+                "value": "accountBalance",
+                "text": "accountBalance",
+                "offset": 164,
+                "lineBreaks": 0,
+                "line": 7,
+                "col": 1
+              },
+              {
+                "type": "assign",
+                "value": "=",
+                "text": "=",
+                "offset": 179,
+                "lineBreaks": 0,
+                "line": 7,
+                "col": 16
+              },
+              [
+                [
+                  {
+                    "type": "identifier",
+                    "value": "accountBalance",
+                    "text": "accountBalance",
+                    "offset": 181,
+                    "lineBreaks": 0,
+                    "line": 7,
+                    "col": 18
+                  }
+                ],
+                {
+                  "type": "op",
+                  "value": "-",
+                  "text": "-",
+                  "offset": 196,
+                  "lineBreaks": 0,
+                  "line": 7,
+                  "col": 33
+                },
+                [
+                  {
+                    "type": "identifier",
+                    "value": "withdrawalAmount",
+                    "text": "withdrawalAmount",
+                    "offset": 198,
+                    "lineBreaks": 0,
+                    "line": 7,
+                    "col": 35
+                  }
+                ]
+              ]
+            ],
+            {
+              "type": "semicolon",
+              "value": ";",
+              "text": ";",
+              "offset": 214,
+              "lineBreaks": 0,
+              "line": 7,
+              "col": 51
+            }
+          ]
+        ],
+        [
+          [
+            [
+              {
+                "type": "keyword",
+                "value": "let",
+                "text": "let",
+                "offset": 217,
+                "lineBreaks": 0,
+                "line": 9,
+                "col": 1
+              },
+              {
+                "type": "identifier",
+                "value": "canWithdraw",
+                "text": "canWithdraw",
+                "offset": 221,
+                "lineBreaks": 0,
+                "line": 9,
+                "col": 5
+              },
+              {
+                "type": "assign",
+                "value": "=",
+                "text": "=",
+                "offset": 233,
+                "lineBreaks": 0,
+                "line": 9,
+                "col": 17
+              },
+              [
+                [
+                  {
+                    "type": "identifier",
+                    "value": "accountBalance",
+                    "text": "accountBalance",
+                    "offset": 235,
+                    "lineBreaks": 0,
+                    "line": 9,
+                    "col": 19
+                  }
+                ],
+                {
+                  "type": "op",
+                  "value": ">=",
+                  "text": ">=",
+                  "offset": 250,
+                  "lineBreaks": 0,
+                  "line": 9,
+                  "col": 34
+                },
+                [
+                  {
+                    "type": "number",
+                    "value": "1000",
+                    "text": "1000",
+                    "offset": 253,
+                    "lineBreaks": 0,
+                    "line": 9,
+                    "col": 37
+                  }
+                ]
+              ],
+              {
+                "type": "semicolon",
+                "value": ";",
+                "text": ";",
+                "offset": 257,
+                "lineBreaks": 0,
+                "line": 9,
+                "col": 41
+              }
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              {
+                "type": "identifier",
+                "value": "async",
+                "text": "async",
+                "offset": 260,
+                "lineBreaks": 0,
+                "line": 11,
+                "col": 1
+              },
+              {
+                "type": "keyword",
+                "value": "function",
+                "text": "function",
+                "offset": 266,
+                "lineBreaks": 0,
+                "line": 11,
+                "col": 7
+              },
+              {
+                "type": "identifier",
+                "value": "withdrawMoney",
+                "text": "withdrawMoney",
+                "offset": 275,
+                "lineBreaks": 0,
+                "line": 11,
+                "col": 16
+              },
+              {
+                "type": "lparen",
+                "value": "(",
+                "text": "(",
+                "offset": 288,
+                "lineBreaks": 0,
+                "line": 11,
+                "col": 29
+              },
+              null,
+              {
+                "type": "rparen",
+                "value": ")",
+                "text": ")",
+                "offset": 289,
+                "lineBreaks": 0,
+                "line": 11,
+                "col": 30
+              },
+              [
+                {
+                  "type": "lbracket",
+                  "value": "{",
+                  "text": "{",
+                  "offset": 291,
+                  "lineBreaks": 0,
+                  "line": 11,
+                  "col": 32
+                },
+                [
+                  [
+                    [
+                      [
+                        {
+                          "type": "keyword",
+                          "value": "return",
+                          "text": "return",
+                          "offset": 297,
+                          "lineBreaks": 0,
+                          "line": 12,
+                          "col": 5
+                        },
+                        [
+                          [
+                            {
+                              "type": "number",
+                              "value": "1",
+                              "text": "1",
+                              "offset": 304,
+                              "lineBreaks": 0,
+                              "line": 12,
+                              "col": 12
+                            }
+                          ],
+                          {
+                            "type": "op",
+                            "value": "+",
+                            "text": "+",
+                            "offset": 306,
+                            "lineBreaks": 0,
+                            "line": 12,
+                            "col": 14
+                          },
+                          [
+                            {
+                              "type": "number",
+                              "value": "1",
+                              "text": "1",
+                              "offset": 308,
+                              "lineBreaks": 0,
+                              "line": 12,
+                              "col": 16
+                            }
+                          ]
+                        ],
+                        {
+                          "type": "semicolon",
+                          "value": ";",
+                          "text": ";",
+                          "offset": 309,
+                          "lineBreaks": 0,
+                          "line": 12,
+                          "col": 17
+                        }
+                      ]
+                    ]
+                  ]
+                ],
+                {
+                  "type": "rbracket",
+                  "value": "}",
+                  "text": "}",
+                  "offset": 311,
+                  "lineBreaks": 0,
+                  "line": 13,
+                  "col": 1
+                }
+              ]
+            ]
+          ]
+        ],
+        [
+          [
+            {
+              "type": "keyword",
+              "value": "try",
+              "text": "try",
+              "offset": 314,
+              "lineBreaks": 0,
+              "line": 15,
+              "col": 1
+            },
+            [
+              {
+                "type": "lbracket",
+                "value": "{",
+                "text": "{",
+                "offset": 318,
+                "lineBreaks": 0,
+                "line": 15,
+                "col": 5
+              },
+              [
+                [
+                  [
+                    [
+                      {
+                        "type": "keyword",
+                        "value": "if",
+                        "text": "if",
+                        "offset": 324,
+                        "lineBreaks": 0,
+                        "line": 16,
+                        "col": 5
+                      },
+                      {
+                        "type": "lparen",
+                        "value": "(",
+                        "text": "(",
+                        "offset": 327,
+                        "lineBreaks": 0,
+                        "line": 16,
+                        "col": 8
+                      },
+                      [
+                        [
+                          {
+                            "type": "identifier",
+                            "value": "canWithdraw",
+                            "text": "canWithdraw",
+                            "offset": 328,
+                            "lineBreaks": 0,
+                            "line": 16,
+                            "col": 9
+                          }
+                        ],
+                        {
+                          "type": "equals",
+                          "value": "==",
+                          "text": "==",
+                          "offset": 340,
+                          "lineBreaks": 0,
+                          "line": 16,
+                          "col": 21
+                        },
+                        [
+                          {
+                            "type": "keyword",
+                            "value": "true",
+                            "text": "true",
+                            "offset": 343,
+                            "lineBreaks": 0,
+                            "line": 16,
+                            "col": 24
+                          }
+                        ]
+                      ],
+                      {
+                        "type": "rparen",
+                        "value": ")",
+                        "text": ")",
+                        "offset": 347,
+                        "lineBreaks": 0,
+                        "line": 16,
+                        "col": 28
+                      },
+                      [
+                        [
+                          {
+                            "type": "lbracket",
+                            "value": "{",
+                            "text": "{",
+                            "offset": 349,
+                            "lineBreaks": 0,
+                            "line": 16,
+                            "col": 30
+                          },
+                          [
+                            [
+                              [
+                                [
+                                  [
+                                    {
+                                      "type": "keyword",
+                                      "value": "const",
+                                      "text": "const",
+                                      "offset": 359,
+                                      "lineBreaks": 0,
+                                      "line": 17,
+                                      "col": 9
+                                    },
+                                    {
+                                      "type": "identifier",
+                                      "value": "response",
+                                      "text": "response",
+                                      "offset": 365,
+                                      "lineBreaks": 0,
+                                      "line": 17,
+                                      "col": 15
+                                    },
+                                    {
+                                      "type": "assign",
+                                      "value": "=",
+                                      "text": "=",
+                                      "offset": 374,
+                                      "lineBreaks": 0,
+                                      "line": 17,
+                                      "col": 24
+                                    },
+                                    [
+                                      {
+                                        "type": "identifier",
+                                        "value": "await",
+                                        "text": "await",
+                                        "offset": 376,
+                                        "lineBreaks": 0,
+                                        "line": 17,
+                                        "col": 26
+                                      },
+                                      [
+                                        [
+                                          {
+                                            "type": "identifier",
+                                            "value": "withdrawMoney",
+                                            "text": "withdrawMoney",
+                                            "offset": 382,
+                                            "lineBreaks": 0,
+                                            "line": 17,
+                                            "col": 32
+                                          },
+                                          {
+                                            "type": "lparen",
+                                            "value": "(",
+                                            "text": "(",
+                                            "offset": 395,
+                                            "lineBreaks": 0,
+                                            "line": 17,
+                                            "col": 45
+                                          },
+                                          null,
+                                          {
+                                            "type": "rparen",
+                                            "value": ")",
+                                            "text": ")",
+                                            "offset": 396,
+                                            "lineBreaks": 0,
+                                            "line": 17,
+                                            "col": 46
+                                          }
+                                        ]
+                                      ]
+                                    ],
+                                    {
+                                      "type": "semicolon",
+                                      "value": ";",
+                                      "text": ";",
+                                      "offset": 397,
+                                      "lineBreaks": 0,
+                                      "line": 17,
+                                      "col": 47
+                                    }
+                                  ]
+                                ]
+                              ],
+                              [
+                                [
+                                  [
+                                    [
+                                      [
+                                        {
+                                          "type": "identifier",
+                                          "value": "console",
+                                          "text": "console",
+                                          "offset": 407,
+                                          "lineBreaks": 0,
+                                          "line": 18,
+                                          "col": 9
+                                        }
+                                      ],
+                                      {
+                                        "type": "dot",
+                                        "value": ".",
+                                        "text": ".",
+                                        "offset": 414,
+                                        "lineBreaks": 0,
+                                        "line": 18,
+                                        "col": 16
+                                      },
+                                      [
+                                        {
+                                          "type": "identifier",
+                                          "value": "log",
+                                          "text": "log",
+                                          "offset": 415,
+                                          "lineBreaks": 0,
+                                          "line": 18,
+                                          "col": 17
+                                        },
+                                        {
+                                          "type": "lparen",
+                                          "value": "(",
+                                          "text": "(",
+                                          "offset": 418,
+                                          "lineBreaks": 0,
+                                          "line": 18,
+                                          "col": 20
+                                        },
+                                        [
+                                          {
+                                            "type": "identifier",
+                                            "value": "response",
+                                            "text": "response",
+                                            "offset": 419,
+                                            "lineBreaks": 0,
+                                            "line": 18,
+                                            "col": 21
+                                          }
+                                        ],
+                                        {
+                                          "type": "rparen",
+                                          "value": ")",
+                                          "text": ")",
+                                          "offset": 427,
+                                          "lineBreaks": 0,
+                                          "line": 18,
+                                          "col": 29
+                                        }
+                                      ]
+                                    ]
+                                  ],
+                                  {
+                                    "type": "semicolon",
+                                    "value": ";",
+                                    "text": ";",
+                                    "offset": 428,
+                                    "lineBreaks": 0,
+                                    "line": 18,
+                                    "col": 30
+                                  }
+                                ]
+                              ]
+                            ]
+                          ],
+                          {
+                            "type": "rbracket",
+                            "value": "}",
+                            "text": "}",
+                            "offset": 434,
+                            "lineBreaks": 0,
+                            "line": 19,
+                            "col": 5
+                          }
+                        ]
+                      ]
+                    ]
+                  ]
+                ]
+              ],
+              {
+                "type": "rbracket",
+                "value": "}",
+                "text": "}",
+                "offset": 436,
+                "lineBreaks": 0,
+                "line": 20,
+                "col": 1
+              }
+            ],
+            [
+              {
+                "type": "keyword",
+                "value": "catch",
+                "text": "catch",
+                "offset": 438,
+                "lineBreaks": 0,
+                "line": 20,
+                "col": 3
+              },
+              {
+                "type": "lparen",
+                "value": "(",
+                "text": "(",
+                "offset": 444,
+                "lineBreaks": 0,
+                "line": 20,
+                "col": 9
+              },
+              {
+                "type": "identifier",
+                "value": "error",
+                "text": "error",
+                "offset": 445,
+                "lineBreaks": 0,
+                "line": 20,
+                "col": 10
+              },
+              {
+                "type": "rparen",
+                "value": ")",
+                "text": ")",
+                "offset": 450,
+                "lineBreaks": 0,
+                "line": 20,
+                "col": 15
+              },
+              [
+                {
+                  "type": "lbracket",
+                  "value": "{",
+                  "text": "{",
+                  "offset": 452,
+                  "lineBreaks": 0,
+                  "line": 20,
+                  "col": 17
+                },
+                [
+                  [
+                    [
+                      [
+                        [
+                          [
+                            [
+                              {
+                                "type": "identifier",
+                                "value": "console",
+                                "text": "console",
+                                "offset": 458,
+                                "lineBreaks": 0,
+                                "line": 21,
+                                "col": 5
+                              }
+                            ],
+                            {
+                              "type": "dot",
+                              "value": ".",
+                              "text": ".",
+                              "offset": 465,
+                              "lineBreaks": 0,
+                              "line": 21,
+                              "col": 12
+                            },
+                            [
+                              {
+                                "type": "identifier",
+                                "value": "log",
+                                "text": "log",
+                                "offset": 466,
+                                "lineBreaks": 0,
+                                "line": 21,
+                                "col": 13
+                              },
+                              {
+                                "type": "lparen",
+                                "value": "(",
+                                "text": "(",
+                                "offset": 469,
+                                "lineBreaks": 0,
+                                "line": 21,
+                                "col": 16
+                              },
+                              [
+                                {
+                                  "type": "identifier",
+                                  "value": "error",
+                                  "text": "error",
+                                  "offset": 470,
+                                  "lineBreaks": 0,
+                                  "line": 21,
+                                  "col": 17
+                                }
+                              ],
+                              {
+                                "type": "rparen",
+                                "value": ")",
+                                "text": ")",
+                                "offset": 475,
+                                "lineBreaks": 0,
+                                "line": 21,
+                                "col": 22
+                              }
+                            ]
+                          ]
+                        ],
+                        {
+                          "type": "semicolon",
+                          "value": ";",
+                          "text": ";",
+                          "offset": 476,
+                          "lineBreaks": 0,
+                          "line": 21,
+                          "col": 23
+                        }
+                      ]
+                    ]
+                  ]
+                ],
+                {
+                  "type": "rbracket",
+                  "value": "}",
+                  "text": "}",
+                  "offset": 478,
+                  "lineBreaks": 0,
+                  "line": 22,
+                  "col": 1
+                }
+              ]
+            ]
+          ]
+        ]
+      ]
+    ],
+    {
+      "type": "EOF",
+      "value": "__EOF__",
+      "text": "__EOF__",
+      "offset": 481,
+      "lineBreaks": 0,
+      "line": 24,
+      "col": 1
+    }
+  ]
+]
