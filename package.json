@@ -8,7 +8,7 @@
     "nearley": "^2.20.1"
   },
   "scripts": {
-    "parse": "nearleyc ./src/langs/javascript/grammar.ne -o ./src/langs/javascript/grammar.ts && npx tsc && node ./dist/parser.js",
+    "parse": "nearleyc ./src/langs/haskell/grammar.ne -o ./src/langs/haskell/grammar.ts && npx tsc && node ./dist/parser.js",
     "lex": "npx tsc && node ./dist/lexer.js"
   },
   "devDependencies": {

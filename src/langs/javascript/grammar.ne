@@ -25,15 +25,15 @@ JSLexer.next = (next => () => {
 @preprocessor typescript
 @lexer JSLexer
 
-program -> statement_list %EOF
+program -> (statement|declaration):* %EOF
 
 statement_list -> (statement:*) {% (d) => d[0] %}
 
 statement -> (
-    declaration
-    | expression_statement
-    | block
+    expression ";"
     | if_statement
+    # switch_statement
+    | block
     | iteration_statement
     | break_statement
     | continue_statement
@@ -50,14 +50,14 @@ declaration -> (
 
 variable_declaration -> 
     ("const" identifier %assign expression %semicolon) {% (d) => d[0] %}
-    | ("let" identifier %assign expression %semicolon) {% (d) => d[0] %}
-    | ("var" identifier %assign expression %semicolon) {% (d) => d[0] %}
+    | ("let" identifier (%assign expression):? %semicolon) {% (d) => d[0] %}
+    | ("var" identifier (%assign expression):? %semicolon) {% (d) => d[0] %}
 
 function_declaration -> 
-    "async":? "function" identifier parameter_list block
+    "async":? "function" identifier parameter_list block ";"
 
 class_declaration -> 
-    "class" identifier class_body
+    "class" identifier class_body ";"
 
 class_body -> 
     %lbracket class_element_list:? %rbracket
@@ -85,6 +85,7 @@ property_name ->
     | %lsquare expression %rsquare
 
 parameter_list -> %lparen (identifier ("," identifier):*):? %rparen
+
 
 block -> 
     %lbracket statement:* %rbracket
@@ -123,99 +124,160 @@ catch_clause ->
 empty_statement -> 
     %semicolon {% (d) => d[0] %}
 
-expression_statement -> 
-    assignment_expression %semicolon 
-
 expression -> 
-    conditional_expression {% (d) => d[0] %}
+    ternary_expression {% (d) => d[0] %}
+	| binary_expression {% (d) => d[0] %}
+	| unary_expression {% (d) => d[0] %}
+	| primary_expression {% (d) => d[0] %}
+	| assignment_expression {% (d) => d[0] %}
+ 
+assignment_expression ->
+    primary_expression "=" expression
+	| primary_expression "+=" expression
+	| primary_expression "-=" expression
+	| primary_expression "*=" expression
+	| primary_expression "/=" expression
+	| primary_expression "%=" expression
+	| primary_expression "**=" expression
+	| primary_expression ">>=" expression
+	| primary_expression "<<=" expression
+	| primary_expression ">>>=" expression
+	| primary_expression "&=" expression
+	| primary_expression "^=" expression
+	| primary_expression "|=" expression
+	| primary_expression "&&=" expression
+	| primary_expression "||=" expression
+	| primary_expression "??=" expression
 
-assignment_expression -> 
-    conditional_expression {% (d) => d[0] %}
-    | identifier %assign assignment_expression
+ternary_expression -> binary_expression "?" binary_expression ":" binary_expression
 
-arrow_function -> 
-    parameter_list "=>" ((%lbracket statement_list:? %rbracket) | expression)
+binary_expression -> 
+    nullish_binary_expression
 
-conditional_expression -> 
-    logical_or_expression {% (d) => d[0] %}
-    | logical_or_expression "?" assignment_expression ":" assignment_expression
+nullish_binary_expression ->
+    logical_or_binary_expression "??" nullish_binary_expression
+    | logical_or_binary_expression
 
-logical_or_expression -> 
-    logical_and_expression {% (d) => d[0] %}
-    | logical_or_expression "||" logical_and_expression
+logical_or_binary_expression -> 
+    logical_and_binary_expression "||" logical_or_binary_expression
+    | logical_and_binary_expression
 
-logical_and_expression -> 
-    equality_expression {% (d) => d[0] %}
-    | logical_and_expression "&&" equality_expression
+logical_and_binary_expression -> 
+    bitwise_or_binary_expression "&&" logical_and_binary_expression
+    | bitwise_or_binary_expression
 
-equality_expression -> 
-    relational_expression {% (d) => d[0] %}
-    | equality_expression "===" relational_expression
-    | equality_expression "!=" relational_expression
-    | equality_expression "!==" relational_expression
-    | equality_expression "==" relational_expression
+bitwise_or_binary_expression -> 
+    bitwise_xor_binary_expression "|" bitwise_or_binary_expression
+    |bitwise_xor_binary_expression
 
-relational_expression -> 
-    additive_expression {% (d) => d[0] %}
-    | relational_expression "<" additive_expression
-    | relational_expression ">" additive_expression
-    | relational_expression "<=" additive_expression
-    | relational_expression ">=" additive_expression
+bitwise_xor_binary_expression -> 
+    bitwise_and_binary_expression "^" bitwise_xor_binary_expression
+    | bitwise_and_binary_expression
 
-additive_expression -> 
-    multiplicative_expression {% (d) => d[0] %}
-    | additive_expression "+" multiplicative_expression
-    | additive_expression "-" multiplicative_expression
+bitwise_and_binary_expression -> 
+    equality_binary_expression "&" bitwise_and_binary_expression
+    | equality_binary_expression
 
-multiplicative_expression -> 
-    unary_expression {% (d) => d[0] %}
-    | multiplicative_expression "*" unary_expression
-    | multiplicative_expression "/" unary_expression
-    | multiplicative_expression "%" unary_expression
+equality_binary_expression ->
+    relational_binary_expression "==" equality_binary_expression
+	| relational_binary_expression "===" equality_binary_expression
+	| relational_binary_expression "!=" equality_binary_expression
+	| relational_binary_expression "!==" equality_binary_expression
+    | relational_binary_expression
 
-unary_expression -> 
-    primary_expression {% (d) => d[0] %}
-    | "!" unary_expression
-    | "-" unary_expression
-    | "+" unary_expression
-    | "await" unary_expression
-    | "delete" unary_expression
-    | "typeof" unary_expression
-    | "void" unary_expression
+relational_binary_expression -> 
+    bitwise_shift_binary_expression "<" relational_binary_expression
+	| bitwise_shift_binary_expression "<=" relational_binary_expression
+	| bitwise_shift_binary_expression ">" relational_binary_expression
+	| bitwise_shift_binary_expression ">=" relational_binary_expression
+	| bitwise_shift_binary_expression "??" relational_binary_expression
+    | bitwise_shift_binary_expression
+
+bitwise_shift_binary_expression	-> 
+    additive_binary_expression ">>" bitwise_shift_binary_expression
+	| additive_binary_expression "<<" bitwise_shift_binary_expression
+	| additive_binary_expression ">>>" bitwise_shift_binary_expression
+    | additive_binary_expression
+
+additive_binary_expression	-> 
+    multiplicative_binary_expression "+" additive_binary_expression
+	| multiplicative_binary_expression "-" additive_binary_expression
+    | multiplicative_binary_expression
+
+multiplicative_binary_expression -> 
+    unary_expression "*" multiplicative_binary_expression
+	| unary_expression "/" multiplicative_binary_expression
+	| unary_expression "%" multiplicative_binary_expression
+	| unary_expression "**" multiplicative_binary_expression
+    | unary_expression
+
+unary_expression -> prefix_expression | postfix_expression | primary_expression
+
+postfix_expression ->
+    primary_expression property_access_postfix
+	| primary_expression function_call_postfix
+	| primary_expression "++"
+	| primary_expression "--"
+	| primary_expression %template
+	| primary_expression  "?"
+
+prefix_expression		-> 
+    "+" primary_expression
+	| "-" primary_expression
+	| "++" primary_expression
+	| "--" primary_expression
+	| "!" primary_expression
+	| "~" primary_expression
+	| "..." expression
+	| "typeof" expression
+	| "void" expression
+	| "delete" expression
+	| "await" expression
+	| "new" expression
 
 primary_expression -> 
-    (call_expression
-    | member_expression
-    | identifier
-    | %number
-    | %string
-    | "true" | "false" | "null" | "undefined"
-    | "this"
-    | array_literal
-    | object_literal) {% (d) => d[0] %} 
-    | %lparen expression %rparen
-    | "new" primary_expression argument_list
+    %number {% (d) => d[0] %}
+    | %string {% (d) => d[0] %}
+    | "null" | "undefined" {% (d) => d[0] %}
+    | "true" | "false" {% (d) => d[0] %}
+    # | %regex 
+	| %template {% (d) => d[0] %}
+    | array_literal {% (d) => d[0] %}
+    | object_literal {% (d) => d[0] %}
+	| %lparen expression %rparen
+	| class_declaration {% (d) => d[0] %}
+	| function_declaration {% (d) => d[0] %}
+	# | arrow_function
+	| "this" {% (d) => d[0] %}
+	| identifier {% (d) => d[0] %}
 
 
-member_expression -> 
-    primary_expression %dot call_expression
-    | primary_expression %dot identifier
-    | primary_expression %lsquare expression %rsquare
+function_call_postfix -> %lbracket comma_separated_expressions %rbracket
+comma_separated_expressions -> expression ("," expression):?
 
-call_expression -> 
-    (primary_expression | "then" | "catch" | "finally") argument_list
+property_access_postfix -> bracket_notation_property | dot_notation_property
 
-argument_list -> %lparen (expression ("," expression):*):? %rparen {%(d)=> {console.log(util.inspect(d, false, null, true)); return d}%}
+bracket_notation_property -> bracket_enclosed_expression:+
+
+bracket_enclosed_expression -> %lsquare expression %rsquare
+
+dot_notation_property -> "." dot_separated_expressions
+
+dot_separated_expressions -> expression ("." expression):*
+
+argument_list -> %lparen arg_list:? %rparen {%(d) => {console.log(util.inspect(d.flat(Infinity), false ,null, true)), console.log("\n\n"); return d}%}
+
+arg_list -> (expression ("," expression):*) 
 
 array_literal -> 
-    %lsquare element_list:? %rsquare
+    %lsquare element_list:? %rsquare 
 
 element_list -> 
     expression {% (d) => d[0] %}
     | (element_list {% (d) => d[0] %}) "," expression
 
 object_literal -> 
-    %lbracket property_definition_list:? %rbracket
+    %lbracket property_definition_list:? %rbracket {%(d) => {return d}%}
 
 property_definition_list -> 
     property_definition {% (d) => d[0] %}
@@ -227,30 +289,3 @@ property_definition ->
 
 identifier -> 
     %identifier {% (d) => d[0] %}
-
-##statement -> 
-##    "const" identifier %assign expression %semicolon:? NL:* {% (d) => {return parseStatement(filter(d))} %}
-##    | "let" identifier %assign expression %semicolon:? NL:* {% (d) => {return parseStatement(filter(d))} %}
-##    | "var" identifier %assign expression %semicolon:? NL:* {% (d) => {return parseStatement(filter(d))} %}
-##    | identifier %assign expression %semicolon:? NL:* {% (d) => {return parseStatement(filter(d))} %}
-##
-##expression ->
-##    term {% (d) => {return parseExpression(filter(d))} %}
-##    | term "+" term {% (d) => {return parseExpression(filter(d))} %}
-##    | term "-" term {% (d) => {return parseExpression(filter(d))} %}
-##    | term ">=" term {% (d) => {return parseExpression(filter(d))} %}
-##
-##term -> 
-##    primary {% (d) => {return parseTerm(filter(d))}%}
-##    | primary "*" primary {% (d) => {return parseTerm(filter(d))}%}
-##    | primary "/" primary {% (d) => {return parseTerm(filter(d))}%}
-##
-##
-##primary -> 
-##    identifier {% (d) => {return parsePrimary(filter(d))}%}
-##    | %number {% (d) => {return parsePrimary(filter(d))}%}
-##    | %string {% (d) => {return parsePrimary(filter(d))}%}
-##    | %lparen expression %rparen {% (d) => {return parsePrimary(filter(d))}%}
-##
-##identifier -> %identifier {%(d) => {return parseIdentifier(filter(d))}%}
-##-> " ":+ {% (d) => {return null} %}  Ignore whitespaces
