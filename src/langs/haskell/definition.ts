@@ -1,8 +1,19 @@
 import { SymbolPrimitive } from "../../globals";
-import { FunctionDeclaration, Expression, FunctionExpression, ListPrimitive, LambdaExpression } from "../../paradigms/functional";
+import {
+  FunctionDeclaration,
+  Expression,
+  FunctionExpression,
+  ListPrimitive,
+  LambdaExpression,
+} from "../../paradigms/functional";
 
 export const keywords = [
   "type",
+  "where",
+  "in",
+  "if",
+  "else",
+  "then",
   // All the following ones are from JS keywords, this should be updated to Haskell keywords
   "break",
   "byte",
@@ -17,7 +28,7 @@ export const keywords = [
   "delete",
   "do",
   "double",
-  "else",
+
   "enum",
   "eval",
   "export",
@@ -29,10 +40,8 @@ export const keywords = [
   "for",
   "function",
   "goto",
-  "if",
   "implements",
   "import",
-  "in",
   "instanceof",
   "int",
   "interface",
@@ -71,9 +80,16 @@ export const keywords = [
 //   numericType: "number" | "bigint";
 // }
 
-export type HSFunctionDeclaration = FunctionDeclaration
+export type HSFunctionDeclaration = FunctionDeclaration;
 export type HSFunctionExpression = FunctionExpression;
-export type HSExpression = Expression;
+export type HSExpression = Expression | ApplicationExpression;
+
+export interface ApplicationExpression {
+  type: "application_expression";
+  left: SymbolPrimitive;
+  operator: "$";
+  right: SymbolPrimitive;
+}
 
 export interface HSTypeAlias {
   type: "type_alias";

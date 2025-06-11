@@ -9,7 +9,8 @@ export const HaskellLexerConfig = {
     /0[xX][0-9a-fA-F]+|0[bB][01]+|0[oO][0-7]+|(?:\d*\.\d+|\d+)(?:[eE][+-]?\d+)?/,
   string:
     /"(?:\\["\\bfnrtv0]|\\u[0-9a-fA-F]{4}|[^"\\\n\r])*"|'(?:\\['\\bfnrtv0]|\\u[0-9a-fA-F]{4}|[^'\\\n\r])*'/,
-  template: /`(?:\\[\s\S]|[^\\`])*`/,
+  //template: /`(?:\\[\s\S]|[^\\`])*`/,
+  backtick: "`",
   lparen: "(",
   rparen: ")",
   lbracket: "{",

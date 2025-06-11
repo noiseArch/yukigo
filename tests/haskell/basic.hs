@@ -51,24 +51,22 @@ squareList :: [Int] -> [Int]
 squareList xs = map (\n -> n * n) xs
 
 -- 7. If-Else expression (Haskell's if is an expression, not a statement)
---isEven :: Int -> String
---isEven n =
---    if n `mod` 2 == 0
---    then "Even"
---    else "Odd"
+isEven :: Int -> String
+isEven n =
+    if n `mod` 2 == 0
+    then "Even"
+    else "Odd"
 
 -- 8. `let` expression (for local bindings)
---calculateArea :: Double -> Double
---calculateArea radius =
---    let piVal = 3.14159
---        area = piVal * radius * radius
---    in area
---
+calculateArea :: Double -> Double
+calculateArea radius =
+    let piVal = 3.14159; area = piVal * radius * radius; in area
+
 ---- 9. `where` clause (another way for local bindings, often used with functions)
---circumference :: Double -> Double
---circumference radius = 2 * piVal * radius
---  where
---    piVal = 3.14159
+circumference :: Double -> Double
+circumference radius = 2 * piVal * radius
+  where
+    piVal = 3.14159;
 
 {-
 This is a

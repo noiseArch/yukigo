@@ -20,7 +20,7 @@ import {
 import util from "util";
 
 function parseFunction(token: any) {
-  console.log("Function", util.inspect(token, false, null, true));
+  //console.log("Function", util.inspect(token, false, null, true));
   const funcDecl: HSFunctionDeclaration = {
     type: "function",
     name: { type: "symbol", value: token[0].value },
@@ -36,14 +36,13 @@ function parseFunction(token: any) {
 }
 
 function parseFunctionType(token: any) {
-  console.log("Function Type Exp", util.inspect(token, false, null, true));
-  const inputTypes =
-    token[1].length > 1
-      ? token[1].slice(0, -1).map((param: any) => {
-          return { type: "symbol", value: param.value };
-        })
-      : [];
-  const returnType = token[1][token[1].length - 1];
+  //console.log("Function Type Exp", util.inspect(token, false, null, true));
+  const bodyType: SymbolPrimitive[] = token[1]
+    .flat(Infinity)
+    .filter((t) => t !== null && t.type !== "typeArrow").map(t => ({type: "symbol", name: t.value}));
+
+  const inputTypes = bodyType.length > 1 ? bodyType.slice(0, -1) : [];
+  const returnType = bodyType[token[1].length - 1];
   const functionType: HSFunctionTypeDeclaration = {
     type: "function_type_declaration",
     name: { type: "symbol", value: token[0].value },
@@ -64,6 +63,16 @@ function parseTypeAlias(token: any) {
 }
 
 function parseExpression(token: any) {
+  if (token.type == "application") {
+    const expression: HSExpression = {
+      type: "application",
+      left: token.body[0],
+      operator: "$",
+      right: token.body[1],
+    };
+    console.log("App. Expr.", expression);
+    return expression;
+  }
   if (!token[1]) return token;
   const expression: HSExpression = {
     type: "expression",
@@ -82,8 +91,8 @@ function parseLambda(token: any) {
       return { type: "symbol", value: param.value };
     }),
     body: token[1],
-  }
-  return lambda
+  };
+  return lambda;
 }
 
 function parseFunctionExpression(token: any) {
@@ -137,7 +146,7 @@ function parsePrimary(token: any) {
     case "list": {
       const listPrimitive: HSListPrimitive = {
         type: "list",
-        elements: token.body[2]
+        elements: token.body[2],
       };
       return listPrimitive;
     }
@@ -156,5 +165,5 @@ export {
   parseCompositionExpression,
   parseTypeAlias,
   parseFunctionType,
-  parseLambda
+  parseLambda,
 };

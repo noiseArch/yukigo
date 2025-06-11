@@ -11,7 +11,7 @@
           "type": "identifier",
           "value": "Int",
           "text": "Int",
-          "offset": 61,
+          "offset": 64,
           "lineBreaks": 0,
           "line": 4,
           "col": 15
@@ -26,13 +26,8 @@
       },
       "inputTypes": [],
       "returnType": {
-        "type": "identifier",
-        "value": "Int",
-        "text": "Int",
-        "offset": 76,
-        "lineBreaks": 0,
-        "line": 6,
-        "col": 11
+        "type": "symbol",
+        "name": "Int"
       }
     },
     {
@@ -56,13 +51,8 @@
       },
       "inputTypes": [],
       "returnType": {
-        "type": "identifier",
-        "value": "Double",
-        "text": "Double",
-        "offset": 131,
-        "lineBreaks": 0,
-        "line": 10,
-        "col": 13
+        "type": "symbol",
+        "name": "Double"
       }
     },
     {
@@ -86,13 +76,8 @@
       },
       "inputTypes": [],
       "returnType": {
-        "type": "identifier",
-        "value": "Char",
-        "text": "Char",
-        "offset": 181,
-        "lineBreaks": 0,
-        "line": 14,
-        "col": 10
+        "type": "symbol",
+        "name": "Char"
       }
     },
     {
@@ -115,13 +100,8 @@
       },
       "inputTypes": [],
       "returnType": {
-        "type": "identifier",
-        "value": "String",
-        "text": "String",
-        "offset": 246,
-        "lineBreaks": 0,
-        "line": 18,
-        "col": 16
+        "type": "symbol",
+        "name": "String"
       }
     },
     {
@@ -144,13 +124,8 @@
       },
       "inputTypes": [],
       "returnType": {
-        "type": "identifier",
-        "value": "Bool",
-        "text": "Bool",
-        "offset": 310,
-        "lineBreaks": 0,
-        "line": 22,
-        "col": 13
+        "type": "symbol",
+        "name": "Bool"
       }
     },
     {
@@ -173,48 +148,18 @@
       },
       "inputTypes": [
         {
-          "type": "symbol"
+          "type": "symbol",
+          "name": "Int"
         },
         {
           "type": "symbol",
-          "value": "->"
+          "name": "Int"
         }
       ],
-      "returnType": [
-        [
-          null,
-          {
-            "type": "identifier",
-            "value": "Int",
-            "text": "Int",
-            "offset": 421,
-            "lineBreaks": 0,
-            "line": 27,
-            "col": 25
-          },
-          null
-        ],
-        {
-          "type": "typeArrow",
-          "value": "->",
-          "text": "->",
-          "offset": 425,
-          "lineBreaks": 0,
-          "line": 27,
-          "col": 29
-        },
-        [
-          {
-            "type": "identifier",
-            "value": "Int",
-            "text": "Int",
-            "offset": 428,
-            "lineBreaks": 0,
-            "line": 27,
-            "col": 32
-          }
-        ]
-      ]
+      "returnType": {
+        "type": "symbol",
+        "name": "Int"
+      }
     },
     {
       "type": "function",
@@ -253,22 +198,8 @@
       },
       "inputTypes": [
         {
-          "type": "symbol"
-        },
-        {
           "type": "symbol",
-          "value": "->"
-        }
-      ],
-      "returnType": [
-        {
-          "type": "identifier",
-          "value": "String",
-          "text": "String",
-          "offset": 563,
-          "lineBreaks": 0,
-          "line": 32,
-          "col": 20
+          "name": "String"
         }
       ]
     },
@@ -331,7 +262,7 @@
             "type": "op",
             "value": "++",
             "text": "++",
-            "offset": 673,
+            "offset": 707,
             "lineBreaks": 0,
             "line": 35,
             "col": 39
@@ -352,21 +283,16 @@
       "inputTypes": [
         {
           "type": "symbol",
-          "value": "["
+          "name": "["
         },
         {
           "type": "symbol",
-          "value": "Int"
+          "name": "Int"
         }
       ],
       "returnType": {
-        "type": "rsquare",
-        "value": "]",
-        "text": "]",
-        "offset": 735,
-        "lineBreaks": 0,
-        "line": 38,
-        "col": 18
+        "type": "symbol",
+        "name": "]"
       }
     },
     {
@@ -415,24 +341,22 @@
       },
       "inputTypes": [
         {
-          "type": "symbol"
+          "type": "symbol",
+          "name": "["
         },
         {
           "type": "symbol",
-          "value": "->"
+          "name": "Int"
+        },
+        {
+          "type": "symbol",
+          "name": "]"
         }
       ],
-      "returnType": [
-        {
-          "type": "identifier",
-          "value": "Int",
-          "text": "Int",
-          "offset": 829,
-          "lineBreaks": 0,
-          "line": 42,
-          "col": 21
-        }
-      ]
+      "returnType": {
+        "type": "symbol",
+        "name": "]"
+      }
     },
     {
       "type": "function",
@@ -446,17 +370,16 @@
         }
       ],
       "body": {
-        "type": "function_expression",
-        "name": {
+        "type": "application",
+        "left": {
           "type": "symbol",
           "value": "sum"
         },
-        "parameters": [
-          {
-            "type": "symbol",
-            "value": "xs"
-          }
-        ]
+        "operator": "$",
+        "right": {
+          "type": "symbol",
+          "value": "xs"
+        }
       }
     },
     {
@@ -467,24 +390,22 @@
       },
       "inputTypes": [
         {
-          "type": "symbol"
+          "type": "symbol",
+          "name": "["
         },
         {
           "type": "symbol",
-          "value": "->"
+          "name": "a"
+        },
+        {
+          "type": "symbol",
+          "name": "]"
         }
       ],
-      "returnType": [
-        {
-          "type": "identifier",
-          "value": "Int",
-          "text": "Int",
-          "offset": 903,
-          "lineBreaks": 0,
-          "line": 46,
-          "col": 22
-        }
-      ]
+      "returnType": {
+        "type": "symbol",
+        "name": "]"
+      }
     },
     {
       "type": "function",
@@ -498,17 +419,16 @@
         }
       ],
       "body": {
-        "type": "function_expression",
-        "name": {
+        "type": "application",
+        "left": {
           "type": "symbol",
           "value": "length"
         },
-        "parameters": [
-          {
-            "type": "symbol",
-            "value": "xs"
-          }
-        ]
+        "operator": "$",
+        "right": {
+          "type": "symbol",
+          "value": "xs"
+        }
       }
     },
     {
@@ -519,42 +439,30 @@
       },
       "inputTypes": [
         {
-          "type": "symbol"
+          "type": "symbol",
+          "name": "["
         },
         {
           "type": "symbol",
-          "value": "->"
+          "name": "Int"
+        },
+        {
+          "type": "symbol",
+          "name": "]"
+        },
+        {
+          "type": "symbol",
+          "name": "["
+        },
+        {
+          "type": "symbol",
+          "name": "Int"
         }
       ],
-      "returnType": [
-        {
-          "type": "lsquare",
-          "value": "[",
-          "text": "[",
-          "offset": 1017,
-          "lineBreaks": 0,
-          "line": 50,
-          "col": 24
-        },
-        {
-          "type": "identifier",
-          "value": "Int",
-          "text": "Int",
-          "offset": 1018,
-          "lineBreaks": 0,
-          "line": 50,
-          "col": 25
-        },
-        {
-          "type": "rsquare",
-          "value": "]",
-          "text": "]",
-          "offset": 1021,
-          "lineBreaks": 0,
-          "line": 50,
-          "col": 28
-        }
-      ]
+      "returnType": {
+        "type": "symbol",
+        "name": "]"
+      }
     },
     {
       "type": "function",
@@ -568,14 +476,192 @@
         }
       ],
       "body": {
-        "type": "function_expression",
-        "name": {
+        "type": "application",
+        "left": {
           "type": "symbol",
           "value": "map"
         },
-        "parameters": [
+        "operator": "$",
+        "right": {
+          "type": "application",
+          "body": [
+            {
+              "type": "lambda_expression",
+              "parameters": [
+                {
+                  "type": "symbol"
+                }
+              ],
+              "body": {
+                "type": "expression",
+                "left": {
+                  "type": "symbol",
+                  "value": "n"
+                },
+                "operator": "*",
+                "right": {
+                  "type": "symbol",
+                  "value": "n"
+                }
+              }
+            },
+            {
+              "type": "symbol",
+              "value": "xs"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "function_type_declaration",
+      "name": {
+        "type": "symbol",
+        "value": "isEven"
+      },
+      "inputTypes": [
+        {
+          "type": "symbol",
+          "name": "Int"
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": {
+        "type": "symbol",
+        "value": "isEven"
+      },
+      "parameters": [
+        {
+          "type": "symbol"
+        }
+      ],
+      "body": {
+        "type": "if",
+        "cond": {
+          "type": "comparison",
+          "left": {
+            "type": "infix_application",
+            "operator": "mod",
+            "left": {
+              "type": "symbol",
+              "value": "n"
+            },
+            "right": {
+              "type": "number",
+              "numericType": "number",
+              "value": "2"
+            }
+          },
+          "right": {
+            "type": "number",
+            "numericType": "number",
+            "value": "0"
+          }
+        },
+        "then": {
+          "type": "string",
+          "value": "\"Even\""
+        },
+        "else": {
+          "type": "string",
+          "value": "\"Odd\""
+        }
+      }
+    },
+    {
+      "type": "function_type_declaration",
+      "name": {
+        "type": "symbol",
+        "value": "calculateArea"
+      },
+      "inputTypes": [
+        {
+          "type": "symbol",
+          "name": "Double"
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": {
+        "type": "symbol",
+        "value": "calculateArea"
+      },
+      "parameters": [
+        {
+          "type": "symbol"
+        }
+      ],
+      "body": {
+        "type": "let_in",
+        "bindings": [
           {
-            "type": "symbol"
+            "name": "piVal",
+            "value": {
+              "type": "number",
+              "numericType": "number",
+              "value": "3.14159"
+            }
+          },
+          null
+        ],
+        "body": {
+          "type": "symbol",
+          "value": "area"
+        }
+      }
+    },
+    {
+      "type": "function_type_declaration",
+      "name": {
+        "type": "symbol",
+        "value": "circumference"
+      },
+      "inputTypes": [
+        {
+          "type": "symbol",
+          "name": "Double"
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": {
+        "type": "symbol",
+        "value": "circumference"
+      },
+      "parameters": [
+        {
+          "type": "symbol"
+        }
+      ],
+      "body": {
+        "type": "expression",
+        "left": {
+          "type": "number",
+          "numericType": "number",
+          "value": "2"
+        },
+        "operator": "*",
+        "right": [
+          {
+            "type": "symbol",
+            "value": "piVal"
+          },
+          {
+            "type": "op",
+            "value": "*",
+            "text": "*",
+            "offset": 1607,
+            "lineBreaks": 0,
+            "line": 67,
+            "col": 34
+          },
+          {
+            "type": "symbol",
+            "value": "radius"
           }
         ]
       }

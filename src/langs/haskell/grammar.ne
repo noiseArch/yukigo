@@ -22,53 +22,87 @@ program -> (declaration):* {% (d) => filter(d.flat(Infinity)) %}
 expression -> concatenation {% (d) => parseExpression(d[0]) %}
 
 lambda_expression -> 
-    "(" "\\" _ parameter_list _ "->" _ expression ")" {% (d) => parseLambda([d[3], d[7]]) %}
+    "(" _ "\\" _ parameter_list _ "->" _ expression _ ")" {% (d) => parseLambda([d[4], d[8]]) %}
 
-function_expression -> 
-    %identifier _ "(" _ argument_list _ ")" _ {% (d) => parseFunctionExpression([d[0], d[4]]) %}
-    | %identifier __ primary (__ primary):* {% (d) => parseFunctionExpression([d[0], d[1], [d[2]]]) %}
 
-composition_expression ->
-    %identifier _ "." _ %identifier {% (d) => parseCompositionExpression([d[0], d[4]]) %}
-
-argument_list -> 
-    primary __ argument_list {% (d) => {console.log(d); return filter(d)} %}
-    | primary {% (d) => {console.log(d); return d} %}
 
 concatenation ->
-    addition _ "++" _ concatenation {% (d) => filter(d) %}
+    comparison _ "++" _ concatenation {% (d) => filter(d) %}
+    | comparison {% (d) => d[0] %}
+
+comparison ->
+    addition _ comparison_operator _ comparison {% (d) => ({ type: "comparison", operator: d[2].value, left: d[0], right: d[4] }) %}
     | addition {% (d) => d[0] %}
 
 addition -> 
-    multiplication _ "+" _ multiplication {% (d) => filter(d) %}
-    | multiplication _ "-" _ multiplication {% (d) => filter(d) %}
+    multiplication _ "+" _ addition {% (d) => filter(d) %}
+    | multiplication _ "-" _ addition {% (d) => filter(d) %}
     | multiplication {% (d) => d[0] %}
 
-
 multiplication ->
-    primary _ "*" _ primary {% (d) => filter(d) %}
-    | primary _ "/" _ primary {% (d) => filter(d) %}
-    | primary {% (d) => d[0] %}
+    infix_operator_expression _ "*" _ multiplication {% (d) => filter(d) %}
+    | infix_operator_expression _ "/" _ multiplication {% (d) => filter(d) %}
+    | infix_operator_expression {% (d) => d[0] %}
+
+
+infix_operator_expression ->
+    application _ "`" _ %identifier _ "`" _ infix_operator_expression
+    {% (d) => ({
+        type: "infix_application",
+        operator: d[4].value,
+        left: d[0],
+        right: d[8]
+    }) %}
+    | application {% d => d[0] %}
+
+application ->
+    primary __ application {% (d) => {return {type: "application", body: filter(d).flat(Infinity)}} %}
+    | primary {% (d) => { return d[0] } %}
+
 
 primary ->
     %number {% (d) => parsePrimary(d[0]) %}
     | %string {% (d) => parsePrimary(d[0]) %}
     | %identifier {% (d) => parsePrimary(d[0]) %}
-    ##| "(" _ expression _ ")" {% (d) => d %}
+    | "(" _ expression _ ")" {% (d) => d[2] %}
     | list_literal {% (d) => parsePrimary({type: "list", body: d[0]}) %}
-    | function_expression {% (d) => {return d[0]} %}
     | composition_expression {% (d) => {return d[0]} %}
     | lambda_expression {% (d) => {return d[0]} %}
+    | if_expression {% d => d[0] %}
+    | let_in_expression {% d => d[0] %}
+
+if_expression ->
+    "if" _ expression _ "then" _ expression _ "else" _ expression
+    {% (d) => ({ type: "if", cond: d[2], then: d[6], else: d[10] }) %}
 
 declaration -> function_declaration | function_type_declaration | type_declaration {% (d) => d[0] %}
 
 function_type_declaration -> %identifier _ "::" _ type_list {% (d) => parseFunctionType([d[0], d[4]]) %}
 
-function_declaration -> %identifier __ parameter_list:? _ "=" _ expression {% (d) => parseFunction(d) %}
+function_declaration -> %identifier __ parameter_list:? _ "=" _ expression where_clause:? {% (d) => parseFunction(d) %}
 
 parameter_list -> 
     (%identifier|%string|%number| "(" %identifier ":" %identifier ")") __ parameter_list {% (d) => filter(d.flat(Infinity)) %}
     | (%identifier|%string|%number| "(" %identifier ":" %identifier ")") {% (d) => [d[0]] %}
+
+composition_expression ->
+    %identifier _ "." _ %identifier {% (d) => parseCompositionExpression([d[0], d[4]]) %}
+
+## Local bindings
+
+where_clause ->
+    _ "where" _ let_bindings
+    {% (d) => d[3] %}
+
+let_in_expression ->
+    "let" __ let_bindings __ "in" __ expression
+    {% (d) => ({ type: "let_in", bindings: d[2], body: d[6] }) %}
+
+let_bindings ->
+    let_binding (_ let_binding):*
+    {% (d) => [d[0], ...(d[1] ? d[1].map(x => x[3]) : [])] %}
+
+let_binding -> %identifier _ "=" _ expression _ ";" {% (d) => ({ name: d[0].value, value: d[4] }) %}
 
 type_declaration -> "type" __ %identifier _ "=" _ type_list {% (d) => parseTypeAlias(d) %}
 
@@ -82,6 +116,8 @@ expression_list ->
     expression _ "," _ expression_list {% (d) => filter([d[0], d[4]]).flat(Infinity) %}
     | expression {% (d) => [d[0]] %}
 
+comparison_operator -> 
+    "==" | "/=" | "<" | ">" | "<=" | ">="
 
 _ -> %WS:* {% (d) => null %}
 
