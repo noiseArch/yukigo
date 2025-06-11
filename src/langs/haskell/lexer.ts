@@ -4,7 +4,7 @@ import { makeLexer } from "moo-ignore";
 export const HaskellLexerConfig = {
   //EOF: "__EOF__",
   WS: /[ \t]+/,
-  comment: /\/\/.*?$|\/\*[\s\S]*?\*\//,
+  comment: /--.*?$|{-[\s\S]*?-}/,
   number:
     /0[xX][0-9a-fA-F]+|0[bB][01]+|0[oO][0-7]+|(?:\d*\.\d+|\d+)(?:[eE][+-]?\d+)?/,
   string:
@@ -19,6 +19,8 @@ export const HaskellLexerConfig = {
   comma: ",",
   dot: ".",
   semicolon: ";",
+  typeArrow: "->",
+  typeEquals: "::",
   colon: ":",
   question: "?",
   arrow: "=>",
@@ -29,7 +31,7 @@ export const HaskellLexerConfig = {
   greaterThan: ">",
   equals: "==",
   assign: "=",
-  op: /[+\-*/%&|^!~<>]=?|={2,3}|!==?|&&|\|\||\?\?/,
+  op: /[#!$%&*+./<=>?@\\^|~-]+/,
   identifier: {
     match: /[a-zA-Z_$][a-zA-Z0-9_$]*/,
     type: moo.keywords({
@@ -39,4 +41,4 @@ export const HaskellLexerConfig = {
   NL: { match: /\r?\n/, lineBreaks: true },
 };
 
-export const HSLexer = makeLexer(HaskellLexerConfig, [ "NL" ,"comment" ]);;
+export const HSLexer = makeLexer(HaskellLexerConfig, ["NL", "comment"]);

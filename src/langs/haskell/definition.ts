@@ -1,4 +1,9 @@
+import { SymbolPrimitive } from "../../globals";
+import { FunctionDeclaration, Expression, FunctionExpression, ListPrimitive, LambdaExpression } from "../../paradigms/functional";
+
 export const keywords = [
+  "type",
+  // All the following ones are from JS keywords, this should be updated to Haskell keywords
   "break",
   "byte",
   "case",
@@ -65,3 +70,26 @@ export const keywords = [
 // interface HSNumberPrimitive extends NumberPrimitive {
 //   numericType: "number" | "bigint";
 // }
+
+export type HSFunctionDeclaration = FunctionDeclaration
+export type HSFunctionExpression = FunctionExpression;
+export type HSExpression = Expression;
+
+export interface HSTypeAlias {
+  type: "type_alias";
+  name: SymbolPrimitive;
+  typeParameters: SymbolPrimitive[]; // Optional type parameters
+}
+
+export interface HSFunctionTypeDeclaration {
+  type: "function_type_declaration";
+  name: SymbolPrimitive;
+  inputTypes: SymbolPrimitive[];
+  returnType: SymbolPrimitive;
+}
+
+export type HSListPrimitive = ListPrimitive;
+
+export interface HSLamdaExpression extends LambdaExpression {
+  body: HSExpression;
+}

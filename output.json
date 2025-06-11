@@ -1,446 +1,584 @@
 [
   [
     {
-      "type": "identifier",
-      "value": "module",
-      "text": "module",
-      "offset": 0,
-      "lineBreaks": 0,
-      "line": 1,
-      "col": 1
+      "type": "type_alias",
+      "name": {
+        "type": "symbol",
+        "value": "Number"
+      },
+      "typeParameters": [
+        {
+          "type": "identifier",
+          "value": "Int",
+          "text": "Int",
+          "offset": 61,
+          "lineBreaks": 0,
+          "line": 4,
+          "col": 15
+        }
+      ]
     },
-    [
-      {
-        "type": "WS",
-        "value": " ",
-        "text": " ",
-        "offset": 6,
-        "lineBreaks": 0,
-        "line": 1,
-        "col": 7
-      }
-    ],
     {
-      "type": "identifier",
-      "value": "Basic",
-      "text": "Basic",
-      "offset": 7,
-      "lineBreaks": 0,
-      "line": 1,
-      "col": 8
-    },
-    [
-      {
-        "type": "WS",
-        "value": " ",
-        "text": " ",
-        "offset": 12,
+      "type": "function_type_declaration",
+      "name": {
+        "type": "symbol",
+        "value": "numInt"
+      },
+      "inputTypes": [],
+      "returnType": {
+        "type": "identifier",
+        "value": "Int",
+        "text": "Int",
+        "offset": 76,
         "lineBreaks": 0,
-        "line": 1,
+        "line": 6,
+        "col": 11
+      }
+    },
+    {
+      "type": "function",
+      "name": {
+        "type": "symbol",
+        "value": "numInt"
+      },
+      "parameters": [],
+      "body": {
+        "type": "number",
+        "numericType": "number",
+        "value": "42"
+      }
+    },
+    {
+      "type": "function_type_declaration",
+      "name": {
+        "type": "symbol",
+        "value": "numFloat"
+      },
+      "inputTypes": [],
+      "returnType": {
+        "type": "identifier",
+        "value": "Double",
+        "text": "Double",
+        "offset": 131,
+        "lineBreaks": 0,
+        "line": 10,
         "col": 13
       }
-    ],
-    {
-      "type": "identifier",
-      "value": "where",
-      "text": "where",
-      "offset": 13,
-      "lineBreaks": 0,
-      "line": 1,
-      "col": 14
     },
-    [
-      [
-        [
-          {
-            "type": "identifier",
-            "value": "doble",
-            "text": "doble",
-            "offset": 22,
-            "lineBreaks": 0,
-            "line": 3,
-            "col": 1
-          },
-          [
-            {
-              "type": "WS",
-              "value": " ",
-              "text": " ",
-              "offset": 27,
-              "lineBreaks": 0,
-              "line": 3,
-              "col": 6
-            }
-          ],
-          {
-            "type": "identifier",
-            "value": "num",
-            "text": "num",
-            "offset": 28,
-            "lineBreaks": 0,
-            "line": 3,
-            "col": 7
-          },
-          [
-            [
-              {
-                "type": "WS",
-                "value": " ",
-                "text": " ",
-                "offset": 31,
-                "lineBreaks": 0,
-                "line": 3,
-                "col": 10
-              }
-            ]
-          ],
-          {
-            "type": "assign",
-            "value": "=",
-            "text": "=",
-            "offset": 32,
-            "lineBreaks": 0,
-            "line": 3,
-            "col": 11
-          },
-          [
-            [
-              {
-                "type": "WS",
-                "value": " ",
-                "text": " ",
-                "offset": 33,
-                "lineBreaks": 0,
-                "line": 3,
-                "col": 12
-              }
-            ]
-          ],
-          [
-            {
-              "type": "identifier",
-              "value": "num",
-              "text": "num",
-              "offset": 34,
-              "lineBreaks": 0,
-              "line": 3,
-              "col": 13
-            },
-            [
-              [
-                {
-                  "type": "WS",
-                  "value": " ",
-                  "text": " ",
-                  "offset": 37,
-                  "lineBreaks": 0,
-                  "line": 3,
-                  "col": 16
-                }
-              ]
-            ],
-            {
-              "type": "op",
-              "value": "*",
-              "text": "*",
-              "offset": 38,
-              "lineBreaks": 0,
-              "line": 3,
-              "col": 17
-            },
-            [
-              [
-                {
-                  "type": "WS",
-                  "value": " ",
-                  "text": " ",
-                  "offset": 39,
-                  "lineBreaks": 0,
-                  "line": 3,
-                  "col": 18
-                }
-              ]
-            ],
-            {
-              "type": "number",
-              "value": "2",
-              "text": "2",
-              "offset": 40,
-              "lineBreaks": 0,
-              "line": 3,
-              "col": 19
-            }
-          ]
-        ]
+    {
+      "type": "function",
+      "name": {
+        "type": "symbol",
+        "value": "numFloat"
+      },
+      "parameters": [],
+      "body": {
+        "type": "number",
+        "numericType": "number",
+        "value": "3.14159"
+      }
+    },
+    {
+      "type": "function_type_declaration",
+      "name": {
+        "type": "symbol",
+        "value": "charA"
+      },
+      "inputTypes": [],
+      "returnType": {
+        "type": "identifier",
+        "value": "Char",
+        "text": "Char",
+        "offset": 181,
+        "lineBreaks": 0,
+        "line": 14,
+        "col": 10
+      }
+    },
+    {
+      "type": "function",
+      "name": {
+        "type": "symbol",
+        "value": "charA"
+      },
+      "parameters": [],
+      "body": {
+        "type": "string",
+        "value": "'A'"
+      }
+    },
+    {
+      "type": "function_type_declaration",
+      "name": {
+        "type": "symbol",
+        "value": "stringHello"
+      },
+      "inputTypes": [],
+      "returnType": {
+        "type": "identifier",
+        "value": "String",
+        "text": "String",
+        "offset": 246,
+        "lineBreaks": 0,
+        "line": 18,
+        "col": 16
+      }
+    },
+    {
+      "type": "function",
+      "name": {
+        "type": "symbol",
+        "value": "stringHello"
+      },
+      "parameters": [],
+      "body": {
+        "type": "string",
+        "value": "\"Hello, Haskell!\""
+      }
+    },
+    {
+      "type": "function_type_declaration",
+      "name": {
+        "type": "symbol",
+        "value": "boolTrue"
+      },
+      "inputTypes": [],
+      "returnType": {
+        "type": "identifier",
+        "value": "Bool",
+        "text": "Bool",
+        "offset": 310,
+        "lineBreaks": 0,
+        "line": 22,
+        "col": 13
+      }
+    },
+    {
+      "type": "function",
+      "name": {
+        "type": "symbol",
+        "value": "boolTrue"
+      },
+      "parameters": [],
+      "body": {
+        "type": "symbol",
+        "value": "True"
+      }
+    },
+    {
+      "type": "function_type_declaration",
+      "name": {
+        "type": "symbol",
+        "value": "addTwoNumbers"
+      },
+      "inputTypes": [
+        {
+          "type": "symbol"
+        },
+        {
+          "type": "symbol",
+          "value": "->"
+        }
       ],
-      [
+      "returnType": [
+        [
+          null,
+          {
+            "type": "identifier",
+            "value": "Int",
+            "text": "Int",
+            "offset": 421,
+            "lineBreaks": 0,
+            "line": 27,
+            "col": 25
+          },
+          null
+        ],
+        {
+          "type": "typeArrow",
+          "value": "->",
+          "text": "->",
+          "offset": 425,
+          "lineBreaks": 0,
+          "line": 27,
+          "col": 29
+        },
         [
           {
             "type": "identifier",
-            "value": "doblep",
-            "text": "doblep",
-            "offset": 45,
+            "value": "Int",
+            "text": "Int",
+            "offset": 428,
             "lineBreaks": 0,
-            "line": 5,
-            "col": 1
-          },
-          [
-            {
-              "type": "WS",
-              "value": " ",
-              "text": " ",
-              "offset": 51,
-              "lineBreaks": 0,
-              "line": 5,
-              "col": 7
-            }
-          ],
-          {
-            "type": "identifier",
-            "value": "num",
-            "text": "num",
-            "offset": 52,
-            "lineBreaks": 0,
-            "line": 5,
-            "col": 8
-          },
-          [
-            [
-              {
-                "type": "WS",
-                "value": " ",
-                "text": " ",
-                "offset": 55,
-                "lineBreaks": 0,
-                "line": 5,
-                "col": 11
-              }
-            ]
-          ],
-          {
-            "type": "assign",
-            "value": "=",
-            "text": "=",
-            "offset": 56,
-            "lineBreaks": 0,
-            "line": 5,
-            "col": 12
-          },
-          [
-            [
-              {
-                "type": "WS",
-                "value": " ",
-                "text": " ",
-                "offset": 57,
-                "lineBreaks": 0,
-                "line": 5,
-                "col": 13
-              }
-            ]
-          ],
-          [
-            {
-              "type": "identifier",
-              "value": "num",
-              "text": "num",
-              "offset": 58,
-              "lineBreaks": 0,
-              "line": 5,
-              "col": 14
-            },
-            [
-              [
-                {
-                  "type": "WS",
-                  "value": " ",
-                  "text": " ",
-                  "offset": 61,
-                  "lineBreaks": 0,
-                  "line": 5,
-                  "col": 17
-                }
-              ]
-            ],
-            {
-              "type": "op",
-              "value": "+",
-              "text": "+",
-              "offset": 62,
-              "lineBreaks": 0,
-              "line": 5,
-              "col": 18
-            },
-            [
-              [
-                {
-                  "type": "WS",
-                  "value": " ",
-                  "text": " ",
-                  "offset": 63,
-                  "lineBreaks": 0,
-                  "line": 5,
-                  "col": 19
-                }
-              ]
-            ],
-            {
-              "type": "identifier",
-              "value": "num",
-              "text": "num",
-              "offset": 64,
-              "lineBreaks": 0,
-              "line": 5,
-              "col": 20
-            }
-          ]
-        ]
-      ],
-      [
-        [
-          {
-            "type": "identifier",
-            "value": "suma",
-            "text": "suma",
-            "offset": 71,
-            "lineBreaks": 0,
-            "line": 7,
-            "col": 1
-          },
-          [
-            {
-              "type": "WS",
-              "value": " ",
-              "text": " ",
-              "offset": 75,
-              "lineBreaks": 0,
-              "line": 7,
-              "col": 5
-            }
-          ],
-          [
-            {
-              "type": "identifier",
-              "value": "x",
-              "text": "x",
-              "offset": 76,
-              "lineBreaks": 0,
-              "line": 7,
-              "col": 6
-            },
-            [
-              {
-                "type": "WS",
-                "value": " ",
-                "text": " ",
-                "offset": 77,
-                "lineBreaks": 0,
-                "line": 7,
-                "col": 7
-              }
-            ],
-            {
-              "type": "identifier",
-              "value": "y",
-              "text": "y",
-              "offset": 78,
-              "lineBreaks": 0,
-              "line": 7,
-              "col": 8
-            }
-          ],
-          [
-            [
-              {
-                "type": "WS",
-                "value": " ",
-                "text": " ",
-                "offset": 79,
-                "lineBreaks": 0,
-                "line": 7,
-                "col": 9
-              }
-            ]
-          ],
-          {
-            "type": "assign",
-            "value": "=",
-            "text": "=",
-            "offset": 80,
-            "lineBreaks": 0,
-            "line": 7,
-            "col": 10
-          },
-          [
-            [
-              {
-                "type": "WS",
-                "value": " ",
-                "text": " ",
-                "offset": 81,
-                "lineBreaks": 0,
-                "line": 7,
-                "col": 11
-              }
-            ]
-          ],
-          [
-            {
-              "type": "identifier",
-              "value": "x",
-              "text": "x",
-              "offset": 82,
-              "lineBreaks": 0,
-              "line": 7,
-              "col": 12
-            },
-            [
-              [
-                {
-                  "type": "WS",
-                  "value": " ",
-                  "text": " ",
-                  "offset": 83,
-                  "lineBreaks": 0,
-                  "line": 7,
-                  "col": 13
-                }
-              ]
-            ],
-            {
-              "type": "op",
-              "value": "+",
-              "text": "+",
-              "offset": 84,
-              "lineBreaks": 0,
-              "line": 7,
-              "col": 14
-            },
-            [
-              [
-                {
-                  "type": "WS",
-                  "value": " ",
-                  "text": " ",
-                  "offset": 85,
-                  "lineBreaks": 0,
-                  "line": 7,
-                  "col": 15
-                }
-              ]
-            ],
-            {
-              "type": "identifier",
-              "value": "y",
-              "text": "y",
-              "offset": 86,
-              "lineBreaks": 0,
-              "line": 7,
-              "col": 16
-            }
-          ]
+            "line": 27,
+            "col": 32
+          }
         ]
       ]
-    ]
+    },
+    {
+      "type": "function",
+      "name": {
+        "type": "symbol",
+        "value": "addTwoNumbers"
+      },
+      "parameters": [
+        {
+          "type": "symbol",
+          "value": "x"
+        },
+        {
+          "type": "symbol",
+          "value": "y"
+        }
+      ],
+      "body": {
+        "type": "expression",
+        "left": {
+          "type": "symbol",
+          "value": "x"
+        },
+        "operator": "+",
+        "right": {
+          "type": "symbol",
+          "value": "y"
+        }
+      }
+    },
+    {
+      "type": "function_type_declaration",
+      "name": {
+        "type": "symbol",
+        "value": "greet"
+      },
+      "inputTypes": [
+        {
+          "type": "symbol"
+        },
+        {
+          "type": "symbol",
+          "value": "->"
+        }
+      ],
+      "returnType": [
+        {
+          "type": "identifier",
+          "value": "String",
+          "text": "String",
+          "offset": 563,
+          "lineBreaks": 0,
+          "line": 32,
+          "col": 20
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": {
+        "type": "symbol",
+        "value": "greet"
+      },
+      "parameters": [
+        {
+          "type": "symbol"
+        }
+      ],
+      "body": {
+        "type": "string",
+        "value": "\"Hello, Alice!\""
+      }
+    },
+    {
+      "type": "function",
+      "name": {
+        "type": "symbol",
+        "value": "greet"
+      },
+      "parameters": [
+        {
+          "type": "symbol"
+        }
+      ],
+      "body": {
+        "type": "string",
+        "value": "\"Hi there, Bob!\""
+      }
+    },
+    {
+      "type": "function",
+      "name": {
+        "type": "symbol",
+        "value": "greet"
+      },
+      "parameters": [
+        {
+          "type": "symbol"
+        }
+      ],
+      "body": {
+        "type": "expression",
+        "left": {
+          "type": "string",
+          "value": "\"Greetings, \""
+        },
+        "operator": "++",
+        "right": [
+          {
+            "type": "symbol",
+            "value": "name"
+          },
+          {
+            "type": "op",
+            "value": "++",
+            "text": "++",
+            "offset": 673,
+            "lineBreaks": 0,
+            "line": 35,
+            "col": 39
+          },
+          {
+            "type": "string",
+            "value": "\"!\""
+          }
+        ]
+      }
+    },
+    {
+      "type": "function_type_declaration",
+      "name": {
+        "type": "symbol",
+        "value": "myNumbers"
+      },
+      "inputTypes": [
+        {
+          "type": "symbol",
+          "value": "["
+        },
+        {
+          "type": "symbol",
+          "value": "Int"
+        }
+      ],
+      "returnType": {
+        "type": "rsquare",
+        "value": "]",
+        "text": "]",
+        "offset": 735,
+        "lineBreaks": 0,
+        "line": 38,
+        "col": 18
+      }
+    },
+    {
+      "type": "function",
+      "name": {
+        "type": "symbol",
+        "value": "myNumbers"
+      },
+      "parameters": [],
+      "body": {
+        "type": "list",
+        "elements": [
+          {
+            "type": "number",
+            "numericType": "number",
+            "value": "1"
+          },
+          {
+            "type": "number",
+            "numericType": "number",
+            "value": "2"
+          },
+          {
+            "type": "number",
+            "numericType": "number",
+            "value": "3"
+          },
+          {
+            "type": "number",
+            "numericType": "number",
+            "value": "4"
+          },
+          {
+            "type": "number",
+            "numericType": "number",
+            "value": "5"
+          }
+        ]
+      }
+    },
+    {
+      "type": "function_type_declaration",
+      "name": {
+        "type": "symbol",
+        "value": "sumList"
+      },
+      "inputTypes": [
+        {
+          "type": "symbol"
+        },
+        {
+          "type": "symbol",
+          "value": "->"
+        }
+      ],
+      "returnType": [
+        {
+          "type": "identifier",
+          "value": "Int",
+          "text": "Int",
+          "offset": 829,
+          "lineBreaks": 0,
+          "line": 42,
+          "col": 21
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": {
+        "type": "symbol",
+        "value": "sumList"
+      },
+      "parameters": [
+        {
+          "type": "symbol"
+        }
+      ],
+      "body": {
+        "type": "function_expression",
+        "name": {
+          "type": "symbol",
+          "value": "sum"
+        },
+        "parameters": [
+          {
+            "type": "symbol",
+            "value": "xs"
+          }
+        ]
+      }
+    },
+    {
+      "type": "function_type_declaration",
+      "name": {
+        "type": "symbol",
+        "value": "listLength"
+      },
+      "inputTypes": [
+        {
+          "type": "symbol"
+        },
+        {
+          "type": "symbol",
+          "value": "->"
+        }
+      ],
+      "returnType": [
+        {
+          "type": "identifier",
+          "value": "Int",
+          "text": "Int",
+          "offset": 903,
+          "lineBreaks": 0,
+          "line": 46,
+          "col": 22
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": {
+        "type": "symbol",
+        "value": "listLength"
+      },
+      "parameters": [
+        {
+          "type": "symbol"
+        }
+      ],
+      "body": {
+        "type": "function_expression",
+        "name": {
+          "type": "symbol",
+          "value": "length"
+        },
+        "parameters": [
+          {
+            "type": "symbol",
+            "value": "xs"
+          }
+        ]
+      }
+    },
+    {
+      "type": "function_type_declaration",
+      "name": {
+        "type": "symbol",
+        "value": "squareList"
+      },
+      "inputTypes": [
+        {
+          "type": "symbol"
+        },
+        {
+          "type": "symbol",
+          "value": "->"
+        }
+      ],
+      "returnType": [
+        {
+          "type": "lsquare",
+          "value": "[",
+          "text": "[",
+          "offset": 1017,
+          "lineBreaks": 0,
+          "line": 50,
+          "col": 24
+        },
+        {
+          "type": "identifier",
+          "value": "Int",
+          "text": "Int",
+          "offset": 1018,
+          "lineBreaks": 0,
+          "line": 50,
+          "col": 25
+        },
+        {
+          "type": "rsquare",
+          "value": "]",
+          "text": "]",
+          "offset": 1021,
+          "lineBreaks": 0,
+          "line": 50,
+          "col": 28
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": {
+        "type": "symbol",
+        "value": "squareList"
+      },
+      "parameters": [
+        {
+          "type": "symbol"
+        }
+      ],
+      "body": {
+        "type": "function_expression",
+        "name": {
+          "type": "symbol",
+          "value": "map"
+        },
+        "parameters": [
+          {
+            "type": "symbol"
+          }
+        ]
+      }
+    }
   ]
 ]
