@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import nearley from "nearley";
-import grammar from "./langs/haskell/grammar";
+import grammar from "./parser/langs/haskell/grammar";
 import util from "util";
 import path from "path";
 import { argv } from "process";

@@ -1,4 +1,4 @@
-import { SymbolPrimitive } from "../../globals";
+import { SymbolPrimitive } from "../../../globals";
 import {
   FunctionDeclaration,
   Expression,

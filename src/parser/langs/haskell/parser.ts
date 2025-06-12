@@ -2,7 +2,7 @@ import {
   NumberPrimitive,
   StringPrimitive,
   SymbolPrimitive,
-} from "../../globals";
+} from "../../../globals";
 import {
   CompositionExpression,
   FunctionExpression,
