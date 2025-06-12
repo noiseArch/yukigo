@@ -1,5 +1,4 @@
 import {
-  ArrayCollection,
   NumberPrimitive,
   StringPrimitive,
   SymbolPrimitive,
@@ -7,7 +6,6 @@ import {
 import {
   CompositionExpression,
   FunctionExpression,
-  ListPrimitive,
 } from "../../paradigms/functional";
 import {
   HSExpression,
@@ -17,32 +15,47 @@ import {
   HSListPrimitive,
   HSTypeAlias,
 } from "./definition";
-import util from "util";
 
-function parseFunction(token: any) {
+// For now BaseMooToken it's just for reference, can't be sure if the tokens of each function are of one type.
+// TODO: Remove every any and have proper types
+
+interface BaseMooToken {
+  type: string;
+  value: string;
+  text: string;
+  toString: () => string;
+  offset: number;
+  lineBreaks: number;
+  line: number;
+  col: number;
+}
+
+function parseFunction(token: {
+  type: "function";
+  name: SymbolPrimitive;
+  params: SymbolPrimitive[];
+  body: any;
+  attributes: string[];
+}) {
   //console.log("Function", util.inspect(token, false, null, true));
   const funcDecl: HSFunctionDeclaration = {
     type: "function",
-    name: { type: "symbol", value: token[0].value },
-    parameters: token[2]
-      ? token[2].map((param: any) => {
-          return { type: "symbol", value: param.value };
-        })
-      : [],
-    body: token[6],
+    name: token.name,
+    parameters: token.params,
+    body: token.body,
   };
 
   return funcDecl;
 }
 
 function parseFunctionType(token: any) {
-  //console.log("Function Type Exp", util.inspect(token, false, null, true));
   const bodyType: SymbolPrimitive[] = token[1]
     .flat(Infinity)
-    .filter((t) => t !== null && t.type !== "typeArrow").map(t => ({type: "symbol", name: t.value}));
+    .filter((t) => t !== null && t.type !== "typeArrow")
+    .map((t) => ({ type: "symbol", name: t.value }));
 
   const inputTypes = bodyType.length > 1 ? bodyType.slice(0, -1) : [];
-  const returnType = bodyType[token[1].length - 1];
+  const returnType = bodyType[bodyType.length - 1];
   const functionType: HSFunctionTypeDeclaration = {
     type: "function_type_declaration",
     name: { type: "symbol", value: token[0].value },

@@ -939,6 +939,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mulang@npm:^6.0.6":
+  version: 6.0.6
+  resolution: "mulang@npm:6.0.6"
+  bin:
+    mulangjs: mulang-cli.js
+  checksum: 10c0/932f7a04f21fe2e978b5bbd1eccf21a6b175f4c143142e9b9857920cf77102483f24497ecb97e0555621c3cab9e7dbd91a0d2035c066a56fa2f02d1c93754a41
+  languageName: node
+  linkType: hard
+
 "natural-compare@npm:^1.4.0":
   version: 1.4.0
   resolution: "natural-compare@npm:1.4.0"
@@ -1248,6 +1257,7 @@ __metadata:
     globals: "npm:^16.2.0"
     moo: "npm:^0.5.2"
     moo-ignore: "npm:^2.5.3"
+    mulang: "npm:^6.0.6"
     nearley: "npm:^2.20.1"
     typescript: "npm:^5.8.3"
     typescript-eslint: "npm:^8.33.1"

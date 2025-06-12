@@ -46,7 +46,7 @@ multiplication ->
 
 
 infix_operator_expression ->
-    application _ "`" _ %identifier _ "`" _ infix_operator_expression
+    application _ "`" _ identifier _ "`" _ infix_operator_expression
     {% (d) => ({
         type: "infix_application",
         operator: d[4].value,
@@ -63,13 +63,16 @@ application ->
 primary ->
     %number {% (d) => parsePrimary(d[0]) %}
     | %string {% (d) => parsePrimary(d[0]) %}
-    | %identifier {% (d) => parsePrimary(d[0]) %}
+    | identifier {% (d) => d[0] %} ## No need to reprocess
     | "(" _ expression _ ")" {% (d) => d[2] %}
     | list_literal {% (d) => parsePrimary({type: "list", body: d[0]}) %}
     | composition_expression {% (d) => {return d[0]} %}
     | lambda_expression {% (d) => {return d[0]} %}
     | if_expression {% d => d[0] %}
+    | case_expression {% d => d[0] %}
     | let_in_expression {% d => d[0] %}
+
+
 
 if_expression ->
     "if" _ expression _ "then" _ expression _ "else" _ expression
@@ -77,38 +80,72 @@ if_expression ->
 
 declaration -> function_declaration | function_type_declaration | type_declaration {% (d) => d[0] %}
 
-function_type_declaration -> %identifier _ "::" _ type_list {% (d) => parseFunctionType([d[0], d[4]]) %}
+function_type_declaration -> identifier _ "::" _ type_list {% (d) => parseFunctionType([d[0], d[4]]) %}
 
-function_declaration -> %identifier __ parameter_list:? _ "=" _ expression where_clause:? {% (d) => parseFunction(d) %}
+function_declaration -> 
+    identifier __ parameter_list:? guarded_rhs_list:+ {% (d) => {console.log("Function", d); return parseFunction({type: "function", name: d[0], params: d[2].flat(Infinity), body: d[3], attributes: ["GuardedBody"]})} %}
+    | identifier __ parameter_list:? _ "=" _ expression {% (d) => {console.log("Function", d); return parseFunction({type: "function", name: d[0], params: d[2] ? d[2].flat(Infinity) : [], body: d[6], attributes: ["UnguardedBody"]})} %}
+
+guarded_rhs_list -> _ "|" _ guarded_rhs {% (d) => d[3] %}
+
+guarded_rhs -> expression _ "=" _ expression {% (d) => {return { guard: d[0], body: d[4] }} %}
 
 parameter_list -> 
-    (%identifier|%string|%number| "(" %identifier ":" %identifier ")") __ parameter_list {% (d) => filter(d.flat(Infinity)) %}
-    | (%identifier|%string|%number| "(" %identifier ":" %identifier ")") {% (d) => [d[0]] %}
+    pattern __ parameter_list {% (d) => filter(d.flat(Infinity)) %}
+    | pattern {% (d) => [d[0]] %}
+
+pattern ->
+    identifier {% (d) => ({type: "VariablePattern", name: d[0].value}) %}
+  | %number {% (d) => ({type: "LiteralPattern", name: d[0].value}) %}
+  | %string {% (d) => ({type: "LiteralPattern", name: d[0].value}) %}
+  | "_" {% (d) => ({type: "AnonymousPattern", name: d[0].value}) %}
+  | identifier pattern:+
+  | "(" _ pattern (_ "," _ pattern):* _ ")"
+  | "[" _ parameter_list:? _ "]"
+  | "(" _ pattern _ ")"
 
 composition_expression ->
-    %identifier _ "." _ %identifier {% (d) => parseCompositionExpression([d[0], d[4]]) %}
+    identifier _ "." _ identifier {% (d) => parseCompositionExpression([d[0], d[4]]) %}
+
+identifier -> %identifier {% (d) => parsePrimary(d[0]) %}
+
+## All of these commented expression require NL to not be ignored. WIP
+## TODO: Support newlines  
+## Case expression
+
+## case_expression ->
+##     "case" __ expression __ "of" _ case_alternatives
+##     {% (d) => ({ type: "case", expr: d[2], alts: d[6] }) %}
+## 
+## case_alternatives ->
+##     case_alternative (__ case_alternative):*
+##     {% (d) => [d[0], ...(d[1] ? d[1].map(x => x[1]) : [])] %}
+## 
+## case_alternative ->
+##     pattern _ "->" _ expression
+##     {% (d) => ({ pattern: d[0], body: d[4] }) %}
 
 ## Local bindings
 
-where_clause ->
-    _ "where" _ let_bindings
-    {% (d) => d[3] %}
+## where_clause ->
+##     _ "where" _ let_bindings
+##     {% (d) => d[3] %}
+## 
+## let_in_expression ->
+##     "let" __ let_bindings __ "in" __ expression
+##     {% (d) => ({ type: "let_in", bindings: d[2], body: d[6] }) %}
+## 
+## let_bindings ->
+##     let_binding (_ let_binding):*
+##     {% (d) => [d[0], ...(d[1] ? d[1].map(x => x[3]) : [])] %}
+## 
+## let_binding -> identifier _ "=" _ expression _ ";" {% (d) => ({ name: d[0].value, value: d[4] }) %}
 
-let_in_expression ->
-    "let" __ let_bindings __ "in" __ expression
-    {% (d) => ({ type: "let_in", bindings: d[2], body: d[6] }) %}
-
-let_bindings ->
-    let_binding (_ let_binding):*
-    {% (d) => [d[0], ...(d[1] ? d[1].map(x => x[3]) : [])] %}
-
-let_binding -> %identifier _ "=" _ expression _ ";" {% (d) => ({ name: d[0].value, value: d[4] }) %}
-
-type_declaration -> "type" __ %identifier _ "=" _ type_list {% (d) => parseTypeAlias(d) %}
+type_declaration -> "type" __ identifier _ "=" _ type_list {% (d) => parseTypeAlias(d) %}
 
 type_list -> 
-    ("[":? %identifier "]":?) _ "->" _ type_list {% (d) => filter(d) %}
-    | "[":? %identifier "]":? {% (d) => filter(d) %}
+    ("[":? identifier "]":?) _ "->" _ type_list {% (d) => filter(d) %}
+    | "[":? identifier "]":? {% (d) => filter(d) %}
 
 list_literal -> "[" _ expression_list _ "]" {% (d) => d %}
 
@@ -117,7 +154,7 @@ expression_list ->
     | expression {% (d) => [d[0]] %}
 
 comparison_operator -> 
-    "==" | "/=" | "<" | ">" | "<=" | ">="
+    "==" | "/=" | "<" | ">" | "<=" | ">=" {% (d) => d[0] %}
 
 _ -> %WS:* {% (d) => null %}
 

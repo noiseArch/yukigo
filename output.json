@@ -8,13 +8,8 @@
       },
       "typeParameters": [
         {
-          "type": "identifier",
-          "value": "Int",
-          "text": "Int",
-          "offset": 64,
-          "lineBreaks": 0,
-          "line": 4,
-          "col": 15
+          "type": "symbol",
+          "value": "Int"
         }
       ]
     },
@@ -169,12 +164,12 @@
       },
       "parameters": [
         {
-          "type": "symbol",
-          "value": "x"
+          "type": "VariablePattern",
+          "name": "x"
         },
         {
-          "type": "symbol",
-          "value": "y"
+          "type": "VariablePattern",
+          "name": "y"
         }
       ],
       "body": {
@@ -201,7 +196,11 @@
           "type": "symbol",
           "name": "String"
         }
-      ]
+      ],
+      "returnType": {
+        "type": "symbol",
+        "name": "String"
+      }
     },
     {
       "type": "function",
@@ -211,7 +210,8 @@
       },
       "parameters": [
         {
-          "type": "symbol"
+          "type": "LiteralPattern",
+          "name": "\"Alice\""
         }
       ],
       "body": {
@@ -227,7 +227,8 @@
       },
       "parameters": [
         {
-          "type": "symbol"
+          "type": "LiteralPattern",
+          "name": "\"Bob\""
         }
       ],
       "body": {
@@ -243,7 +244,8 @@
       },
       "parameters": [
         {
-          "type": "symbol"
+          "type": "VariablePattern",
+          "name": "name"
         }
       ],
       "body": {
@@ -262,10 +264,10 @@
             "type": "op",
             "value": "++",
             "text": "++",
-            "offset": 707,
+            "offset": 700,
             "lineBreaks": 0,
-            "line": 35,
-            "col": 39
+            "line": 34,
+            "col": 36
           },
           {
             "type": "string",
@@ -355,7 +357,7 @@
       ],
       "returnType": {
         "type": "symbol",
-        "name": "]"
+        "name": "Int"
       }
     },
     {
@@ -366,7 +368,8 @@
       },
       "parameters": [
         {
-          "type": "symbol"
+          "type": "VariablePattern",
+          "name": "xs"
         }
       ],
       "body": {
@@ -404,7 +407,7 @@
       ],
       "returnType": {
         "type": "symbol",
-        "name": "]"
+        "name": "Int"
       }
     },
     {
@@ -415,7 +418,8 @@
       },
       "parameters": [
         {
-          "type": "symbol"
+          "type": "VariablePattern",
+          "name": "xs"
         }
       ],
       "body": {
@@ -472,7 +476,8 @@
       },
       "parameters": [
         {
-          "type": "symbol"
+          "type": "VariablePattern",
+          "name": "xs"
         }
       ],
       "body": {
@@ -524,7 +529,11 @@
           "type": "symbol",
           "name": "Int"
         }
-      ]
+      ],
+      "returnType": {
+        "type": "symbol",
+        "name": "String"
+      }
     },
     {
       "type": "function",
@@ -534,7 +543,8 @@
       },
       "parameters": [
         {
-          "type": "symbol"
+          "type": "VariablePattern",
+          "name": "n"
         }
       ],
       "body": {
@@ -574,97 +584,100 @@
       "type": "function_type_declaration",
       "name": {
         "type": "symbol",
-        "value": "calculateArea"
+        "value": "grade"
       },
       "inputTypes": [
         {
           "type": "symbol",
-          "name": "Double"
+          "name": "Int"
         }
-      ]
+      ],
+      "returnType": {
+        "type": "symbol",
+        "name": "String"
+      }
     },
     {
       "type": "function",
       "name": {
         "type": "symbol",
-        "value": "calculateArea"
+        "value": "grade"
       },
       "parameters": [
         {
-          "type": "symbol"
+          "type": "VariablePattern",
+          "name": "score"
         }
       ],
-      "body": {
-        "type": "let_in",
-        "bindings": [
-          {
-            "name": "piVal",
-            "value": {
+      "body": [
+        {
+          "guard": {
+            "type": "comparison",
+            "operator": ">=",
+            "left": {
+              "type": "symbol",
+              "value": "score"
+            },
+            "right": {
               "type": "number",
               "numericType": "number",
-              "value": "3.14159"
+              "value": "90"
             }
           },
-          null
-        ],
-        "body": {
-          "type": "symbol",
-          "value": "area"
-        }
-      }
-    },
-    {
-      "type": "function_type_declaration",
-      "name": {
-        "type": "symbol",
-        "value": "circumference"
-      },
-      "inputTypes": [
+          "body": {
+            "type": "string",
+            "value": "\"Excellent\""
+          }
+        },
         {
-          "type": "symbol",
-          "name": "Double"
+          "guard": {
+            "type": "comparison",
+            "operator": ">=",
+            "left": {
+              "type": "symbol",
+              "value": "score"
+            },
+            "right": {
+              "type": "number",
+              "numericType": "number",
+              "value": "75"
+            }
+          },
+          "body": {
+            "type": "string",
+            "value": "\"Good\""
+          }
+        },
+        {
+          "guard": {
+            "type": "comparison",
+            "operator": ">=",
+            "left": {
+              "type": "symbol",
+              "value": "score"
+            },
+            "right": {
+              "type": "number",
+              "numericType": "number",
+              "value": "60"
+            }
+          },
+          "body": {
+            "type": "string",
+            "value": "\"Pass\""
+          }
+        },
+        {
+          "guard": {
+            "type": "symbol",
+            "value": "otherwise"
+          },
+          "body": {
+            "type": "string",
+            "value": "\"Fail\""
+          }
         }
       ]
-    },
-    {
-      "type": "function",
-      "name": {
-        "type": "symbol",
-        "value": "circumference"
-      },
-      "parameters": [
-        {
-          "type": "symbol"
-        }
-      ],
-      "body": {
-        "type": "expression",
-        "left": {
-          "type": "number",
-          "numericType": "number",
-          "value": "2"
-        },
-        "operator": "*",
-        "right": [
-          {
-            "type": "symbol",
-            "value": "piVal"
-          },
-          {
-            "type": "op",
-            "value": "*",
-            "text": "*",
-            "offset": 1607,
-            "lineBreaks": 0,
-            "line": 67,
-            "col": 34
-          },
-          {
-            "type": "symbol",
-            "value": "radius"
-          }
-        ]
-      }
     }
   ]
 ]

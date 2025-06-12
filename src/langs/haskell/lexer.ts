@@ -29,6 +29,7 @@ export const HaskellLexerConfig = {
   notEquals: "!==",
   lessThanEquals: "<=",
   lessThan: "<",
+  greaterThanEquals: ">=",
   greaterThan: ">",
   equals: "==",
   assign: "=",

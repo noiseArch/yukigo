@@ -1,4 +1,3 @@
-
 -- 3. Basic data types and values
 -- Integers
 type Number = Int
@@ -31,8 +30,8 @@ addTwoNumbers x y = x + y
 -- Function to get the greeting based on a name
 greet :: String -> String
 greet "Alice" = "Hello, Alice!"
-greet "Bob"   = "Hi there, Bob!"
-greet name    = "Greetings, " ++ name ++ "!"
+greet "Bob" = "Hi there, Bob!"
+greet name = "Greetings, " ++ name ++ "!"
 
 -- 6. List definition and operations
 myNumbers :: [Int]
@@ -53,20 +52,27 @@ squareList xs = map (\n -> n * n) xs
 -- 7. If-Else expression (Haskell's if is an expression, not a statement)
 isEven :: Int -> String
 isEven n =
-    if n `mod` 2 == 0
+  if n `mod` 2 == 0
     then "Even"
     else "Odd"
 
 -- 8. `let` expression (for local bindings)
-calculateArea :: Double -> Double
-calculateArea radius =
-    let piVal = 3.14159; area = piVal * radius * radius; in area
+-- calculateArea :: Double -> Double
+-- calculateArea radius =
+--   let piVal = 3.14159; area = piVal * radius * radius; in area
 
 ---- 9. `where` clause (another way for local bindings, often used with functions)
-circumference :: Double -> Double
-circumference radius = 2 * piVal * radius
-  where
-    piVal = 3.14159;
+-- circumference :: Double -> Double
+-- circumference radius = 2 * piVal * radius
+--   where piVal = 3.14159;
+
+-- 10. Function using guards
+grade :: Int -> String
+grade score
+  | score >= 90 = "Excellent"
+  | score >= 75 = "Good"
+  | score >= 60 = "Pass"
+  | otherwise = "Fail"
 
 {-
 This is a
