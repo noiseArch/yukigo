@@ -1,4 +1,4 @@
-import { SymbolPrimitive } from "../../../globals";
+import { SymbolPrimitive } from "../../globals";
 import {
   FunctionDeclaration,
   Expression,
@@ -14,6 +14,7 @@ export const keywords = [
   "if",
   "else",
   "then",
+  "data",
   // All the following ones are from JS keywords, this should be updated to Haskell keywords
   "break",
   "byte",
@@ -28,12 +29,10 @@ export const keywords = [
   "delete",
   "do",
   "double",
-
   "enum",
   "eval",
   "export",
   "extends",
-  "false",
   "final",
   "finally",
   "float",
@@ -64,7 +63,6 @@ export const keywords = [
   "throw",
   "throws",
   "transient",
-  "true",
   "try",
   "typeof",
   "var",

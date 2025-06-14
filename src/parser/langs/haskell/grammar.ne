@@ -63,6 +63,7 @@ application ->
 primary ->
     %number {% (d) => parsePrimary(d[0]) %}
     | %string {% (d) => parsePrimary(d[0]) %}
+    | %bool {% (d) => ({type: "Boolean", value: d[0]}) %}
     | identifier {% (d) => d[0] %} ## No need to reprocess
     | "(" _ expression _ ")" {% (d) => d[2] %}
     | list_literal {% (d) => parsePrimary({type: "list", body: d[0]}) %}
@@ -70,21 +71,32 @@ primary ->
     | lambda_expression {% (d) => {return d[0]} %}
     | if_expression {% d => d[0] %}
     | case_expression {% d => d[0] %}
+    | data_expression {% d => d[0] %}
     | let_in_expression {% d => d[0] %}
 
+data_expression -> identifier _ %lbracket fields_expressions %rbracket {% (d) => ({type: "DataExpression", name: d[0], contents: d[3]}) %}
 
+fields_expressions -> _ field_exp _ ("," _ field_exp):* {% (d) => {return filter(d.flat(Infinity)).filter(tok => tok.type !== "comma")}%}
+
+field_exp -> identifier _ "=" _ expression {% (d) => ({type: "FieldExpression", name: d[0], contents: d[4]}) %}
 
 if_expression ->
     "if" _ expression _ "then" _ expression _ "else" _ expression
     {% (d) => ({ type: "if", cond: d[2], then: d[6], else: d[10] }) %}
 
-declaration -> function_declaration | function_type_declaration | type_declaration {% (d) => d[0] %}
+declaration -> function_declaration | function_type_declaration | type_declaration | data_declaration {% (d) => d[0] %}
+
+data_declaration -> "data" __ identifier _ "=" _ identifier _ %lbracket field_list %rbracket {% (d) => ({type: "Record", name: d[6], contents: d[9]}) %}
+
+field_list -> _ field _ ("," _ field):* {% (d) => {return filter(d.flat(Infinity)).filter(tok => tok.type !== "comma")}%}
+
+field -> identifier _ "::" _ type_list {% (d) => ({type: "Field", name: d[0], contents: d[4]}) %}
 
 function_type_declaration -> identifier _ "::" _ type_list {% (d) => parseFunctionType([d[0], d[4]]) %}
 
 function_declaration -> 
-    identifier __ parameter_list:? guarded_rhs_list:+ {% (d) => {console.log("Function", d); return parseFunction({type: "function", name: d[0], params: d[2].flat(Infinity), body: d[3], attributes: ["GuardedBody"]})} %}
-    | identifier __ parameter_list:? _ "=" _ expression {% (d) => {console.log("Function", d); return parseFunction({type: "function", name: d[0], params: d[2] ? d[2].flat(Infinity) : [], body: d[6], attributes: ["UnguardedBody"]})} %}
+    identifier __ parameter_list:? guarded_rhs_list:+ {% (d) => {return parseFunction({type: "function", name: d[0], params: d[2].flat(Infinity), body: d[3], attributes: ["GuardedBody"]})} %}
+    | identifier __ parameter_list:? _ "=" _ expression {% (d) => {return parseFunction({type: "function", name: d[0], params: d[2] ? d[2].flat(Infinity) : [], body: d[6], attributes: ["UnguardedBody"]})} %}
 
 guarded_rhs_list -> _ "|" _ guarded_rhs {% (d) => d[3] %}
 
@@ -98,7 +110,7 @@ pattern ->
     identifier {% (d) => ({type: "VariablePattern", name: d[0].value}) %}
   | %number {% (d) => ({type: "LiteralPattern", name: d[0].value}) %}
   | %string {% (d) => ({type: "LiteralPattern", name: d[0].value}) %}
-  | "_" {% (d) => ({type: "AnonymousPattern", name: d[0].value}) %}
+  | %anonymousVariable {% (d) => ({type: "WildcardPattern", name: d[0].value}) %}
   | identifier pattern:+
   | "(" _ pattern (_ "," _ pattern):* _ ")"
   | "[" _ parameter_list:? _ "]"

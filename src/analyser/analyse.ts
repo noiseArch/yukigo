@@ -1,8 +1,17 @@
-// TODO: Make a analyser that executes different checks depending of the inspection provided in the expections.yml
+import fs from "fs";
+import { parse } from "../parser/parser";
+import { argv } from "process";
+import { runExpectations } from "../inspector/expectations";
 
-// Like:
-// {binding: function1, inspection: UsesGuards} -> Checks if function1 has a guarded body
-// {binding: function2, inspection: HasUsage:esMultiploDe } -> Checks if function2 has esMultiploDe in it's body
-// {binding: function3, inspection: Not:HasBinding } -> Checks that function3 is not declared anywhere, throws if it is.
-// etc
-
+const filePath = argv[2];
+const code = fs.readFileSync(filePath, "utf-8");
+const ast = parse(code);
+const results = runExpectations(ast, [
+  { inspection: "Not:HasBinding", binding: "minimoEntre" },
+  { inspection: "HasBinding", binding: "squareList" },
+  { inspection: "UsesGuards", binding: "grade" },
+  { inspection: "Not:UsesGuards", binding: "squareList" },
+  { inspection: "UsesAnonymousVariable", binding: "isSecret" },
+  { inspection: "Not:UsesAnonymousVariable", binding: "squareList" },
+]);
+console.log(results);

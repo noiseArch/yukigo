@@ -6,8 +6,16 @@ export interface FunctionDeclaration {
   name: SymbolPrimitive;
   parameters: SymbolPrimitive[];
   body: Expression | BlockExpression;
+  attributes: string[]
   //loc: SourceLocation;
 }
+
+export interface FunctionGroup {
+  type: "function_group";
+  name: SymbolPrimitive;
+  variants: FunctionDeclaration[];
+}
+
 export interface FunctionExpression {
   type: "function_expression";
   name: SymbolPrimitive;

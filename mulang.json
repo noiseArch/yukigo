@@ -9,6 +9,10 @@
       ]
     },
     {
+      "tag": "Record",
+      "contents": "Datita"
+    },
+    {
       "tag": "TypeSignature",
       "contents": [
         "addTwoNumbers",
@@ -41,22 +45,6 @@
     {
       "tag": "TypeSignature",
       "contents": [
-        "calculateArea",
-        {
-          "tag": "ParameterizedType",
-          "contents": [
-            [
-              "Double"
-            ],
-            "Double",
-            []
-          ]
-        }
-      ]
-    },
-    {
-      "tag": "TypeSignature",
-      "contents": [
         "charA",
         {
           "tag": "SimpleType",
@@ -70,14 +58,24 @@
     {
       "tag": "TypeSignature",
       "contents": [
-        "circumference",
+        "datita",
         {
-          "tag": "ParameterizedType",
+          "tag": "SimpleType",
           "contents": [
-            [
-              "Double"
-            ],
-            "Double",
+            "Datita",
+            []
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "TypeSignature",
+      "contents": [
+        "datita'",
+        {
+          "tag": "SimpleType",
+          "contents": [
+            "Datita",
             []
           ]
         }
@@ -126,6 +124,23 @@
               "Int"
             ],
             "String",
+            []
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "TypeSignature",
+      "contents": [
+        "isSecret",
+        {
+          "tag": "ParameterizedType",
+          "contents": [
+            [
+              "String",
+              "a"
+            ],
+            "Bool",
             []
           ]
         }
@@ -270,106 +285,6 @@
                     ]
                   ]
                 }
-              }
-            }
-          ]
-        ]
-      ]
-    },
-    {
-      "tag": "Function",
-      "contents": [
-        "calculateArea",
-        [
-          [
-            [
-              {
-                "tag": "VariablePattern",
-                "contents": "radius"
-              }
-            ],
-            {
-              "tag": "UnguardedBody",
-              "contents": {
-                "tag": "Return",
-                "contents": {
-                  "tag": "Other",
-                  "contents": [
-                    "HsLet [HsPatBind (SrcLoc {srcFilename = \"<unknown>\", srcLine = 62, srcColumn = 7}) (HsPVar (HsIdent \"piVal\")) (HsUnGuardedRhs (HsLit (HsFrac (314159 % 100000)))) [],HsPatBind (SrcLoc {srcFilename = \"<unknown>\", srcLine = 63, srcColumn = 7}) (HsPVar (HsIdent \"area\")) (HsUnGuardedRhs (HsInfixApp (HsInfixApp (HsVar (UnQual (HsIdent \"piVal\"))) (HsQVarOp (UnQual (HsSymbol \"*\"))) (HsVar (UnQual (HsIdent \"radius\")))) (HsQVarOp (UnQual (HsSymbol \"*\"))) (HsVar (UnQual (HsIdent \"radius\"))))) []] (HsVar (UnQual (HsIdent \"area\")))",
-                    null
-                  ]
-                }
-              }
-            }
-          ]
-        ]
-      ]
-    },
-    {
-      "tag": "Function",
-      "contents": [
-        "circumference",
-        [
-          [
-            [
-              {
-                "tag": "VariablePattern",
-                "contents": "radius"
-              }
-            ],
-            {
-              "tag": "UnguardedBody",
-              "contents": {
-                "tag": "Sequence",
-                "contents": [
-                  {
-                    "tag": "Variable",
-                    "contents": [
-                      "piVal",
-                      {
-                        "tag": "MuNumber",
-                        "contents": 3.14159
-                      }
-                    ]
-                  },
-                  {
-                    "tag": "Return",
-                    "contents": {
-                      "tag": "Application",
-                      "contents": [
-                        {
-                          "tag": "Primitive",
-                          "contents": "Multiply"
-                        },
-                        [
-                          {
-                            "tag": "Application",
-                            "contents": [
-                              {
-                                "tag": "Primitive",
-                                "contents": "Multiply"
-                              },
-                              [
-                                {
-                                  "tag": "MuNumber",
-                                  "contents": 2
-                                },
-                                {
-                                  "tag": "Reference",
-                                  "contents": "piVal"
-                                }
-                              ]
-                            ]
-                          },
-                          {
-                            "tag": "Reference",
-                            "contents": "radius"
-                          }
-                        ]
-                      ]
-                    }
-                  }
-                ]
               }
             }
           ]
@@ -658,6 +573,58 @@
     {
       "tag": "Function",
       "contents": [
+        "isSecret",
+        [
+          [
+            [
+              {
+                "tag": "LiteralPattern",
+                "contents": "\"secret\""
+              },
+              {
+                "tag": "WildcardPattern",
+                "contents": []
+              }
+            ],
+            {
+              "tag": "UnguardedBody",
+              "contents": {
+                "tag": "Return",
+                "contents": {
+                  "tag": "MuBool",
+                  "contents": true
+                }
+              }
+            }
+          ],
+          [
+            [
+              {
+                "tag": "WildcardPattern",
+                "contents": []
+              },
+              {
+                "tag": "WildcardPattern",
+                "contents": []
+              }
+            ],
+            {
+              "tag": "UnguardedBody",
+              "contents": {
+                "tag": "Return",
+                "contents": {
+                  "tag": "MuBool",
+                  "contents": false
+                }
+              }
+            }
+          ]
+        ]
+      ]
+    },
+    {
+      "tag": "Function",
+      "contents": [
         "listLength",
         [
           [
@@ -816,6 +783,44 @@
         {
           "tag": "MuChar",
           "contents": "A"
+        }
+      ]
+    },
+    {
+      "tag": "Variable",
+      "contents": [
+        "datita",
+        {
+          "tag": "Other",
+          "contents": [
+            "HsRecConstr (UnQual (HsIdent \"UnDatita\")) [HsFieldUpdate (UnQual (HsIdent \"atributito\")) (HsLit (HsString \"Hola\")),HsFieldUpdate (UnQual (HsIdent \"atributote\")) (HsLit (HsInt 42))]",
+            null
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "Variable",
+      "contents": [
+        "datita'",
+        {
+          "tag": "Application",
+          "contents": [
+            {
+              "tag": "Reference",
+              "contents": "UnDatita"
+            },
+            [
+              {
+                "tag": "MuString",
+                "contents": "Hola"
+              },
+              {
+                "tag": "MuNumber",
+                "contents": 42
+              }
+            ]
+          ]
         }
       ]
     },

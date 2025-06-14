@@ -3,6 +3,7 @@ import { keywords } from "./definition";
 import { makeLexer } from "moo-ignore";
 export const HaskellLexerConfig = {
   //EOF: "__EOF__",
+  anonymousVariable: "_",
   WS: /[ \t]+/,
   comment: /--.*?$|{-[\s\S]*?-}/,
   number:
@@ -33,9 +34,12 @@ export const HaskellLexerConfig = {
   greaterThan: ">",
   equals: "==",
   assign: "=",
+  bool: {
+    match: ["True", "False"]
+  },
   op: /[#!$%&*+./<=>?@\\^|~-]+/,
   identifier: {
-    match: /[a-zA-Z_$][a-zA-Z0-9_$]*/,
+    match: /[a-zA-Z0-9_']+|_[a-zA-Z0-9_']+/,
     type: moo.keywords({
       keyword: keywords,
     }),

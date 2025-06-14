@@ -5,6 +5,10 @@
 function id(d: any[]): any { return d[0]; }
 declare var number: any;
 declare var string: any;
+declare var bool: any;
+declare var lbracket: any;
+declare var rbracket: any;
+declare var anonymousVariable: any;
 declare var identifier: any;
 declare var WS: any;
 
@@ -80,6 +84,7 @@ const grammar: Grammar = {
     {"name": "application", "symbols": ["primary"], "postprocess": (d) => { return d[0] }},
     {"name": "primary", "symbols": [(HSLexer.has("number") ? {type: "number"} : number)], "postprocess": (d) => parsePrimary(d[0])},
     {"name": "primary", "symbols": [(HSLexer.has("string") ? {type: "string"} : string)], "postprocess": (d) => parsePrimary(d[0])},
+    {"name": "primary", "symbols": [(HSLexer.has("bool") ? {type: "bool"} : bool)], "postprocess": (d) => ({type: "Boolean", value: d[0]})},
     {"name": "primary", "symbols": ["identifier"], "postprocess": (d) => d[0]},
     {"name": "primary", "symbols": [{"literal":"("}, "_", "expression", "_", {"literal":")"}], "postprocess": (d) => d[2]},
     {"name": "primary", "symbols": ["list_literal"], "postprocess": (d) => parsePrimary({type: "list", body: d[0]})},
@@ -87,20 +92,34 @@ const grammar: Grammar = {
     {"name": "primary", "symbols": ["lambda_expression"], "postprocess": (d) => {return d[0]}},
     {"name": "primary", "symbols": ["if_expression"], "postprocess": d => d[0]},
     {"name": "primary", "symbols": ["case_expression"], "postprocess": d => d[0]},
+    {"name": "primary", "symbols": ["data_expression"], "postprocess": d => d[0]},
     {"name": "primary", "symbols": ["let_in_expression"], "postprocess": d => d[0]},
+    {"name": "data_expression", "symbols": ["identifier", "_", (HSLexer.has("lbracket") ? {type: "lbracket"} : lbracket), "fields_expressions", (HSLexer.has("rbracket") ? {type: "rbracket"} : rbracket)], "postprocess": (d) => ({type: "DataExpression", name: d[0], contents: d[3]})},
+    {"name": "fields_expressions$ebnf$1", "symbols": []},
+    {"name": "fields_expressions$ebnf$1$subexpression$1", "symbols": [{"literal":","}, "_", "field_exp"]},
+    {"name": "fields_expressions$ebnf$1", "symbols": ["fields_expressions$ebnf$1", "fields_expressions$ebnf$1$subexpression$1"], "postprocess": (d) => d[0].concat([d[1]])},
+    {"name": "fields_expressions", "symbols": ["_", "field_exp", "_", "fields_expressions$ebnf$1"], "postprocess": (d) => {return filter(d.flat(Infinity)).filter(tok => tok.type !== "comma")}},
+    {"name": "field_exp", "symbols": ["identifier", "_", {"literal":"="}, "_", "expression"], "postprocess": (d) => ({type: "FieldExpression", name: d[0], contents: d[4]})},
     {"name": "if_expression", "symbols": [{"literal":"if"}, "_", "expression", "_", {"literal":"then"}, "_", "expression", "_", {"literal":"else"}, "_", "expression"], "postprocess": (d) => ({ type: "if", cond: d[2], then: d[6], else: d[10] })},
     {"name": "declaration", "symbols": ["function_declaration"]},
     {"name": "declaration", "symbols": ["function_type_declaration"]},
-    {"name": "declaration", "symbols": ["type_declaration"], "postprocess": (d) => d[0]},
+    {"name": "declaration", "symbols": ["type_declaration"]},
+    {"name": "declaration", "symbols": ["data_declaration"], "postprocess": (d) => d[0]},
+    {"name": "data_declaration", "symbols": [{"literal":"data"}, "__", "identifier", "_", {"literal":"="}, "_", "identifier", "_", (HSLexer.has("lbracket") ? {type: "lbracket"} : lbracket), "field_list", (HSLexer.has("rbracket") ? {type: "rbracket"} : rbracket)], "postprocess": (d) => ({type: "Record", name: d[6], contents: d[9]})},
+    {"name": "field_list$ebnf$1", "symbols": []},
+    {"name": "field_list$ebnf$1$subexpression$1", "symbols": [{"literal":","}, "_", "field"]},
+    {"name": "field_list$ebnf$1", "symbols": ["field_list$ebnf$1", "field_list$ebnf$1$subexpression$1"], "postprocess": (d) => d[0].concat([d[1]])},
+    {"name": "field_list", "symbols": ["_", "field", "_", "field_list$ebnf$1"], "postprocess": (d) => {return filter(d.flat(Infinity)).filter(tok => tok.type !== "comma")}},
+    {"name": "field", "symbols": ["identifier", "_", {"literal":"::"}, "_", "type_list"], "postprocess": (d) => ({type: "Field", name: d[0], contents: d[4]})},
     {"name": "function_type_declaration", "symbols": ["identifier", "_", {"literal":"::"}, "_", "type_list"], "postprocess": (d) => parseFunctionType([d[0], d[4]])},
     {"name": "function_declaration$ebnf$1", "symbols": ["parameter_list"], "postprocess": id},
     {"name": "function_declaration$ebnf$1", "symbols": [], "postprocess": () => null},
     {"name": "function_declaration$ebnf$2", "symbols": ["guarded_rhs_list"]},
     {"name": "function_declaration$ebnf$2", "symbols": ["function_declaration$ebnf$2", "guarded_rhs_list"], "postprocess": (d) => d[0].concat([d[1]])},
-    {"name": "function_declaration", "symbols": ["identifier", "__", "function_declaration$ebnf$1", "function_declaration$ebnf$2"], "postprocess": (d) => {console.log("Function", d); return parseFunction({type: "function", name: d[0], params: d[2].flat(Infinity), body: d[3], attributes: ["GuardedBody"]})}},
+    {"name": "function_declaration", "symbols": ["identifier", "__", "function_declaration$ebnf$1", "function_declaration$ebnf$2"], "postprocess": (d) => {return parseFunction({type: "function", name: d[0], params: d[2].flat(Infinity), body: d[3], attributes: ["GuardedBody"]})}},
     {"name": "function_declaration$ebnf$3", "symbols": ["parameter_list"], "postprocess": id},
     {"name": "function_declaration$ebnf$3", "symbols": [], "postprocess": () => null},
-    {"name": "function_declaration", "symbols": ["identifier", "__", "function_declaration$ebnf$3", "_", {"literal":"="}, "_", "expression"], "postprocess": (d) => {console.log("Function", d); return parseFunction({type: "function", name: d[0], params: d[2] ? d[2].flat(Infinity) : [], body: d[6], attributes: ["UnguardedBody"]})}},
+    {"name": "function_declaration", "symbols": ["identifier", "__", "function_declaration$ebnf$3", "_", {"literal":"="}, "_", "expression"], "postprocess": (d) => {return parseFunction({type: "function", name: d[0], params: d[2] ? d[2].flat(Infinity) : [], body: d[6], attributes: ["UnguardedBody"]})}},
     {"name": "guarded_rhs_list", "symbols": ["_", {"literal":"|"}, "_", "guarded_rhs"], "postprocess": (d) => d[3]},
     {"name": "guarded_rhs", "symbols": ["expression", "_", {"literal":"="}, "_", "expression"], "postprocess": (d) => {return { guard: d[0], body: d[4] }}},
     {"name": "parameter_list", "symbols": ["pattern", "__", "parameter_list"], "postprocess": (d) => filter(d.flat(Infinity))},
@@ -108,7 +127,7 @@ const grammar: Grammar = {
     {"name": "pattern", "symbols": ["identifier"], "postprocess": (d) => ({type: "VariablePattern", name: d[0].value})},
     {"name": "pattern", "symbols": [(HSLexer.has("number") ? {type: "number"} : number)], "postprocess": (d) => ({type: "LiteralPattern", name: d[0].value})},
     {"name": "pattern", "symbols": [(HSLexer.has("string") ? {type: "string"} : string)], "postprocess": (d) => ({type: "LiteralPattern", name: d[0].value})},
-    {"name": "pattern", "symbols": [{"literal":"_"}], "postprocess": (d) => ({type: "AnonymousPattern", name: d[0].value})},
+    {"name": "pattern", "symbols": [(HSLexer.has("anonymousVariable") ? {type: "anonymousVariable"} : anonymousVariable)], "postprocess": (d) => ({type: "AnonymousPattern", name: d[0].value})},
     {"name": "pattern$ebnf$1", "symbols": ["pattern"]},
     {"name": "pattern$ebnf$1", "symbols": ["pattern$ebnf$1", "pattern"], "postprocess": (d) => d[0].concat([d[1]])},
     {"name": "pattern", "symbols": ["identifier", "pattern$ebnf$1"]},

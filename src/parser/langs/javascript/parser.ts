@@ -1,4 +1,4 @@
-import { Primitive, SymbolPrimitive } from "../../../globals";
+import { Primitive, SymbolPrimitive } from "../../globals";
 import { Expression, Statement } from "../../paradigms/objects";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

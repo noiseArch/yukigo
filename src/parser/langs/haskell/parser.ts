@@ -2,7 +2,7 @@ import {
   NumberPrimitive,
   StringPrimitive,
   SymbolPrimitive,
-} from "../../../globals";
+} from "../../globals";
 import {
   CompositionExpression,
   FunctionExpression,
@@ -43,6 +43,7 @@ function parseFunction(token: {
     name: token.name,
     parameters: token.params,
     body: token.body,
+    attributes: token.attributes,
   };
 
   return funcDecl;
@@ -83,7 +84,7 @@ function parseExpression(token: any) {
       operator: "$",
       right: token.body[1],
     };
-    console.log("App. Expr.", expression);
+    //console.log("App. Expr.", expression);
     return expression;
   }
   if (!token[1]) return token;

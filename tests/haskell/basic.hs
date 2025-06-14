@@ -2,6 +2,17 @@
 -- Integers
 type Number = Int
 
+data Datita = UnDatita {
+  atributito :: String,
+  atributote :: Number
+}
+
+datita :: Datita
+datita = UnDatita {atributito = "Hola", atributote = 42}
+
+datita' :: Datita
+datita' = UnDatita "Hola" 42
+
 numInt :: Int
 numInt = 42
 
@@ -32,6 +43,12 @@ greet :: String -> String
 greet "Alice" = "Hello, Alice!"
 greet "Bob" = "Hi there, Bob!"
 greet name = "Greetings, " ++ name ++ "!"
+
+-- Example using anonymous variable (_)
+-- Function that checks if a string is "secret", ignoring the second argument
+isSecret :: String -> a -> Bool
+isSecret "secret" _ = True
+isSecret _ _ = False
 
 -- 6. List definition and operations
 myNumbers :: [Int]

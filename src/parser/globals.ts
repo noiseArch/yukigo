@@ -79,7 +79,7 @@ export interface UndefinedPrimitive extends BasePrimitive {
  */
 export interface SymbolPrimitive extends BasePrimitive {
   type: "symbol";
-  value: symbol;
+  value: string;
   description?: string;
 }
 
