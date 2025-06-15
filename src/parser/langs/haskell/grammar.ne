@@ -24,10 +24,8 @@ expression -> concatenation {% (d) => parseExpression(d[0]) %}
 lambda_expression -> 
     "(" _ "\\" _ parameter_list _ "->" _ expression _ ")" {% (d) => parseLambda([d[4], d[8]]) %}
 
-
-
 concatenation ->
-    comparison _ "++" _ concatenation {% (d) => filter(d) %}
+    comparison _ "++" _ concatenation {% (d) => ({ type: "concatenation", operator: d[2].value, left: d[0], right: d[4] }) %}
     | comparison {% (d) => d[0] %}
 
 comparison ->
@@ -35,15 +33,14 @@ comparison ->
     | addition {% (d) => d[0] %}
 
 addition -> 
-    multiplication _ "+" _ addition {% (d) => filter(d) %}
-    | multiplication _ "-" _ addition {% (d) => filter(d) %}
+    multiplication _ "+" _ addition {% (d) => ({ type: "addition", operator: d[2].value, left: d[0], right: d[4] }) %}
+    | multiplication _ "-" _ addition {% (d) => ({ type: "subtraction", operator: d[2].value, left: d[0], right: d[4] }) %}
     | multiplication {% (d) => d[0] %}
 
 multiplication ->
-    infix_operator_expression _ "*" _ multiplication {% (d) => filter(d) %}
-    | infix_operator_expression _ "/" _ multiplication {% (d) => filter(d) %}
+    infix_operator_expression _ "*" _ multiplication {% (d) => ({ type: "multiplication", operator: d[2].value, left: d[0], right: d[4] }) %}
+    | infix_operator_expression _ "/" _ multiplication {% (d) => ({ type: "division", operator: d[2].value, left: d[0], right: d[4] }) %}
     | infix_operator_expression {% (d) => d[0] %}
-
 
 infix_operator_expression ->
     application _ "`" _ identifier _ "`" _ infix_operator_expression
@@ -58,7 +55,6 @@ infix_operator_expression ->
 application ->
     primary __ application {% (d) => {return {type: "application", body: filter(d).flat(Infinity)}} %}
     | primary {% (d) => { return d[0] } %}
-
 
 primary ->
     %number {% (d) => parsePrimary(d[0]) %}

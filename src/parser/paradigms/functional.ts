@@ -6,14 +6,18 @@ export interface FunctionDeclaration {
   name: SymbolPrimitive;
   parameters: SymbolPrimitive[];
   body: Expression | BlockExpression;
-  attributes: string[]
+  attributes: string[];
   //loc: SourceLocation;
 }
 
 export interface FunctionGroup {
-  type: "function_group";
+  type: "function";
   name: SymbolPrimitive;
-  variants: FunctionDeclaration[];
+  contents: {
+    parameters: SymbolPrimitive[];
+    body: Expression | BlockExpression;
+    attributes: string[];
+  }[];
 }
 
 export interface FunctionExpression {
@@ -24,7 +28,7 @@ export interface FunctionExpression {
 }
 
 export interface CompositionExpression {
-  type: "composition_expression";
+  type: "CompositionExpression";
   left: SymbolPrimitive;
   right: SymbolPrimitive;
   //loc: SourceLocation;
@@ -39,7 +43,7 @@ export type ListPrimitive = {
 };
 
 export interface LambdaExpression {
-  type: "lambda_expression";
+  type: "LambdaExpression";
   parameters: SymbolPrimitive[];
   body: Expression | BlockExpression;
   //loc: SourceLocation;

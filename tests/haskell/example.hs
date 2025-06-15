@@ -3,6 +3,8 @@ data Datita = UnDatita {
   atributote :: Int
 }
 
+type Number = Int
+
 datita :: Datita
 datita = UnDatita {atributito = "Hola", atributote = 42}
 

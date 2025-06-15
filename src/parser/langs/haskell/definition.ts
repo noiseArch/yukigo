@@ -90,13 +90,13 @@ export interface ApplicationExpression {
 }
 
 export interface HSTypeAlias {
-  type: "type_alias";
+  type: "TypeAlias";
   name: SymbolPrimitive;
   typeParameters: SymbolPrimitive[]; // Optional type parameters
 }
 
-export interface HSFunctionTypeDeclaration {
-  type: "function_type_declaration";
+export interface HSFunctionTypeSignature {
+  type: "TypeSignature";
   name: SymbolPrimitive;
   inputTypes: SymbolPrimitive[];
   returnType: SymbolPrimitive;

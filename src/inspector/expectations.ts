@@ -1,10 +1,14 @@
-import { declaresFunction, hasAnonymousVariable, hasGuards } from "./inspections";
+import { declaresFunction, hasAnonymousVariable, hasGuards, hasComposition, hasLambdaExpression } from "./inspections";
 
 const inspectionMap = {
   HasBinding: declaresFunction,
   UsesGuards: hasGuards,
   HasAnonymousVariable: hasAnonymousVariable,
-  UsesAnonymousVariable: hasAnonymousVariable
+  UsesAnonymousVariable: hasAnonymousVariable,
+  UsesComposition: hasComposition,
+  HasComposition: hasComposition,
+  UsesLambda: hasLambdaExpression,
+  HasLambda: hasLambdaExpression,
 };
 
 export function runExpectations(ast: object[], expectations: {binding: string; inspection: string}[]) {

@@ -10,7 +10,7 @@ import {
 import {
   HSExpression,
   HSFunctionDeclaration,
-  HSFunctionTypeDeclaration,
+  HSFunctionTypeSignature,
   HSLamdaExpression,
   HSListPrimitive,
   HSTypeAlias,
@@ -57,8 +57,8 @@ function parseFunctionType(token: any) {
 
   const inputTypes = bodyType.length > 1 ? bodyType.slice(0, -1) : [];
   const returnType = bodyType[bodyType.length - 1];
-  const functionType: HSFunctionTypeDeclaration = {
-    type: "function_type_declaration",
+  const functionType: HSFunctionTypeSignature = {
+    type: "TypeSignature",
     name: { type: "symbol", value: token[0].value },
     inputTypes: inputTypes,
     returnType: returnType,
@@ -69,7 +69,7 @@ function parseFunctionType(token: any) {
 function parseTypeAlias(token: any) {
   //console.log(token);
   const typeAlias: HSTypeAlias = {
-    type: "type_alias",
+    type: "TypeAlias",
     name: { type: "symbol", value: token[2].value },
     typeParameters: token[6],
   };
@@ -100,7 +100,7 @@ function parseExpression(token: any) {
 function parseLambda(token: any) {
   //console.log("Lambda", util.inspect(token, false, null, true));
   const lambda: HSLamdaExpression = {
-    type: "lambda_expression",
+    type: "LambdaExpression",
     parameters: token[0].map((param: any) => {
       return { type: "symbol", value: param.value };
     }),
@@ -125,7 +125,7 @@ function parseFunctionExpression(token: any) {
 
 function parseCompositionExpression(token: any) {
   const compositionExpression: CompositionExpression = {
-    type: "composition_expression",
+    type: "CompositionExpression",
     left: { type: "symbol", value: token[0].value },
     right: { type: "symbol", value: token[1].value },
   };

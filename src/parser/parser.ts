@@ -18,10 +18,10 @@ export function groupFunctionDeclarations(ast: any[]): any[] {
     }
   }
   const functionGroups: FunctionGroup[] = Object.entries(groups).map(
-    ([name, variants]) => ({
-      type: "function_group",
-      name: variants[0].name,
-      variants,
+    ([name, contents]) => ({
+      type: "function",
+      name: contents[0].name,
+      contents: contents.map((func: FunctionDeclaration) => ({parameters: func.parameters, body: func.body, attributes: func.attributes})),
     })
   );
 

@@ -1,245 +1,134 @@
 [
   {
-    "type": "Record",
+    "type": "TypeSignature",
     "name": {
       "type": "symbol",
-      "value": "UnDatita"
+      "value": "squareList"
+    },
+    "inputTypes": [
+      {
+        "type": "symbol",
+        "name": "["
+      },
+      {
+        "type": "symbol",
+        "name": "Int"
+      },
+      {
+        "type": "symbol",
+        "name": "]"
+      },
+      {
+        "type": "symbol",
+        "name": "["
+      },
+      {
+        "type": "symbol",
+        "name": "Int"
+      }
+    ],
+    "returnType": {
+      "type": "symbol",
+      "name": "]"
+    }
+  },
+  {
+    "type": "TypeSignature",
+    "name": {
+      "type": "symbol",
+      "value": "square"
+    },
+    "inputTypes": [
+      {
+        "type": "symbol",
+        "name": "Int"
+      }
+    ],
+    "returnType": {
+      "type": "symbol",
+      "name": "Int"
+    }
+  },
+  {
+    "type": "TypeSignature",
+    "name": {
+      "type": "symbol",
+      "value": "squareList2"
+    },
+    "inputTypes": [
+      {
+        "type": "symbol",
+        "name": "["
+      },
+      {
+        "type": "symbol",
+        "name": "Int"
+      },
+      {
+        "type": "symbol",
+        "name": "]"
+      },
+      {
+        "type": "symbol",
+        "name": "["
+      },
+      {
+        "type": "symbol",
+        "name": "Int"
+      }
+    ],
+    "returnType": {
+      "type": "symbol",
+      "name": "]"
+    }
+  },
+  {
+    "type": "function",
+    "name": {
+      "type": "symbol",
+      "value": "squareList"
     },
     "contents": [
       {
-        "type": "Field",
-        "name": {
-          "type": "symbol",
-          "value": "atributito"
-        },
-        "contents": [
+        "parameters": [
           {
-            "type": "symbol",
-            "value": "String"
+            "type": "VariablePattern",
+            "name": "xs"
           }
-        ]
-      },
-      {
-        "type": "Field",
-        "name": {
-          "type": "symbol",
-          "value": "atributote"
-        },
-        "contents": [
-          {
-            "type": "symbol",
-            "value": "Int"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "type": "function_type_declaration",
-    "name": {
-      "type": "symbol",
-      "value": "datita"
-    },
-    "inputTypes": [],
-    "returnType": {
-      "type": "symbol",
-      "name": "Datita"
-    }
-  },
-  {
-    "type": "function_type_declaration",
-    "name": {
-      "type": "symbol",
-      "value": "datita2"
-    },
-    "inputTypes": [],
-    "returnType": {
-      "type": "symbol",
-      "name": "Datita"
-    }
-  },
-  {
-    "type": "function_type_declaration",
-    "name": {
-      "type": "symbol",
-      "value": "numInt"
-    },
-    "inputTypes": [],
-    "returnType": {
-      "type": "symbol",
-      "name": "Int"
-    }
-  },
-  {
-    "type": "function_type_declaration",
-    "name": {
-      "type": "symbol",
-      "value": "numFloat"
-    },
-    "inputTypes": [],
-    "returnType": {
-      "type": "symbol",
-      "name": "Double"
-    }
-  },
-  {
-    "type": "function_type_declaration",
-    "name": {
-      "type": "symbol",
-      "value": "charA"
-    },
-    "inputTypes": [],
-    "returnType": {
-      "type": "symbol",
-      "name": "Char"
-    }
-  },
-  {
-    "type": "function_type_declaration",
-    "name": {
-      "type": "symbol",
-      "value": "stringHello"
-    },
-    "inputTypes": [],
-    "returnType": {
-      "type": "symbol",
-      "name": "String"
-    }
-  },
-  {
-    "type": "function_type_declaration",
-    "name": {
-      "type": "symbol",
-      "value": "boolTrue"
-    },
-    "inputTypes": [],
-    "returnType": {
-      "type": "symbol",
-      "name": "Bool"
-    }
-  },
-  {
-    "type": "function_type_declaration",
-    "name": {
-      "type": "symbol",
-      "value": "addTwoNumbers"
-    },
-    "inputTypes": [
-      {
-        "type": "symbol",
-        "name": "Int"
-      },
-      {
-        "type": "symbol",
-        "name": "Int"
-      }
-    ],
-    "returnType": {
-      "type": "symbol",
-      "name": "Int"
-    }
-  },
-  {
-    "type": "function_type_declaration",
-    "name": {
-      "type": "symbol",
-      "value": "greet"
-    },
-    "inputTypes": [
-      {
-        "type": "symbol",
-        "name": "String"
-      }
-    ],
-    "returnType": {
-      "type": "symbol",
-      "name": "String"
-    }
-  },
-  {
-    "type": "function_group",
-    "name": {
-      "type": "symbol",
-      "value": "datita"
-    },
-    "variants": [
-      {
-        "type": "function",
-        "name": {
-          "type": "symbol",
-          "value": "datita"
-        },
-        "parameters": [],
-        "body": {
-          "type": "DataExpression",
-          "name": {
-            "type": "symbol",
-            "value": "UnDatita"
-          },
-          "contents": [
-            {
-              "type": "FieldExpression",
-              "name": {
-                "type": "symbol",
-                "value": "atributito"
-              },
-              "contents": {
-                "type": "string",
-                "value": "\"Hola\""
-              }
-            },
-            {
-              "type": "FieldExpression",
-              "name": {
-                "type": "symbol",
-                "value": "atributote"
-              },
-              "contents": {
-                "type": "number",
-                "numericType": "number",
-                "value": "42"
-              }
-            }
-          ]
-        },
-        "attributes": [
-          "UnguardedBody"
-        ]
-      }
-    ]
-  },
-  {
-    "type": "function_group",
-    "name": {
-      "type": "symbol",
-      "value": "datita2"
-    },
-    "variants": [
-      {
-        "type": "function",
-        "name": {
-          "type": "symbol",
-          "value": "datita2"
-        },
-        "parameters": [],
+        ],
         "body": {
           "type": "application",
           "left": {
             "type": "symbol",
-            "value": "UnDatita"
+            "value": "map"
           },
           "operator": "$",
           "right": {
             "type": "application",
             "body": [
               {
-                "type": "string",
-                "value": "\"Hola\""
+                "type": "LambdaExpression",
+                "parameters": [
+                  {
+                    "type": "symbol"
+                  }
+                ],
+                "body": {
+                  "type": "multiplication",
+                  "operator": "*",
+                  "left": {
+                    "type": "symbol",
+                    "value": "n"
+                  },
+                  "right": {
+                    "type": "symbol",
+                    "value": "n"
+                  }
+                }
               },
               {
-                "type": "number",
-                "numericType": "number",
-                "value": "42"
+                "type": "symbol",
+                "value": "xs"
               }
             ]
           }
@@ -251,168 +140,29 @@
     ]
   },
   {
-    "type": "function_group",
+    "type": "function",
     "name": {
       "type": "symbol",
-      "value": "numInt"
+      "value": "square"
     },
-    "variants": [
+    "contents": [
       {
-        "type": "function",
-        "name": {
-          "type": "symbol",
-          "value": "numInt"
-        },
-        "parameters": [],
-        "body": {
-          "type": "number",
-          "numericType": "number",
-          "value": "42"
-        },
-        "attributes": [
-          "UnguardedBody"
-        ]
-      }
-    ]
-  },
-  {
-    "type": "function_group",
-    "name": {
-      "type": "symbol",
-      "value": "numFloat"
-    },
-    "variants": [
-      {
-        "type": "function",
-        "name": {
-          "type": "symbol",
-          "value": "numFloat"
-        },
-        "parameters": [],
-        "body": {
-          "type": "number",
-          "numericType": "number",
-          "value": "3.14159"
-        },
-        "attributes": [
-          "UnguardedBody"
-        ]
-      }
-    ]
-  },
-  {
-    "type": "function_group",
-    "name": {
-      "type": "symbol",
-      "value": "charA"
-    },
-    "variants": [
-      {
-        "type": "function",
-        "name": {
-          "type": "symbol",
-          "value": "charA"
-        },
-        "parameters": [],
-        "body": {
-          "type": "string",
-          "value": "'A'"
-        },
-        "attributes": [
-          "UnguardedBody"
-        ]
-      }
-    ]
-  },
-  {
-    "type": "function_group",
-    "name": {
-      "type": "symbol",
-      "value": "stringHello"
-    },
-    "variants": [
-      {
-        "type": "function",
-        "name": {
-          "type": "symbol",
-          "value": "stringHello"
-        },
-        "parameters": [],
-        "body": {
-          "type": "string",
-          "value": "\"Hello, Haskell!\""
-        },
-        "attributes": [
-          "UnguardedBody"
-        ]
-      }
-    ]
-  },
-  {
-    "type": "function_group",
-    "name": {
-      "type": "symbol",
-      "value": "boolTrue"
-    },
-    "variants": [
-      {
-        "type": "function",
-        "name": {
-          "type": "symbol",
-          "value": "boolTrue"
-        },
-        "parameters": [],
-        "body": {
-          "type": "Boolean",
-          "value": {
-            "type": "bool",
-            "value": "True",
-            "text": "True",
-            "offset": 483,
-            "lineBreaks": 0,
-            "line": 29,
-            "col": 12
-          }
-        },
-        "attributes": [
-          "UnguardedBody"
-        ]
-      }
-    ]
-  },
-  {
-    "type": "function_group",
-    "name": {
-      "type": "symbol",
-      "value": "addTwoNumbers"
-    },
-    "variants": [
-      {
-        "type": "function",
-        "name": {
-          "type": "symbol",
-          "value": "addTwoNumbers"
-        },
         "parameters": [
           {
             "type": "VariablePattern",
-            "name": "x"
-          },
-          {
-            "type": "VariablePattern",
-            "name": "y"
+            "name": "n"
           }
         ],
         "body": {
-          "type": "expression",
+          "type": "multiplication",
+          "operator": "*",
           "left": {
             "type": "symbol",
-            "value": "x"
+            "value": "n"
           },
-          "operator": "+",
           "right": {
             "type": "symbol",
-            "value": "y"
+            "value": "n"
           }
         },
         "attributes": [
@@ -422,90 +172,25 @@
     ]
   },
   {
-    "type": "function_group",
+    "type": "function",
     "name": {
       "type": "symbol",
-      "value": "greet"
+      "value": "squareList2"
     },
-    "variants": [
+    "contents": [
       {
-        "type": "function",
-        "name": {
-          "type": "symbol",
-          "value": "greet"
-        },
-        "parameters": [
-          {
-            "type": "LiteralPattern",
-            "name": "\"Alice\""
-          }
-        ],
+        "parameters": [],
         "body": {
-          "type": "string",
-          "value": "\"Hello, Alice!\""
-        },
-        "attributes": [
-          "UnguardedBody"
-        ]
-      },
-      {
-        "type": "function",
-        "name": {
-          "type": "symbol",
-          "value": "greet"
-        },
-        "parameters": [
-          {
-            "type": "LiteralPattern",
-            "name": "\"Bob\""
-          }
-        ],
-        "body": {
-          "type": "string",
-          "value": "\"Hi there, Bob!\""
-        },
-        "attributes": [
-          "UnguardedBody"
-        ]
-      },
-      {
-        "type": "function",
-        "name": {
-          "type": "symbol",
-          "value": "greet"
-        },
-        "parameters": [
-          {
-            "type": "VariablePattern",
-            "name": "name"
-          }
-        ],
-        "body": {
-          "type": "expression",
+          "type": "application",
           "left": {
-            "type": "string",
-            "value": "\"Greetings, \""
+            "type": "symbol",
+            "value": "map"
           },
-          "operator": "++",
-          "right": [
-            {
-              "type": "symbol",
-              "value": "name"
-            },
-            {
-              "type": "op",
-              "value": "++",
-              "text": "++",
-              "offset": 750,
-              "lineBreaks": 0,
-              "line": 39,
-              "col": 36
-            },
-            {
-              "type": "string",
-              "value": "\"!\""
-            }
-          ]
+          "operator": "$",
+          "right": {
+            "type": "symbol",
+            "value": "square"
+          }
         },
         "attributes": [
           "UnguardedBody"
