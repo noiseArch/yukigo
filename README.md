@@ -4,11 +4,19 @@
 
 ## Components
 
-- **Abstract Semantic Tree (AST):** A parser that generates a generic AST from the supported languages
-- **Inspections & EDL (WIP):** A set of built-in expectations for analysing code and a language for defining custom expectations
-- **Testing: (WIP)** A tester for running tests on the AST
+### **Abstract Semantic Tree:**
 
-Yukigo is fully compatible with mulang's expectations
+A parser that generates a generic AST. This is the intermediate representation of any language. Allows us to analyse the semantics of the code independently of the paradigm.
+
+### **Inspections & EDL (WIP):**
+
+A set of built-in expectations for analysing code and a language for defining custom expectations. Also allows to define custom expectations at runtime.
+
+> TODO: Compatibility with mulang's expectations
+
+### **Testing: (WIP)**
+
+A tester for running tests on the AST
 
 # Usage as NPM package
 
@@ -30,13 +38,41 @@ yarn add yukigo
 import yukigo from "yukigo";
 
 const code = "doble num = num * 2";
-const expectations = [{ binding: "doble", inspection: "HasBinding" }];
+const expectations = [
+  {
+    inspection: "HasBinding",
+    args: { name: "minimoEntre" },
+    expected: false,
+  },
+  {
+    inspection: "HasBinding",
+    args: { name: "doble" },
+    expected: true,
+  },
+];
 const result = yukigo.analyse(code, expectations);
 
 console.log(results);
 // [
-//   { inspection: 'HasBinding', binding: 'doble', result: true },
-// ]
+//   {
+//     rule: {
+//       inspection: "HasBinding",
+//       args: { name: "minimoEntre" },
+//       expected: false,
+//     },
+//     passed: true,
+//     actual: false,
+//   },
+//   {
+//     rule: {
+//       inspection: "HasBinding",
+//       args: { name: "doble" },
+//       expected: true,
+//     },
+//     passed: true,
+//     actual: true,
+//   },
+// ];
 ```
 
 # How to use CLI (WIP)

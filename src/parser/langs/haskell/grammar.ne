@@ -33,13 +33,13 @@ comparison ->
     | addition {% (d) => d[0] %}
 
 addition -> 
-    multiplication _ "+" _ addition {% (d) => ({ type: "addition", operator: d[2].value, left: d[0], right: d[4] }) %}
-    | multiplication _ "-" _ addition {% (d) => ({ type: "subtraction", operator: d[2].value, left: d[0], right: d[4] }) %}
+    multiplication _ "+" _ addition {% (d) => ({ type: "Arithmetic", operator: d[2].value, left: d[0], right: d[4] }) %}
+    | multiplication _ "-" _ addition {% (d) => ({ type: "Arithmetic", operator: d[2].value, left: d[0], right: d[4] }) %}
     | multiplication {% (d) => d[0] %}
 
 multiplication ->
-    infix_operator_expression _ "*" _ multiplication {% (d) => ({ type: "multiplication", operator: d[2].value, left: d[0], right: d[4] }) %}
-    | infix_operator_expression _ "/" _ multiplication {% (d) => ({ type: "division", operator: d[2].value, left: d[0], right: d[4] }) %}
+    infix_operator_expression _ "*" _ multiplication {% (d) => ({ type: "Arithmetic", operator: d[2].value, left: d[0], right: d[4] }) %}
+    | infix_operator_expression _ "/" _ multiplication {% (d) => ({ type: "Arithmetic", operator: d[2].value, left: d[0], right: d[4] }) %}
     | infix_operator_expression {% (d) => d[0] %}
 
 infix_operator_expression ->

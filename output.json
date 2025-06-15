@@ -1,5 +1,267 @@
 [
   {
+    "type": "TypeAlias",
+    "name": {
+      "type": "symbol",
+      "value": "Number"
+    },
+    "typeParameters": [
+      {
+        "type": "symbol",
+        "value": "Int"
+      }
+    ]
+  },
+  {
+    "type": "Record",
+    "name": {
+      "type": "symbol",
+      "value": "UnDatita"
+    },
+    "contents": [
+      {
+        "type": "Field",
+        "name": {
+          "type": "symbol",
+          "value": "atributito"
+        },
+        "contents": [
+          {
+            "type": "symbol",
+            "value": "String"
+          }
+        ]
+      },
+      {
+        "type": "Field",
+        "name": {
+          "type": "symbol",
+          "value": "atributote"
+        },
+        "contents": [
+          {
+            "type": "symbol",
+            "value": "Number"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "TypeSignature",
+    "name": {
+      "type": "symbol",
+      "value": "datita"
+    },
+    "inputTypes": [],
+    "returnType": {
+      "type": "symbol",
+      "name": "Datita"
+    }
+  },
+  {
+    "type": "TypeSignature",
+    "name": {
+      "type": "symbol",
+      "value": "datita'"
+    },
+    "inputTypes": [],
+    "returnType": {
+      "type": "symbol",
+      "name": "Datita"
+    }
+  },
+  {
+    "type": "TypeSignature",
+    "name": {
+      "type": "symbol",
+      "value": "numInt"
+    },
+    "inputTypes": [],
+    "returnType": {
+      "type": "symbol",
+      "name": "Int"
+    }
+  },
+  {
+    "type": "TypeSignature",
+    "name": {
+      "type": "symbol",
+      "value": "numFloat"
+    },
+    "inputTypes": [],
+    "returnType": {
+      "type": "symbol",
+      "name": "Double"
+    }
+  },
+  {
+    "type": "TypeSignature",
+    "name": {
+      "type": "symbol",
+      "value": "charA"
+    },
+    "inputTypes": [],
+    "returnType": {
+      "type": "symbol",
+      "name": "Char"
+    }
+  },
+  {
+    "type": "TypeSignature",
+    "name": {
+      "type": "symbol",
+      "value": "stringHello"
+    },
+    "inputTypes": [],
+    "returnType": {
+      "type": "symbol",
+      "name": "String"
+    }
+  },
+  {
+    "type": "TypeSignature",
+    "name": {
+      "type": "symbol",
+      "value": "boolTrue"
+    },
+    "inputTypes": [],
+    "returnType": {
+      "type": "symbol",
+      "name": "Bool"
+    }
+  },
+  {
+    "type": "TypeSignature",
+    "name": {
+      "type": "symbol",
+      "value": "addTwoNumbers"
+    },
+    "inputTypes": [
+      {
+        "type": "symbol",
+        "name": "Int"
+      },
+      {
+        "type": "symbol",
+        "name": "Int"
+      }
+    ],
+    "returnType": {
+      "type": "symbol",
+      "name": "Int"
+    }
+  },
+  {
+    "type": "TypeSignature",
+    "name": {
+      "type": "symbol",
+      "value": "greet"
+    },
+    "inputTypes": [
+      {
+        "type": "symbol",
+        "name": "String"
+      }
+    ],
+    "returnType": {
+      "type": "symbol",
+      "name": "String"
+    }
+  },
+  {
+    "type": "TypeSignature",
+    "name": {
+      "type": "symbol",
+      "value": "isSecret"
+    },
+    "inputTypes": [
+      {
+        "type": "symbol",
+        "name": "String"
+      },
+      {
+        "type": "symbol",
+        "name": "a"
+      }
+    ],
+    "returnType": {
+      "type": "symbol",
+      "name": "Bool"
+    }
+  },
+  {
+    "type": "TypeSignature",
+    "name": {
+      "type": "symbol",
+      "value": "myNumbers"
+    },
+    "inputTypes": [
+      {
+        "type": "symbol",
+        "name": "["
+      },
+      {
+        "type": "symbol",
+        "name": "Int"
+      }
+    ],
+    "returnType": {
+      "type": "symbol",
+      "name": "]"
+    }
+  },
+  {
+    "type": "TypeSignature",
+    "name": {
+      "type": "symbol",
+      "value": "sumList"
+    },
+    "inputTypes": [
+      {
+        "type": "symbol",
+        "name": "["
+      },
+      {
+        "type": "symbol",
+        "name": "Int"
+      },
+      {
+        "type": "symbol",
+        "name": "]"
+      }
+    ],
+    "returnType": {
+      "type": "symbol",
+      "name": "Int"
+    }
+  },
+  {
+    "type": "TypeSignature",
+    "name": {
+      "type": "symbol",
+      "value": "listLength"
+    },
+    "inputTypes": [
+      {
+        "type": "symbol",
+        "name": "["
+      },
+      {
+        "type": "symbol",
+        "name": "a"
+      },
+      {
+        "type": "symbol",
+        "name": "]"
+      }
+    ],
+    "returnType": {
+      "type": "symbol",
+      "name": "Int"
+    }
+  },
+  {
     "type": "TypeSignature",
     "name": {
       "type": "symbol",
@@ -36,7 +298,7 @@
     "type": "TypeSignature",
     "name": {
       "type": "symbol",
-      "value": "square"
+      "value": "isEven"
     },
     "inputTypes": [
       {
@@ -46,32 +308,16 @@
     ],
     "returnType": {
       "type": "symbol",
-      "name": "Int"
+      "name": "String"
     }
   },
   {
     "type": "TypeSignature",
     "name": {
       "type": "symbol",
-      "value": "squareList2"
+      "value": "grade"
     },
     "inputTypes": [
-      {
-        "type": "symbol",
-        "name": "["
-      },
-      {
-        "type": "symbol",
-        "name": "Int"
-      },
-      {
-        "type": "symbol",
-        "name": "]"
-      },
-      {
-        "type": "symbol",
-        "name": "["
-      },
       {
         "type": "symbol",
         "name": "Int"
@@ -79,8 +325,475 @@
     ],
     "returnType": {
       "type": "symbol",
-      "name": "]"
+      "name": "String"
     }
+  },
+  {
+    "type": "function",
+    "name": {
+      "type": "symbol",
+      "value": "datita"
+    },
+    "contents": [
+      {
+        "parameters": [],
+        "body": {
+          "type": "DataExpression",
+          "name": {
+            "type": "symbol",
+            "value": "UnDatita"
+          },
+          "contents": [
+            {
+              "type": "FieldExpression",
+              "name": {
+                "type": "symbol",
+                "value": "atributito"
+              },
+              "contents": {
+                "type": "string",
+                "value": "\"Hola\""
+              }
+            },
+            {
+              "type": "FieldExpression",
+              "name": {
+                "type": "symbol",
+                "value": "atributote"
+              },
+              "contents": {
+                "type": "number",
+                "numericType": "number",
+                "value": "42"
+              }
+            }
+          ]
+        },
+        "attributes": [
+          "UnguardedBody"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": {
+      "type": "symbol",
+      "value": "datita'"
+    },
+    "contents": [
+      {
+        "parameters": [],
+        "body": {
+          "type": "application",
+          "left": {
+            "type": "symbol",
+            "value": "UnDatita"
+          },
+          "operator": "$",
+          "right": {
+            "type": "application",
+            "body": [
+              {
+                "type": "string",
+                "value": "\"Hola\""
+              },
+              {
+                "type": "number",
+                "numericType": "number",
+                "value": "42"
+              }
+            ]
+          }
+        },
+        "attributes": [
+          "UnguardedBody"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": {
+      "type": "symbol",
+      "value": "numInt"
+    },
+    "contents": [
+      {
+        "parameters": [],
+        "body": {
+          "type": "number",
+          "numericType": "number",
+          "value": "42"
+        },
+        "attributes": [
+          "UnguardedBody"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": {
+      "type": "symbol",
+      "value": "numFloat"
+    },
+    "contents": [
+      {
+        "parameters": [],
+        "body": {
+          "type": "number",
+          "numericType": "number",
+          "value": "3.14159"
+        },
+        "attributes": [
+          "UnguardedBody"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": {
+      "type": "symbol",
+      "value": "charA"
+    },
+    "contents": [
+      {
+        "parameters": [],
+        "body": {
+          "type": "string",
+          "value": "'A'"
+        },
+        "attributes": [
+          "UnguardedBody"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": {
+      "type": "symbol",
+      "value": "stringHello"
+    },
+    "contents": [
+      {
+        "parameters": [],
+        "body": {
+          "type": "string",
+          "value": "\"Hello, Haskell!\""
+        },
+        "attributes": [
+          "UnguardedBody"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": {
+      "type": "symbol",
+      "value": "boolTrue"
+    },
+    "contents": [
+      {
+        "parameters": [],
+        "body": {
+          "type": "Boolean",
+          "value": {
+            "type": "bool",
+            "value": "True",
+            "text": "True",
+            "offset": 555,
+            "lineBreaks": 0,
+            "line": 33,
+            "col": 12
+          }
+        },
+        "attributes": [
+          "UnguardedBody"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": {
+      "type": "symbol",
+      "value": "addTwoNumbers"
+    },
+    "contents": [
+      {
+        "parameters": [
+          {
+            "type": "VariablePattern",
+            "name": "x"
+          },
+          {
+            "type": "VariablePattern",
+            "name": "y"
+          }
+        ],
+        "body": {
+          "type": "Arithmetic",
+          "operator": "+",
+          "left": {
+            "type": "symbol",
+            "value": "x"
+          },
+          "right": {
+            "type": "symbol",
+            "value": "y"
+          }
+        },
+        "attributes": [
+          "UnguardedBody"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": {
+      "type": "symbol",
+      "value": "greet"
+    },
+    "contents": [
+      {
+        "parameters": [
+          {
+            "type": "LiteralPattern",
+            "name": "\"Alice\""
+          }
+        ],
+        "body": {
+          "type": "string",
+          "value": "\"Hello, Alice!\""
+        },
+        "attributes": [
+          "UnguardedBody"
+        ]
+      },
+      {
+        "parameters": [
+          {
+            "type": "LiteralPattern",
+            "name": "\"Bob\""
+          }
+        ],
+        "body": {
+          "type": "string",
+          "value": "\"Hi there, Bob!\""
+        },
+        "attributes": [
+          "UnguardedBody"
+        ]
+      },
+      {
+        "parameters": [
+          {
+            "type": "VariablePattern",
+            "name": "name"
+          }
+        ],
+        "body": {
+          "type": "concatenation",
+          "operator": "++",
+          "left": {
+            "type": "string",
+            "value": "\"Greetings, \""
+          },
+          "right": {
+            "type": "concatenation",
+            "operator": "++",
+            "left": {
+              "type": "symbol",
+              "value": "name"
+            },
+            "right": {
+              "type": "string",
+              "value": "\"!\""
+            }
+          }
+        },
+        "attributes": [
+          "UnguardedBody"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": {
+      "type": "symbol",
+      "value": "isSecret"
+    },
+    "contents": [
+      {
+        "parameters": [
+          {
+            "type": "LiteralPattern",
+            "name": "\"secret\""
+          },
+          {
+            "type": "WildcardPattern",
+            "name": "_"
+          }
+        ],
+        "body": {
+          "type": "Boolean",
+          "value": {
+            "type": "bool",
+            "value": "True",
+            "text": "True",
+            "offset": 1094,
+            "lineBreaks": 0,
+            "line": 50,
+            "col": 23
+          }
+        },
+        "attributes": [
+          "UnguardedBody"
+        ]
+      },
+      {
+        "parameters": [
+          {
+            "type": "WildcardPattern",
+            "name": "_"
+          },
+          {
+            "type": "WildcardPattern",
+            "name": "_"
+          }
+        ],
+        "body": {
+          "type": "Boolean",
+          "value": {
+            "type": "bool",
+            "value": "False",
+            "text": "False",
+            "offset": 1115,
+            "lineBreaks": 0,
+            "line": 51,
+            "col": 16
+          }
+        },
+        "attributes": [
+          "UnguardedBody"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": {
+      "type": "symbol",
+      "value": "myNumbers"
+    },
+    "contents": [
+      {
+        "parameters": [],
+        "body": {
+          "type": "list",
+          "elements": [
+            {
+              "type": "number",
+              "numericType": "number",
+              "value": "1"
+            },
+            {
+              "type": "number",
+              "numericType": "number",
+              "value": "2"
+            },
+            {
+              "type": "number",
+              "numericType": "number",
+              "value": "3"
+            },
+            {
+              "type": "number",
+              "numericType": "number",
+              "value": "4"
+            },
+            {
+              "type": "number",
+              "numericType": "number",
+              "value": "5"
+            }
+          ]
+        },
+        "attributes": [
+          "UnguardedBody"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": {
+      "type": "symbol",
+      "value": "sumList"
+    },
+    "contents": [
+      {
+        "parameters": [
+          {
+            "type": "VariablePattern",
+            "name": "xs"
+          }
+        ],
+        "body": {
+          "type": "application",
+          "left": {
+            "type": "symbol",
+            "value": "sum"
+          },
+          "operator": "$",
+          "right": {
+            "type": "symbol",
+            "value": "xs"
+          }
+        },
+        "attributes": [
+          "UnguardedBody"
+        ]
+      }
+    ]
+  },
+  {
+    "type": "function",
+    "name": {
+      "type": "symbol",
+      "value": "listLength"
+    },
+    "contents": [
+      {
+        "parameters": [
+          {
+            "type": "VariablePattern",
+            "name": "xs"
+          }
+        ],
+        "body": {
+          "type": "application",
+          "left": {
+            "type": "symbol",
+            "value": "length"
+          },
+          "operator": "$",
+          "right": {
+            "type": "symbol",
+            "value": "xs"
+          }
+        },
+        "attributes": [
+          "UnguardedBody"
+        ]
+      }
+    ]
   },
   {
     "type": "function",
@@ -114,7 +827,7 @@
                   }
                 ],
                 "body": {
-                  "type": "multiplication",
+                  "type": "Arithmetic",
                   "operator": "*",
                   "left": {
                     "type": "symbol",
@@ -143,7 +856,7 @@
     "type": "function",
     "name": {
       "type": "symbol",
-      "value": "square"
+      "value": "isEven"
     },
     "contents": [
       {
@@ -154,15 +867,35 @@
           }
         ],
         "body": {
-          "type": "multiplication",
-          "operator": "*",
-          "left": {
-            "type": "symbol",
-            "value": "n"
+          "type": "if",
+          "cond": {
+            "type": "comparison",
+            "left": {
+              "type": "infix_application",
+              "operator": "mod",
+              "left": {
+                "type": "symbol",
+                "value": "n"
+              },
+              "right": {
+                "type": "number",
+                "numericType": "number",
+                "value": "2"
+              }
+            },
+            "right": {
+              "type": "number",
+              "numericType": "number",
+              "value": "0"
+            }
           },
-          "right": {
-            "type": "symbol",
-            "value": "n"
+          "then": {
+            "type": "string",
+            "value": "\"Even\""
+          },
+          "else": {
+            "type": "string",
+            "value": "\"Odd\""
           }
         },
         "attributes": [
@@ -175,25 +908,87 @@
     "type": "function",
     "name": {
       "type": "symbol",
-      "value": "squareList2"
+      "value": "grade"
     },
     "contents": [
       {
-        "parameters": [],
-        "body": {
-          "type": "application",
-          "left": {
-            "type": "symbol",
-            "value": "map"
-          },
-          "operator": "$",
-          "right": {
-            "type": "symbol",
-            "value": "square"
+        "parameters": [
+          {
+            "type": "VariablePattern",
+            "name": "score"
           }
-        },
+        ],
+        "body": [
+          {
+            "guard": {
+              "type": "comparison",
+              "operator": ">=",
+              "left": {
+                "type": "symbol",
+                "value": "score"
+              },
+              "right": {
+                "type": "number",
+                "numericType": "number",
+                "value": "90"
+              }
+            },
+            "body": {
+              "type": "string",
+              "value": "\"Excellent\""
+            }
+          },
+          {
+            "guard": {
+              "type": "comparison",
+              "operator": ">=",
+              "left": {
+                "type": "symbol",
+                "value": "score"
+              },
+              "right": {
+                "type": "number",
+                "numericType": "number",
+                "value": "75"
+              }
+            },
+            "body": {
+              "type": "string",
+              "value": "\"Good\""
+            }
+          },
+          {
+            "guard": {
+              "type": "comparison",
+              "operator": ">=",
+              "left": {
+                "type": "symbol",
+                "value": "score"
+              },
+              "right": {
+                "type": "number",
+                "numericType": "number",
+                "value": "60"
+              }
+            },
+            "body": {
+              "type": "string",
+              "value": "\"Pass\""
+            }
+          },
+          {
+            "guard": {
+              "type": "symbol",
+              "value": "otherwise"
+            },
+            "body": {
+              "type": "string",
+              "value": "\"Fail\""
+            }
+          }
+        ],
         "attributes": [
-          "UnguardedBody"
+          "GuardedBody"
         ]
       }
     ]
