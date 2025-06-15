@@ -93,7 +93,7 @@ yarn analyse <filepath> <expectations>
 > Run tests by using
 
 ```
-yarn analyse <filepath> <tests>
+yarn test <filepath> <tests>
 ```
 
 > Note: This feature is still in development,
