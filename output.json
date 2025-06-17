@@ -505,7 +505,7 @@
             "type": "bool",
             "value": "True",
             "text": "True",
-            "offset": 555,
+            "offset": 523,
             "lineBreaks": 0,
             "line": 33,
             "col": 12
@@ -647,7 +647,7 @@
             "type": "bool",
             "value": "True",
             "text": "True",
-            "offset": 1094,
+            "offset": 1045,
             "lineBreaks": 0,
             "line": 50,
             "col": 23
@@ -674,7 +674,7 @@
             "type": "bool",
             "value": "False",
             "text": "False",
-            "offset": 1115,
+            "offset": 1065,
             "lineBreaks": 0,
             "line": 51,
             "col": 16

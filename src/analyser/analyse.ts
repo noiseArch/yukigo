@@ -64,10 +64,7 @@ analyzer.registerInspection("HasArithmetic", (ast, args) => {
     },
   });
   return {
-    result: hasArithmetic,
-    details: hasArithmetic
-      ? "Uses arithmetic operators"
-      : "No arithmetic operators found.",
+    result: hasArithmetic
   };
 });
 
