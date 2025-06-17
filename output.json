@@ -1,996 +1,2687 @@
 [
-  {
-    "type": "TypeAlias",
-    "name": {
-      "type": "symbol",
-      "value": "Number"
-    },
-    "typeParameters": [
+  [
+    [
       {
-        "type": "symbol",
-        "value": "Int"
-      }
-    ]
-  },
-  {
-    "type": "Record",
-    "name": {
-      "type": "symbol",
-      "value": "UnDatita"
-    },
-    "contents": [
-      {
-        "type": "Field",
-        "name": {
-          "type": "symbol",
-          "value": "atributito"
-        },
-        "contents": [
-          {
-            "type": "symbol",
-            "value": "String"
-          }
-        ]
-      },
-      {
-        "type": "Field",
-        "name": {
-          "type": "symbol",
-          "value": "atributote"
-        },
-        "contents": [
-          {
-            "type": "symbol",
-            "value": "Number"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "type": "TypeSignature",
-    "name": {
-      "type": "symbol",
-      "value": "datita"
-    },
-    "inputTypes": [],
-    "returnType": {
-      "type": "symbol",
-      "name": "Datita"
-    }
-  },
-  {
-    "type": "TypeSignature",
-    "name": {
-      "type": "symbol",
-      "value": "datita'"
-    },
-    "inputTypes": [],
-    "returnType": {
-      "type": "symbol",
-      "name": "Datita"
-    }
-  },
-  {
-    "type": "TypeSignature",
-    "name": {
-      "type": "symbol",
-      "value": "numInt"
-    },
-    "inputTypes": [],
-    "returnType": {
-      "type": "symbol",
-      "name": "Int"
-    }
-  },
-  {
-    "type": "TypeSignature",
-    "name": {
-      "type": "symbol",
-      "value": "numFloat"
-    },
-    "inputTypes": [],
-    "returnType": {
-      "type": "symbol",
-      "name": "Double"
-    }
-  },
-  {
-    "type": "TypeSignature",
-    "name": {
-      "type": "symbol",
-      "value": "charA"
-    },
-    "inputTypes": [],
-    "returnType": {
-      "type": "symbol",
-      "name": "Char"
-    }
-  },
-  {
-    "type": "TypeSignature",
-    "name": {
-      "type": "symbol",
-      "value": "stringHello"
-    },
-    "inputTypes": [],
-    "returnType": {
-      "type": "symbol",
-      "name": "String"
-    }
-  },
-  {
-    "type": "TypeSignature",
-    "name": {
-      "type": "symbol",
-      "value": "boolTrue"
-    },
-    "inputTypes": [],
-    "returnType": {
-      "type": "symbol",
-      "name": "Bool"
-    }
-  },
-  {
-    "type": "TypeSignature",
-    "name": {
-      "type": "symbol",
-      "value": "addTwoNumbers"
-    },
-    "inputTypes": [
-      {
-        "type": "symbol",
-        "name": "Int"
-      },
-      {
-        "type": "symbol",
-        "name": "Int"
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 67,
+        "lineBreaks": 1,
+        "line": 1,
+        "col": 68
       }
     ],
-    "returnType": {
-      "type": "symbol",
-      "name": "Int"
-    }
-  },
-  {
-    "type": "TypeSignature",
-    "name": {
-      "type": "symbol",
-      "value": "greet"
-    },
-    "inputTypes": [
+    [
       {
-        "type": "symbol",
-        "name": "String"
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 69,
+        "lineBreaks": 1,
+        "line": 2,
+        "col": 2
       }
     ],
-    "returnType": {
-      "type": "symbol",
-      "name": "String"
-    }
-  },
-  {
-    "type": "TypeSignature",
-    "name": {
-      "type": "symbol",
-      "value": "isSecret"
-    },
-    "inputTypes": [
+    [
       {
-        "type": "symbol",
-        "name": "String"
-      },
-      {
-        "type": "symbol",
-        "name": "a"
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 79,
+        "lineBreaks": 1,
+        "line": 3,
+        "col": 10
       }
     ],
-    "returnType": {
-      "type": "symbol",
-      "name": "Bool"
-    }
-  },
-  {
-    "type": "TypeSignature",
-    "name": {
-      "type": "symbol",
-      "value": "myNumbers"
-    },
-    "inputTypes": [
+    [
       {
-        "type": "symbol",
-        "name": "["
-      },
-      {
-        "type": "symbol",
-        "name": "Int"
-      }
-    ],
-    "returnType": {
-      "type": "symbol",
-      "name": "]"
-    }
-  },
-  {
-    "type": "TypeSignature",
-    "name": {
-      "type": "symbol",
-      "value": "sumList"
-    },
-    "inputTypes": [
-      {
-        "type": "symbol",
-        "name": "["
-      },
-      {
-        "type": "symbol",
-        "name": "Int"
-      },
-      {
-        "type": "symbol",
-        "name": "]"
-      }
-    ],
-    "returnType": {
-      "type": "symbol",
-      "name": "Int"
-    }
-  },
-  {
-    "type": "TypeSignature",
-    "name": {
-      "type": "symbol",
-      "value": "listLength"
-    },
-    "inputTypes": [
-      {
-        "type": "symbol",
-        "name": "["
-      },
-      {
-        "type": "symbol",
-        "name": "a"
-      },
-      {
-        "type": "symbol",
-        "name": "]"
-      }
-    ],
-    "returnType": {
-      "type": "symbol",
-      "name": "Int"
-    }
-  },
-  {
-    "type": "TypeSignature",
-    "name": {
-      "type": "symbol",
-      "value": "squareList"
-    },
-    "inputTypes": [
-      {
-        "type": "symbol",
-        "name": "["
-      },
-      {
-        "type": "symbol",
-        "name": "Int"
-      },
-      {
-        "type": "symbol",
-        "name": "]"
-      },
-      {
-        "type": "symbol",
-        "name": "["
-      },
-      {
-        "type": "symbol",
-        "name": "Int"
-      }
-    ],
-    "returnType": {
-      "type": "symbol",
-      "name": "]"
-    }
-  },
-  {
-    "type": "TypeSignature",
-    "name": {
-      "type": "symbol",
-      "value": "isEven"
-    },
-    "inputTypes": [
-      {
-        "type": "symbol",
-        "name": "Int"
-      }
-    ],
-    "returnType": {
-      "type": "symbol",
-      "name": "String"
-    }
-  },
-  {
-    "type": "TypeSignature",
-    "name": {
-      "type": "symbol",
-      "value": "grade"
-    },
-    "inputTypes": [
-      {
-        "type": "symbol",
-        "name": "Int"
-      }
-    ],
-    "returnType": {
-      "type": "symbol",
-      "name": "String"
-    }
-  },
-  {
-    "type": "function",
-    "name": {
-      "type": "symbol",
-      "value": "datita"
-    },
-    "contents": [
-      {
-        "parameters": [],
-        "body": {
-          "type": "DataExpression",
-          "name": {
-            "type": "symbol",
-            "value": "UnDatita"
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "father"
           },
-          "contents": [
+          "args": [
             {
-              "type": "FieldExpression",
-              "name": {
-                "type": "symbol",
-                "value": "atributito"
-              },
-              "contents": {
-                "type": "string",
-                "value": "\"Hola\""
-              }
+              "type": "atom",
+              "value": "john"
             },
             {
-              "type": "FieldExpression",
-              "name": {
-                "type": "symbol",
-                "value": "atributote"
-              },
-              "contents": {
-                "type": "number",
-                "numericType": "number",
-                "value": "42"
-              }
+              "type": "atom",
+              "value": "mary"
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 100,
+        "lineBreaks": 1,
+        "line": 4,
+        "col": 21
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "father"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "john"
+            },
+            {
+              "type": "atom",
+              "value": "tom"
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 120,
+        "lineBreaks": 1,
+        "line": 5,
+        "col": 20
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "mother"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "susan"
+            },
+            {
+              "type": "atom",
+              "value": "mary"
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 142,
+        "lineBreaks": 1,
+        "line": 6,
+        "col": 22
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "mother"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "susan"
+            },
+            {
+              "type": "atom",
+              "value": "tom"
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 163,
+        "lineBreaks": 1,
+        "line": 7,
+        "col": 21
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "person"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "john"
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 178,
+        "lineBreaks": 1,
+        "line": 8,
+        "col": 15
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "person"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "susan"
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 194,
+        "lineBreaks": 1,
+        "line": 9,
+        "col": 16
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "age"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "john"
+            },
+            {
+              "type": "number",
+              "value": 45
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 210,
+        "lineBreaks": 1,
+        "line": 10,
+        "col": 16
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "age"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "susan"
+            },
+            {
+              "type": "number",
+              "value": 42
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 227,
+        "lineBreaks": 1,
+        "line": 11,
+        "col": 17
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 229,
+        "lineBreaks": 1,
+        "line": 12,
+        "col": 2
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 239,
+        "lineBreaks": 1,
+        "line": 13,
+        "col": 10
+      }
+    ],
+    [
+      {
+        "type": "rule",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "parent"
+          },
+          "args": [
+            {
+              "type": "variable",
+              "value": "X"
+            },
+            {
+              "type": "variable",
+              "value": "Y"
             }
           ]
         },
-        "attributes": [
-          "UnguardedBody"
-        ]
-      }
-    ]
-  },
-  {
-    "type": "function",
-    "name": {
-      "type": "symbol",
-      "value": "datita'"
-    },
-    "contents": [
-      {
-        "parameters": [],
-        "body": {
-          "type": "application",
-          "left": {
-            "type": "symbol",
-            "value": "UnDatita"
-          },
-          "operator": "$",
-          "right": {
-            "type": "application",
-            "body": [
-              {
-                "type": "string",
-                "value": "\"Hola\""
-              },
-              {
-                "type": "number",
-                "numericType": "number",
-                "value": "42"
-              }
-            ]
-          }
-        },
-        "attributes": [
-          "UnguardedBody"
-        ]
-      }
-    ]
-  },
-  {
-    "type": "function",
-    "name": {
-      "type": "symbol",
-      "value": "numInt"
-    },
-    "contents": [
-      {
-        "parameters": [],
-        "body": {
-          "type": "number",
-          "numericType": "number",
-          "value": "42"
-        },
-        "attributes": [
-          "UnguardedBody"
-        ]
-      }
-    ]
-  },
-  {
-    "type": "function",
-    "name": {
-      "type": "symbol",
-      "value": "numFloat"
-    },
-    "contents": [
-      {
-        "parameters": [],
-        "body": {
-          "type": "number",
-          "numericType": "number",
-          "value": "3.14159"
-        },
-        "attributes": [
-          "UnguardedBody"
-        ]
-      }
-    ]
-  },
-  {
-    "type": "function",
-    "name": {
-      "type": "symbol",
-      "value": "charA"
-    },
-    "contents": [
-      {
-        "parameters": [],
-        "body": {
-          "type": "string",
-          "value": "'A'"
-        },
-        "attributes": [
-          "UnguardedBody"
-        ]
-      }
-    ]
-  },
-  {
-    "type": "function",
-    "name": {
-      "type": "symbol",
-      "value": "stringHello"
-    },
-    "contents": [
-      {
-        "parameters": [],
-        "body": {
-          "type": "string",
-          "value": "\"Hello, Haskell!\""
-        },
-        "attributes": [
-          "UnguardedBody"
-        ]
-      }
-    ]
-  },
-  {
-    "type": "function",
-    "name": {
-      "type": "symbol",
-      "value": "boolTrue"
-    },
-    "contents": [
-      {
-        "parameters": [],
-        "body": {
-          "type": "Boolean",
-          "value": {
-            "type": "bool",
-            "value": "True",
-            "text": "True",
-            "offset": 555,
-            "lineBreaks": 0,
-            "line": 33,
-            "col": 12
-          }
-        },
-        "attributes": [
-          "UnguardedBody"
-        ]
-      }
-    ]
-  },
-  {
-    "type": "function",
-    "name": {
-      "type": "symbol",
-      "value": "addTwoNumbers"
-    },
-    "contents": [
-      {
-        "parameters": [
-          {
-            "type": "VariablePattern",
-            "name": "x"
-          },
-          {
-            "type": "VariablePattern",
-            "name": "y"
-          }
-        ],
-        "body": {
-          "type": "Arithmetic",
-          "operator": "+",
-          "left": {
-            "type": "symbol",
-            "value": "x"
-          },
-          "right": {
-            "type": "symbol",
-            "value": "y"
-          }
-        },
-        "attributes": [
-          "UnguardedBody"
-        ]
-      }
-    ]
-  },
-  {
-    "type": "function",
-    "name": {
-      "type": "symbol",
-      "value": "greet"
-    },
-    "contents": [
-      {
-        "parameters": [
-          {
-            "type": "LiteralPattern",
-            "name": "\"Alice\""
-          }
-        ],
-        "body": {
-          "type": "string",
-          "value": "\"Hello, Alice!\""
-        },
-        "attributes": [
-          "UnguardedBody"
-        ]
+        "body": []
       },
       {
-        "parameters": [
-          {
-            "type": "LiteralPattern",
-            "name": "\"Bob\""
-          }
-        ],
-        "body": {
-          "type": "string",
-          "value": "\"Hi there, Bob!\""
-        },
-        "attributes": [
-          "UnguardedBody"
-        ]
-      },
-      {
-        "parameters": [
-          {
-            "type": "VariablePattern",
-            "name": "name"
-          }
-        ],
-        "body": {
-          "type": "concatenation",
-          "operator": "++",
-          "left": {
-            "type": "string",
-            "value": "\"Greetings, \""
-          },
-          "right": {
-            "type": "concatenation",
-            "operator": "++",
-            "left": {
-              "type": "symbol",
-              "value": "name"
-            },
-            "right": {
-              "type": "string",
-              "value": "\"!\""
-            }
-          }
-        },
-        "attributes": [
-          "UnguardedBody"
-        ]
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 336,
+        "lineBreaks": 1,
+        "line": 14,
+        "col": 97
       }
-    ]
-  },
-  {
-    "type": "function",
-    "name": {
-      "type": "symbol",
-      "value": "isSecret"
-    },
-    "contents": [
+    ],
+    [
       {
-        "parameters": [
-          {
-            "type": "LiteralPattern",
-            "name": "\"secret\""
+        "type": "rule",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "grandparent"
           },
-          {
-            "type": "WildcardPattern",
-            "name": "_"
-          }
-        ],
-        "body": {
-          "type": "Boolean",
-          "value": {
-            "type": "bool",
-            "value": "True",
-            "text": "True",
-            "offset": 1094,
-            "lineBreaks": 0,
-            "line": 50,
-            "col": 23
-          }
-        },
-        "attributes": [
-          "UnguardedBody"
-        ]
-      },
-      {
-        "parameters": [
-          {
-            "type": "WildcardPattern",
-            "name": "_"
-          },
-          {
-            "type": "WildcardPattern",
-            "name": "_"
-          }
-        ],
-        "body": {
-          "type": "Boolean",
-          "value": {
-            "type": "bool",
-            "value": "False",
-            "text": "False",
-            "offset": 1115,
-            "lineBreaks": 0,
-            "line": 51,
-            "col": 16
-          }
-        },
-        "attributes": [
-          "UnguardedBody"
-        ]
-      }
-    ]
-  },
-  {
-    "type": "function",
-    "name": {
-      "type": "symbol",
-      "value": "myNumbers"
-    },
-    "contents": [
-      {
-        "parameters": [],
-        "body": {
-          "type": "list",
-          "elements": [
+          "args": [
             {
-              "type": "number",
-              "numericType": "number",
-              "value": "1"
+              "type": "variable",
+              "value": "X"
             },
             {
-              "type": "number",
-              "numericType": "number",
-              "value": "2"
-            },
-            {
-              "type": "number",
-              "numericType": "number",
-              "value": "3"
-            },
-            {
-              "type": "number",
-              "numericType": "number",
-              "value": "4"
-            },
-            {
-              "type": "number",
-              "numericType": "number",
-              "value": "5"
+              "type": "variable",
+              "value": "Y"
             }
           ]
         },
-        "attributes": [
-          "UnguardedBody"
-        ]
-      }
-    ]
-  },
-  {
-    "type": "function",
-    "name": {
-      "type": "symbol",
-      "value": "sumList"
-    },
-    "contents": [
+        "body": []
+      },
       {
-        "parameters": [
-          {
-            "type": "VariablePattern",
-            "name": "xs"
-          }
-        ],
-        "body": {
-          "type": "application",
-          "left": {
-            "type": "symbol",
-            "value": "sum"
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 451,
+        "lineBreaks": 1,
+        "line": 15,
+        "col": 115
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 453,
+        "lineBreaks": 1,
+        "line": 16,
+        "col": 2
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 505,
+        "lineBreaks": 1,
+        "line": 17,
+        "col": 52
+      }
+    ],
+    [
+      {
+        "type": "rule",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "has_hobbies"
           },
-          "operator": "$",
-          "right": {
-            "type": "symbol",
-            "value": "xs"
-          }
-        },
-        "attributes": [
-          "UnguardedBody"
-        ]
-      }
-    ]
-  },
-  {
-    "type": "function",
-    "name": {
-      "type": "symbol",
-      "value": "listLength"
-    },
-    "contents": [
-      {
-        "parameters": [
-          {
-            "type": "VariablePattern",
-            "name": "xs"
-          }
-        ],
-        "body": {
-          "type": "application",
-          "left": {
-            "type": "symbol",
-            "value": "length"
-          },
-          "operator": "$",
-          "right": {
-            "type": "symbol",
-            "value": "xs"
-          }
-        },
-        "attributes": [
-          "UnguardedBody"
-        ]
-      }
-    ]
-  },
-  {
-    "type": "function",
-    "name": {
-      "type": "symbol",
-      "value": "squareList"
-    },
-    "contents": [
-      {
-        "parameters": [
-          {
-            "type": "VariablePattern",
-            "name": "xs"
-          }
-        ],
-        "body": {
-          "type": "application",
-          "left": {
-            "type": "symbol",
-            "value": "map"
-          },
-          "operator": "$",
-          "right": {
-            "type": "application",
-            "body": [
-              {
-                "type": "LambdaExpression",
-                "parameters": [
-                  {
-                    "type": "symbol"
-                  }
-                ],
-                "body": {
-                  "type": "Arithmetic",
-                  "operator": "*",
-                  "left": {
-                    "type": "symbol",
-                    "value": "n"
-                  },
-                  "right": {
-                    "type": "symbol",
-                    "value": "n"
-                  }
-                }
-              },
-              {
-                "type": "symbol",
-                "value": "xs"
-              }
-            ]
-          }
-        },
-        "attributes": [
-          "UnguardedBody"
-        ]
-      }
-    ]
-  },
-  {
-    "type": "function",
-    "name": {
-      "type": "symbol",
-      "value": "isEven"
-    },
-    "contents": [
-      {
-        "parameters": [
-          {
-            "type": "VariablePattern",
-            "name": "n"
-          }
-        ],
-        "body": {
-          "type": "if",
-          "cond": {
-            "type": "comparison",
-            "left": {
-              "type": "infix_application",
-              "operator": "mod",
-              "left": {
-                "type": "symbol",
-                "value": "n"
-              },
-              "right": {
-                "type": "number",
-                "numericType": "number",
-                "value": "2"
-              }
+          "args": [
+            {
+              "type": "variable",
+              "value": "Person"
             },
-            "right": {
-              "type": "number",
-              "numericType": "number",
-              "value": "0"
+            {
+              "type": "variable",
+              "value": "Hobbies"
             }
-          },
-          "then": {
-            "type": "string",
-            "value": "\"Even\""
-          },
-          "else": {
-            "type": "string",
-            "value": "\"Odd\""
-          }
+          ]
         },
-        "attributes": [
-          "UnguardedBody"
-        ]
-      }
-    ]
-  },
-  {
-    "type": "function",
-    "name": {
-      "type": "symbol",
-      "value": "grade"
-    },
-    "contents": [
-      {
-        "parameters": [
-          {
-            "type": "VariablePattern",
-            "name": "score"
-          }
-        ],
         "body": [
           {
-            "guard": {
-              "type": "comparison",
-              "operator": ">=",
-              "left": {
-                "type": "symbol",
-                "value": "score"
-              },
-              "right": {
-                "type": "number",
-                "numericType": "number",
-                "value": "90"
-              }
-            },
-            "body": {
-              "type": "string",
-              "value": "\"Excellent\""
-            }
-          },
-          {
-            "guard": {
-              "type": "comparison",
-              "operator": ">=",
-              "left": {
-                "type": "symbol",
-                "value": "score"
-              },
-              "right": {
-                "type": "number",
-                "numericType": "number",
-                "value": "75"
-              }
-            },
-            "body": {
-              "type": "string",
-              "value": "\"Good\""
-            }
-          },
-          {
-            "guard": {
-              "type": "comparison",
-              "operator": ">=",
-              "left": {
-                "type": "symbol",
-                "value": "score"
-              },
-              "right": {
-                "type": "number",
-                "numericType": "number",
-                "value": "60"
-              }
-            },
-            "body": {
-              "type": "string",
-              "value": "\"Pass\""
-            }
-          },
-          {
-            "guard": {
-              "type": "symbol",
-              "value": "otherwise"
-            },
-            "body": {
-              "type": "string",
-              "value": "\"Fail\""
-            }
+            "type": "NL",
+            "value": "\n",
+            "text": "\n",
+            "offset": 538,
+            "lineBreaks": 1,
+            "line": 18,
+            "col": 33
           }
-        ],
-        "attributes": [
-          "GuardedBody"
         ]
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 601,
+        "lineBreaks": 1,
+        "line": 20,
+        "col": 42
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 603,
+        "lineBreaks": 1,
+        "line": 21,
+        "col": 2
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 651,
+        "lineBreaks": 1,
+        "line": 22,
+        "col": 48
+      }
+    ],
+    [
+      {
+        "type": "rule",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "calculate_value"
+          },
+          "args": [
+            {
+              "type": "variable",
+              "value": "X"
+            },
+            {
+              "type": "variable",
+              "value": "Y"
+            },
+            {
+              "type": "variable",
+              "value": "Result"
+            }
+          ]
+        },
+        "body": [
+          {
+            "type": "NL",
+            "value": "\n",
+            "text": "\n",
+            "offset": 685,
+            "lineBreaks": 1,
+            "line": 23,
+            "col": 34
+          }
+        ]
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 718,
+        "lineBreaks": 1,
+        "line": 24,
+        "col": 33
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 720,
+        "lineBreaks": 1,
+        "line": 25,
+        "col": 2
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 826,
+        "lineBreaks": 1,
+        "line": 30,
+        "col": 31
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 828,
+        "lineBreaks": 1,
+        "line": 31,
+        "col": 2
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 849,
+        "lineBreaks": 1,
+        "line": 32,
+        "col": 21
       }
     ]
-  }
+  ],
+  [
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 67,
+        "lineBreaks": 1,
+        "line": 1,
+        "col": 68
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 69,
+        "lineBreaks": 1,
+        "line": 2,
+        "col": 2
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 79,
+        "lineBreaks": 1,
+        "line": 3,
+        "col": 10
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "father"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "john"
+            },
+            {
+              "type": "atom",
+              "value": "mary"
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 100,
+        "lineBreaks": 1,
+        "line": 4,
+        "col": 21
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "father"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "john"
+            },
+            {
+              "type": "atom",
+              "value": "tom"
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 120,
+        "lineBreaks": 1,
+        "line": 5,
+        "col": 20
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "mother"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "susan"
+            },
+            {
+              "type": "atom",
+              "value": "mary"
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 142,
+        "lineBreaks": 1,
+        "line": 6,
+        "col": 22
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "mother"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "susan"
+            },
+            {
+              "type": "atom",
+              "value": "tom"
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 163,
+        "lineBreaks": 1,
+        "line": 7,
+        "col": 21
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "person"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "john"
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 178,
+        "lineBreaks": 1,
+        "line": 8,
+        "col": 15
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "person"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "susan"
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 194,
+        "lineBreaks": 1,
+        "line": 9,
+        "col": 16
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "age"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "john"
+            },
+            {
+              "type": "number",
+              "value": 45
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 210,
+        "lineBreaks": 1,
+        "line": 10,
+        "col": 16
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "age"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "susan"
+            },
+            {
+              "type": "number",
+              "value": 42
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 227,
+        "lineBreaks": 1,
+        "line": 11,
+        "col": 17
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 229,
+        "lineBreaks": 1,
+        "line": 12,
+        "col": 2
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 239,
+        "lineBreaks": 1,
+        "line": 13,
+        "col": 10
+      }
+    ],
+    [
+      {
+        "type": "rule",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "parent"
+          },
+          "args": [
+            {
+              "type": "variable",
+              "value": "X"
+            },
+            {
+              "type": "variable",
+              "value": "Y"
+            }
+          ]
+        },
+        "body": []
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 336,
+        "lineBreaks": 1,
+        "line": 14,
+        "col": 97
+      }
+    ],
+    [
+      {
+        "type": "rule",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "grandparent"
+          },
+          "args": [
+            {
+              "type": "variable",
+              "value": "X"
+            },
+            {
+              "type": "variable",
+              "value": "Y"
+            }
+          ]
+        },
+        "body": []
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 451,
+        "lineBreaks": 1,
+        "line": 15,
+        "col": 115
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 453,
+        "lineBreaks": 1,
+        "line": 16,
+        "col": 2
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 505,
+        "lineBreaks": 1,
+        "line": 17,
+        "col": 52
+      }
+    ],
+    [
+      {
+        "type": "rule",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "has_hobbies"
+          },
+          "args": [
+            {
+              "type": "variable",
+              "value": "Person"
+            },
+            {
+              "type": "variable",
+              "value": "Hobbies"
+            }
+          ]
+        },
+        "body": [
+          {
+            "type": "NL",
+            "value": "\n",
+            "text": "\n",
+            "offset": 538,
+            "lineBreaks": 1,
+            "line": 18,
+            "col": 33
+          }
+        ]
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 601,
+        "lineBreaks": 1,
+        "line": 20,
+        "col": 42
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 603,
+        "lineBreaks": 1,
+        "line": 21,
+        "col": 2
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 651,
+        "lineBreaks": 1,
+        "line": 22,
+        "col": 48
+      }
+    ],
+    [
+      {
+        "type": "rule",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "calculate_value"
+          },
+          "args": [
+            {
+              "type": "variable",
+              "value": "X"
+            },
+            {
+              "type": "variable",
+              "value": "Y"
+            },
+            {
+              "type": "variable",
+              "value": "Result"
+            }
+          ]
+        },
+        "body": [
+          {
+            "type": "NL",
+            "value": "\n",
+            "text": "\n",
+            "offset": 685,
+            "lineBreaks": 1,
+            "line": 23,
+            "col": 34
+          }
+        ]
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 718,
+        "lineBreaks": 1,
+        "line": 24,
+        "col": 33
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 720,
+        "lineBreaks": 1,
+        "line": 25,
+        "col": 2
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 826,
+        "lineBreaks": 1,
+        "line": 30,
+        "col": 31
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 828,
+        "lineBreaks": 1,
+        "line": 31,
+        "col": 2
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 849,
+        "lineBreaks": 1,
+        "line": 32,
+        "col": 21
+      }
+    ]
+  ],
+  [
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 67,
+        "lineBreaks": 1,
+        "line": 1,
+        "col": 68
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 69,
+        "lineBreaks": 1,
+        "line": 2,
+        "col": 2
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 79,
+        "lineBreaks": 1,
+        "line": 3,
+        "col": 10
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "father"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "john"
+            },
+            {
+              "type": "atom",
+              "value": "mary"
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 100,
+        "lineBreaks": 1,
+        "line": 4,
+        "col": 21
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "father"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "john"
+            },
+            {
+              "type": "atom",
+              "value": "tom"
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 120,
+        "lineBreaks": 1,
+        "line": 5,
+        "col": 20
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "mother"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "susan"
+            },
+            {
+              "type": "atom",
+              "value": "mary"
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 142,
+        "lineBreaks": 1,
+        "line": 6,
+        "col": 22
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "mother"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "susan"
+            },
+            {
+              "type": "atom",
+              "value": "tom"
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 163,
+        "lineBreaks": 1,
+        "line": 7,
+        "col": 21
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "person"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "john"
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 178,
+        "lineBreaks": 1,
+        "line": 8,
+        "col": 15
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "person"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "susan"
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 194,
+        "lineBreaks": 1,
+        "line": 9,
+        "col": 16
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "age"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "john"
+            },
+            {
+              "type": "number",
+              "value": 45
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 210,
+        "lineBreaks": 1,
+        "line": 10,
+        "col": 16
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "age"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "susan"
+            },
+            {
+              "type": "number",
+              "value": 42
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 227,
+        "lineBreaks": 1,
+        "line": 11,
+        "col": 17
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 229,
+        "lineBreaks": 1,
+        "line": 12,
+        "col": 2
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 239,
+        "lineBreaks": 1,
+        "line": 13,
+        "col": 10
+      }
+    ],
+    [
+      {
+        "type": "rule",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "parent"
+          },
+          "args": [
+            {
+              "type": "variable",
+              "value": "X"
+            },
+            {
+              "type": "variable",
+              "value": "Y"
+            }
+          ]
+        },
+        "body": []
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 336,
+        "lineBreaks": 1,
+        "line": 14,
+        "col": 97
+      }
+    ],
+    [
+      {
+        "type": "rule",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "grandparent"
+          },
+          "args": [
+            {
+              "type": "variable",
+              "value": "X"
+            },
+            {
+              "type": "variable",
+              "value": "Y"
+            }
+          ]
+        },
+        "body": []
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 451,
+        "lineBreaks": 1,
+        "line": 15,
+        "col": 115
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 453,
+        "lineBreaks": 1,
+        "line": 16,
+        "col": 2
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 505,
+        "lineBreaks": 1,
+        "line": 17,
+        "col": 52
+      }
+    ],
+    [
+      {
+        "type": "rule",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "has_hobbies"
+          },
+          "args": [
+            {
+              "type": "variable",
+              "value": "Person"
+            },
+            {
+              "type": "variable",
+              "value": "Hobbies"
+            }
+          ]
+        },
+        "body": [
+          {
+            "type": "NL",
+            "value": "\n",
+            "text": "\n",
+            "offset": 538,
+            "lineBreaks": 1,
+            "line": 18,
+            "col": 33
+          }
+        ]
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 601,
+        "lineBreaks": 1,
+        "line": 20,
+        "col": 42
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 603,
+        "lineBreaks": 1,
+        "line": 21,
+        "col": 2
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 651,
+        "lineBreaks": 1,
+        "line": 22,
+        "col": 48
+      }
+    ],
+    [
+      {
+        "type": "rule",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "calculate_value"
+          },
+          "args": [
+            {
+              "type": "variable",
+              "value": "X"
+            },
+            {
+              "type": "variable",
+              "value": "Y"
+            },
+            {
+              "type": "variable",
+              "value": "Result"
+            }
+          ]
+        },
+        "body": [
+          {
+            "type": "NL",
+            "value": "\n",
+            "text": "\n",
+            "offset": 685,
+            "lineBreaks": 1,
+            "line": 23,
+            "col": 34
+          }
+        ]
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 718,
+        "lineBreaks": 1,
+        "line": 24,
+        "col": 33
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 720,
+        "lineBreaks": 1,
+        "line": 25,
+        "col": 2
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 826,
+        "lineBreaks": 1,
+        "line": 30,
+        "col": 31
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 828,
+        "lineBreaks": 1,
+        "line": 31,
+        "col": 2
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 849,
+        "lineBreaks": 1,
+        "line": 32,
+        "col": 21
+      }
+    ]
+  ],
+  [
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 67,
+        "lineBreaks": 1,
+        "line": 1,
+        "col": 68
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 69,
+        "lineBreaks": 1,
+        "line": 2,
+        "col": 2
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 79,
+        "lineBreaks": 1,
+        "line": 3,
+        "col": 10
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "father"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "john"
+            },
+            {
+              "type": "atom",
+              "value": "mary"
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 100,
+        "lineBreaks": 1,
+        "line": 4,
+        "col": 21
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "father"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "john"
+            },
+            {
+              "type": "atom",
+              "value": "tom"
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 120,
+        "lineBreaks": 1,
+        "line": 5,
+        "col": 20
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "mother"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "susan"
+            },
+            {
+              "type": "atom",
+              "value": "mary"
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 142,
+        "lineBreaks": 1,
+        "line": 6,
+        "col": 22
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "mother"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "susan"
+            },
+            {
+              "type": "atom",
+              "value": "tom"
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 163,
+        "lineBreaks": 1,
+        "line": 7,
+        "col": 21
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "person"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "john"
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 178,
+        "lineBreaks": 1,
+        "line": 8,
+        "col": 15
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "person"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "susan"
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 194,
+        "lineBreaks": 1,
+        "line": 9,
+        "col": 16
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "age"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "john"
+            },
+            {
+              "type": "number",
+              "value": 45
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 210,
+        "lineBreaks": 1,
+        "line": 10,
+        "col": 16
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "age"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "susan"
+            },
+            {
+              "type": "number",
+              "value": 42
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 227,
+        "lineBreaks": 1,
+        "line": 11,
+        "col": 17
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 229,
+        "lineBreaks": 1,
+        "line": 12,
+        "col": 2
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 239,
+        "lineBreaks": 1,
+        "line": 13,
+        "col": 10
+      }
+    ],
+    [
+      {
+        "type": "rule",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "parent"
+          },
+          "args": [
+            {
+              "type": "variable",
+              "value": "X"
+            },
+            {
+              "type": "variable",
+              "value": "Y"
+            }
+          ]
+        },
+        "body": []
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 336,
+        "lineBreaks": 1,
+        "line": 14,
+        "col": 97
+      }
+    ],
+    [
+      {
+        "type": "rule",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "grandparent"
+          },
+          "args": [
+            {
+              "type": "variable",
+              "value": "X"
+            },
+            {
+              "type": "variable",
+              "value": "Y"
+            }
+          ]
+        },
+        "body": []
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 451,
+        "lineBreaks": 1,
+        "line": 15,
+        "col": 115
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 453,
+        "lineBreaks": 1,
+        "line": 16,
+        "col": 2
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 505,
+        "lineBreaks": 1,
+        "line": 17,
+        "col": 52
+      }
+    ],
+    [
+      {
+        "type": "rule",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "has_hobbies"
+          },
+          "args": [
+            {
+              "type": "variable",
+              "value": "Person"
+            },
+            {
+              "type": "variable",
+              "value": "Hobbies"
+            }
+          ]
+        },
+        "body": [
+          {
+            "type": "NL",
+            "value": "\n",
+            "text": "\n",
+            "offset": 538,
+            "lineBreaks": 1,
+            "line": 18,
+            "col": 33
+          }
+        ]
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 601,
+        "lineBreaks": 1,
+        "line": 20,
+        "col": 42
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 603,
+        "lineBreaks": 1,
+        "line": 21,
+        "col": 2
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 651,
+        "lineBreaks": 1,
+        "line": 22,
+        "col": 48
+      }
+    ],
+    [
+      {
+        "type": "rule",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "calculate_value"
+          },
+          "args": [
+            {
+              "type": "variable",
+              "value": "X"
+            },
+            {
+              "type": "variable",
+              "value": "Y"
+            },
+            {
+              "type": "variable",
+              "value": "Result"
+            }
+          ]
+        },
+        "body": [
+          {
+            "type": "NL",
+            "value": "\n",
+            "text": "\n",
+            "offset": 685,
+            "lineBreaks": 1,
+            "line": 23,
+            "col": 34
+          }
+        ]
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 718,
+        "lineBreaks": 1,
+        "line": 24,
+        "col": 33
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 720,
+        "lineBreaks": 1,
+        "line": 25,
+        "col": 2
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 826,
+        "lineBreaks": 1,
+        "line": 30,
+        "col": 31
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 828,
+        "lineBreaks": 1,
+        "line": 31,
+        "col": 2
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 849,
+        "lineBreaks": 1,
+        "line": 32,
+        "col": 21
+      }
+    ]
+  ],
+  [
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 67,
+        "lineBreaks": 1,
+        "line": 1,
+        "col": 68
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 69,
+        "lineBreaks": 1,
+        "line": 2,
+        "col": 2
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 79,
+        "lineBreaks": 1,
+        "line": 3,
+        "col": 10
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "father"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "john"
+            },
+            {
+              "type": "atom",
+              "value": "mary"
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 100,
+        "lineBreaks": 1,
+        "line": 4,
+        "col": 21
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "father"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "john"
+            },
+            {
+              "type": "atom",
+              "value": "tom"
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 120,
+        "lineBreaks": 1,
+        "line": 5,
+        "col": 20
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "mother"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "susan"
+            },
+            {
+              "type": "atom",
+              "value": "mary"
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 142,
+        "lineBreaks": 1,
+        "line": 6,
+        "col": 22
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "mother"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "susan"
+            },
+            {
+              "type": "atom",
+              "value": "tom"
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 163,
+        "lineBreaks": 1,
+        "line": 7,
+        "col": 21
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "person"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "john"
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 178,
+        "lineBreaks": 1,
+        "line": 8,
+        "col": 15
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "person"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "susan"
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 194,
+        "lineBreaks": 1,
+        "line": 9,
+        "col": 16
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "age"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "john"
+            },
+            {
+              "type": "number",
+              "value": 45
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 210,
+        "lineBreaks": 1,
+        "line": 10,
+        "col": 16
+      }
+    ],
+    [
+      {
+        "type": "fact",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "age"
+          },
+          "args": [
+            {
+              "type": "atom",
+              "value": "susan"
+            },
+            {
+              "type": "number",
+              "value": 42
+            }
+          ]
+        }
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 227,
+        "lineBreaks": 1,
+        "line": 11,
+        "col": 17
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 229,
+        "lineBreaks": 1,
+        "line": 12,
+        "col": 2
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 239,
+        "lineBreaks": 1,
+        "line": 13,
+        "col": 10
+      }
+    ],
+    [
+      {
+        "type": "rule",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "parent"
+          },
+          "args": [
+            {
+              "type": "variable",
+              "value": "X"
+            },
+            {
+              "type": "variable",
+              "value": "Y"
+            }
+          ]
+        },
+        "body": []
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 336,
+        "lineBreaks": 1,
+        "line": 14,
+        "col": 97
+      }
+    ],
+    [
+      {
+        "type": "rule",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "grandparent"
+          },
+          "args": [
+            {
+              "type": "variable",
+              "value": "X"
+            },
+            {
+              "type": "variable",
+              "value": "Y"
+            }
+          ]
+        },
+        "body": []
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 451,
+        "lineBreaks": 1,
+        "line": 15,
+        "col": 115
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 453,
+        "lineBreaks": 1,
+        "line": 16,
+        "col": 2
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 505,
+        "lineBreaks": 1,
+        "line": 17,
+        "col": 52
+      }
+    ],
+    [
+      {
+        "type": "rule",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "has_hobbies"
+          },
+          "args": [
+            {
+              "type": "variable",
+              "value": "Person"
+            },
+            {
+              "type": "variable",
+              "value": "Hobbies"
+            }
+          ]
+        },
+        "body": [
+          {
+            "type": "NL",
+            "value": "\n",
+            "text": "\n",
+            "offset": 538,
+            "lineBreaks": 1,
+            "line": 18,
+            "col": 33
+          }
+        ]
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 601,
+        "lineBreaks": 1,
+        "line": 20,
+        "col": 42
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 603,
+        "lineBreaks": 1,
+        "line": 21,
+        "col": 2
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 651,
+        "lineBreaks": 1,
+        "line": 22,
+        "col": 48
+      }
+    ],
+    [
+      {
+        "type": "rule",
+        "head": {
+          "type": "structure",
+          "functor": {
+            "type": "atom",
+            "value": "calculate_value"
+          },
+          "args": [
+            {
+              "type": "variable",
+              "value": "X"
+            },
+            {
+              "type": "variable",
+              "value": "Y"
+            },
+            {
+              "type": "variable",
+              "value": "Result"
+            }
+          ]
+        },
+        "body": [
+          {
+            "type": "NL",
+            "value": "\n",
+            "text": "\n",
+            "offset": 685,
+            "lineBreaks": 1,
+            "line": 23,
+            "col": 34
+          }
+        ]
+      },
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 718,
+        "lineBreaks": 1,
+        "line": 24,
+        "col": 33
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 720,
+        "lineBreaks": 1,
+        "line": 25,
+        "col": 2
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 826,
+        "lineBreaks": 1,
+        "line": 30,
+        "col": 31
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 828,
+        "lineBreaks": 1,
+        "line": 31,
+        "col": 2
+      }
+    ],
+    [
+      {
+        "type": "NL",
+        "value": "\n",
+        "text": "\n",
+        "offset": 849,
+        "lineBreaks": 1,
+        "line": 32,
+        "col": 21
+      }
+    ]
+  ]
 ]

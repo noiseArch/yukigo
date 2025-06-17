@@ -30,6 +30,7 @@ export type AnalysisResult = {
   rule: InspectionRule;
   passed: boolean;
   actual?: any; // To store the actual value found during inspection
+  error?: string;
 };
 
 type InspectionHandlerMap = {
@@ -37,7 +38,7 @@ type InspectionHandlerMap = {
     ast: ASTNode[],
     args: Record<string, any>,
     findings: Map<string, any>
-  ) => { result: boolean; details?: string };
+  ) => { result: boolean };
 };
 
 class ASTAnalyzer {
@@ -75,10 +76,7 @@ class ASTAnalyzer {
         },
       });
       return {
-        result: found,
-        details: found
-          ? `Found binding '${bindingName}'.`
-          : `Binding '${bindingName}' not found.`,
+        result: found
       };
     },
 
@@ -103,10 +101,7 @@ class ASTAnalyzer {
         },
       });
       return {
-        result: usesGuards,
-        details: usesGuards
-          ? `'${functionName}' uses guards.`
-          : `'${functionName}' does not use guards.`,
+        result: usesGuards
       };
     },
 
@@ -125,10 +120,81 @@ class ASTAnalyzer {
         },
       });
       return {
-        result: usesAnonymous,
-        details: usesAnonymous
-          ? `'${functionName}' uses an anonymous variable.`
-          : `'${functionName}' does not use an anonymous variable.`,
+        result: usesAnonymous
+      };
+    },
+
+    HasPatternMathing: (ast, args, findings) => {
+      const functionName = args.name;
+      let hasPatternMathing = false;
+      traverse(ast, {
+        function: (node: ASTNode) => {
+          if (node.name.value === functionName && node.contents.length > 1) {
+            hasPatternMathing = true;
+          }
+        },
+      });
+      return {
+        result: hasPatternMathing
+      };
+    },
+
+    Uses: (ast, args, findings) => {
+      const functionName = args.name;
+      const usageName = args.usage;
+      let uses = false;
+      traverse(ast, {
+        function: (node: ASTNode) => {
+          if (node.name.value === functionName) {
+            traverse(node, {
+              "*"(symbolNode) {
+                if (symbolNode.value && symbolNode.value === usageName)
+                  uses = true;
+              },
+            });
+          }
+        },
+      });
+      return {
+        result: uses
+      };
+    },
+
+    HasLambdaExpression: (ast, args, findings) => {
+      const functionName = args.name;
+      let hasLambdaExpression = false;
+      traverse(ast, {
+        function: (node: ASTNode) => {
+          if (node.name.value === functionName) {
+            traverse(node, {
+              LambdaExpression() {
+                hasLambdaExpression = true;
+              },
+            });
+          }
+        },
+      });
+      return {
+        result: hasLambdaExpression
+      };
+    },
+
+    HasArithmetic: (ast, args, findings) => {
+      const functionName = args.name;
+      let hasArithmetic = false;
+      traverse(ast, {
+        function: (node: ASTNode) => {
+          if (node.name.value === functionName) {
+            traverse(node, {
+              Arithmetic() {
+                hasArithmetic = true;
+              },
+            });
+          }
+        },
+      });
+      return {
+        result: hasArithmetic
       };
     },
 
@@ -147,10 +213,7 @@ class ASTAnalyzer {
         },
       });
       return {
-        result: hasComposition,
-        details: hasComposition
-          ? `'${functionName}' appears to use composition.`
-          : `'${functionName}' does not appear to use composition.`,
+        result: hasComposition
       };
     },
   };
@@ -182,6 +245,7 @@ class ASTAnalyzer {
       return {
         rule,
         passed: false,
+        error: "Unknown inspection",
       };
     }
 
@@ -194,6 +258,8 @@ class ASTAnalyzer {
         actual: result,
       };
     } catch (error: any) {
+      console.log(error);
+
       return {
         rule,
         passed: false,

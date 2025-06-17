@@ -163,6 +163,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/js-yaml@npm:^4":
+  version: 4.0.9
+  resolution: "@types/js-yaml@npm:4.0.9"
+  checksum: 10c0/24de857aa8d61526bbfbbaa383aa538283ad17363fcd5bb5148e2c7f604547db36646440e739d78241ed008702a8920665d1add5618687b6743858fae00da211
+  languageName: node
+  linkType: hard
+
 "@types/json-schema@npm:^7.0.15":
   version: 7.0.15
   resolution: "@types/json-schema@npm:7.0.15"
@@ -1238,6 +1245,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"yaml@npm:^2.8.0":
+  version: 2.8.0
+  resolution: "yaml@npm:2.8.0"
+  bin:
+    yaml: bin.mjs
+  checksum: 10c0/f6f7310cf7264a8107e72c1376f4de37389945d2fb4656f8060eca83f01d2d703f9d1b925dd8f39852a57034fafefde6225409ddd9f22aebfda16c6141b71858
+  languageName: node
+  linkType: hard
+
 "yocto-queue@npm:^0.1.0":
   version: 0.1.0
   resolution: "yocto-queue@npm:0.1.0"
@@ -1250,16 +1266,19 @@ __metadata:
   resolution: "yukigo@workspace:."
   dependencies:
     "@eslint/js": "npm:^9.28.0"
+    "@types/js-yaml": "npm:^4"
     "@types/nearley": "npm:^2"
     "@types/node": "npm:^22.15.29"
     eslint: "npm:^9.28.0"
     fs: "npm:^0.0.1-security"
     globals: "npm:^16.2.0"
+    js-yaml: "npm:^4.1.0"
     moo: "npm:^0.5.2"
     moo-ignore: "npm:^2.5.3"
     mulang: "npm:^6.0.6"
     nearley: "npm:^2.20.1"
     typescript: "npm:^5.8.3"
     typescript-eslint: "npm:^8.33.1"
+    yaml: "npm:^2.8.0"
   languageName: unknown
   linkType: soft
