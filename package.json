@@ -3,13 +3,15 @@
   "packageManager": "yarn@4.6.0",
   "dependencies": {
     "fs": "^0.0.1-security",
+    "js-yaml": "^4.1.0",
     "moo": "^0.5.2",
     "moo-ignore": "^2.5.3",
     "mulang": "^6.0.6",
-    "nearley": "^2.20.1"
+    "nearley": "^2.20.1",
+    "yaml": "^2.8.0"
   },
   "scripts": {
-    "parse": "nearleyc ./src/parser/langs/haskell/grammar.ne -o ./src/parser/langs/haskell/grammar.ts && npx tsc && node ./dist/parser/parser.js",
+    "parse": "nearleyc ./src/parser/langs/prolog/grammar.ne -o ./src/parser/langs/prolog/grammar.ts && npx tsc && node ./dist/parser/parser.js",
     "lex": "npx tsc && node ./dist/parser/lexer.js",
     "analyse": "nearleyc ./src/parser/langs/haskell/grammar.ne -o ./src/parser/langs/haskell/grammar.ts && npx tsc && node ./dist/analyser/analyse.js",
     "mulang": "npx tsc && node ./dist/parser/mulang.js",
@@ -17,6 +19,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",
+    "@types/js-yaml": "^4",
     "@types/nearley": "^2",
     "@types/node": "^22.15.29",
     "eslint": "^9.28.0",

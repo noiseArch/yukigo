@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import nearley from "nearley";
-import grammar from "./langs/haskell/grammar";
+import grammar from "./langs/prolog/grammar";
 import { argv } from "process";
 import { FunctionDeclaration, FunctionGroup } from "./paradigms/functional";
 
@@ -33,12 +33,12 @@ export function parse(code: string) {
   parser.feed(code);
   parser.finish();
   console.log("Amount of possibles ASTs:", parser.results.length);
-  if (parser.results.length > 1)
+/*   if (parser.results.length > 1)
     throw Error("Too much ambiguity. Output not generated.");
   if (parser.results.length == 0)
     throw Error("Parser did not generate an AST.");
-  const groupedAst = groupFunctionDeclarations(parser.results[0]);
-  return groupedAst;
+  const groupedAst = groupFunctionDeclarations(parser.results[0]); */
+  return parser.results;
 }
 
 try {
