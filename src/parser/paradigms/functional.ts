@@ -48,3 +48,17 @@ export interface LambdaExpression {
   body: Expression | BlockExpression;
   //loc: SourceLocation;
 }
+
+export interface TypeAlias {
+  type: "TypeAlias";
+  name: SymbolPrimitive;
+  typeParameters: SymbolPrimitive[]; // Optional type parameters
+}
+
+
+export interface FunctionTypeSignature {
+  type: "TypeSignature";
+  name: SymbolPrimitive;
+  inputTypes: SymbolPrimitive[];
+  returnType: SymbolPrimitive;
+}

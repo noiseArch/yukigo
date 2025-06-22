@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import nearley from "nearley";
-import grammar from "./langs/prolog/grammar";
+import grammar from "./langs/haskell/grammar";
 import { argv } from "process";
 import { FunctionDeclaration, FunctionGroup } from "./paradigms/functional";
 

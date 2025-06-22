@@ -6,14 +6,14 @@ import {
 import {
   CompositionExpression,
   FunctionExpression,
+  FunctionTypeSignature,
+  TypeAlias
 } from "../../paradigms/functional";
 import {
   HSExpression,
   HSFunctionDeclaration,
-  HSFunctionTypeSignature,
   HSLamdaExpression,
   HSListPrimitive,
-  HSTypeAlias,
 } from "./definition";
 
 // For now BaseMooToken it's just for reference, can't be sure if the tokens of each function are of one type.
@@ -57,7 +57,7 @@ function parseFunctionType(token: any) {
 
   const inputTypes = bodyType.length > 1 ? bodyType.slice(0, -1) : [];
   const returnType = bodyType[bodyType.length - 1];
-  const functionType: HSFunctionTypeSignature = {
+  const functionType: FunctionTypeSignature = {
     type: "TypeSignature",
     name: { type: "symbol", value: token[0].value },
     inputTypes: inputTypes,
@@ -68,7 +68,7 @@ function parseFunctionType(token: any) {
 
 function parseTypeAlias(token: any) {
   //console.log(token);
-  const typeAlias: HSTypeAlias = {
+  const typeAlias: TypeAlias = {
     type: "TypeAlias",
     name: { type: "symbol", value: token[2].value },
     typeParameters: token[6],

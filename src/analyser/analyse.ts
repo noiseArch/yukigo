@@ -1,55 +1,44 @@
 import fs from "fs";
 import { parse } from "../parser/parser";
-import { argv } from "process";
+import yargs from "yargs";
+import { hideBin } from "yargs/helpers";
 import ASTAnalyzer from "../ast/inspector";
 import { translateMulangToInspectionRules } from "../utils/mulangToYukigo";
+import { traverse } from "../ast/visitor";
+import { FunctionGroup } from "../parser/paradigms/functional";
 
-const filePath = argv[2];
-if (!filePath)
-  throw Error(
-    "You need to provide the path to the file you want to analyse. Usage: yukigo analyse <filepath>"
-  );
+const argv = yargs(hideBin(process.argv))
+  .usage("Usage: yukigo analyse <filepath> [options]")
+  .option("o", {
+    alias: "output",
+    describe: "Path to output JSON file",
+    type: "string",
+  })
+  .option("m", {
+    alias: "mulang",
+    describe: "Use mulang-format expectations",
+    type: "boolean",
+    default: false,
+  })
+  .option("p", {
+    alias: "pretty",
+    describe: "Pretty format the output",
+    type: "boolean",
+    default: false,
+  })
+  .option("e", {
+    alias: "expectations",
+    describe: "Path to expectations file",
+    type: "string",
+    demandOption: true,
+  })
+  .demandCommand(1, "You must provide a file to analyse")
+  .help()
+  .parseSync();
 
+const filePath = argv._[0] as string;
 const code = fs.readFileSync(filePath, "utf-8");
 const ast = parse(code);
-
-/*const rules: InspectionRule[] = [
-  {
-    inspection: "HasBinding",
-    args: { name: "minimoEntre" },
-    expected: false,
-  },
-  {
-    inspection: "HasBinding",
-    args: { name: "squareList" },
-    expected: true,
-  },
-  {
-    inspection: "UsesGuards",
-    args: { name: "grade" },
-    expected: true,
-  },
-  {
-    inspection: "UsesGuards",
-    args: { name: "squareList" },
-    expected: false,
-  },
-  {
-    inspection: "UsesAnonymousVariable",
-    args: { name: "isSecret" },
-    expected: true,
-  },
-  {
-    inspection: "UsesAnonymousVariable",
-    args: { name: "squareList" },
-    expected: false,
-  },
-  {
-    inspection: "HasArithmetic",
-    args: { name: "addTwoNumbers" },
-    expected: true,
-  },
-];
 
 const analyzer = new ASTAnalyzer(ast);
 
@@ -57,7 +46,7 @@ const analyzer = new ASTAnalyzer(ast);
 analyzer.registerInspection("HasArithmetic", (ast, args) => {
   let hasArithmetic = false;
   traverse(ast, {
-    function: (node: ASTNode) => {
+    function: (node: FunctionGroup) => {
       if (node.name.value === args.name) {
         traverse(node, {
           Arithmetic() {
@@ -68,56 +57,39 @@ analyzer.registerInspection("HasArithmetic", (ast, args) => {
     },
   });
   return {
-    result: hasArithmetic
+    result: hasArithmetic,
   };
 });
 
-const analysisResults = analyzer.analyze(rules);
-analysisResults.forEach((result) => {
-  console.log(
-    `Rule: ${result.rule.inspection} (Target: ${
-      result.rule.args ? result.rule.args.name : "N/A"
-    })`
-  );
-  console.log(`  Expected: ${result.rule.expected}, Actual: ${result.actual}`);
-  console.log(`  Passed: ${result.passed ? "✅" : "❌"}`);
-  console.log("---");
-});
- */
+let expectations: any;
+if (argv.e) {
+  const expectationsContent = fs.readFileSync(argv.e, "utf-8");
+  expectations = argv.m
+    ? translateMulangToInspectionRules(expectationsContent)
+    : JSON.parse(expectationsContent);
+} else {
+  throw Error("You must provide an expectations file with -e");
+}
 
-const mulangYaml1 = `
-expectations:
-- !ruby/hash:ActiveSupport::HashWithIndifferentAccess
-  binding: squareList
-  inspection: HasBinding
-- !ruby/hash:ActiveSupport::HashWithIndifferentAccess
-  binding: squareList
-  inspection: HasLambdaExpression
-- !ruby/hash:ActiveSupport::HashWithIndifferentAccess
-  binding: square
-  inspection: HasArithmetic
-- !ruby/hash:ActiveSupport::HashWithIndifferentAccess
-  binding: doble
-  inspection: Not:HasBinding
-- !ruby/hash:ActiveSupport::HashWithIndifferentAccess
-  binding: square
-  inspection: Uses:n
-- !ruby/hash:ActiveSupport::HashWithIndifferentAccess
-  binding: squareList2
-  inspection: Uses:map
-`;
-
-const expectations = translateMulangToInspectionRules(mulangYaml1);
-const analyzer = new ASTAnalyzer(ast);
 const analysisResults = analyzer.analyze(expectations);
 
-analysisResults.forEach((result) => {
-  console.log(
-    `Rule: ${result.rule.inspection} (Target: ${
-      result.rule.args ? result.rule.args.name : "N/A"
-    })`
-  );
-  console.log(`  Expected: ${result.rule.expected}, Actual: ${result.actual}`);
-  console.log(`  Passed: ${result.passed ? "✅" : "❌"}`);
-  console.log("---");
-});
+if (argv.o) {
+  fs.writeFileSync(argv.o, JSON.stringify(analysisResults, null, 2));
+} else {
+  if (argv.p) {
+    analysisResults.forEach((result) => {
+      console.log(
+        `Rule: ${result.rule.inspection} (Target: ${
+          result.rule.args ? result.rule.args.name : "N/A"
+        })`
+      );
+      console.log(
+        `  Expected: ${result.rule.expected}, Actual: ${result.actual}`
+      );
+      console.log(`  Passed: ${result.passed ? "✅" : "❌"}`);
+      console.log("---");
+    });
+  } else {
+    console.log(analysisResults);
+  }
+}

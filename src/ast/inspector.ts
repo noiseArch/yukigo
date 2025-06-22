@@ -1,24 +1,9 @@
+import {
+  FunctionGroup,
+  FunctionTypeSignature,
+  TypeAlias,
+} from "../parser/paradigms/functional";
 import { traverse } from "./visitor";
-
-// astAnalyzer.ts
-export type ASTNode = {
-  type: string;
-  name?: { type: string; value?: string }; // Example, extend as needed
-  contents?: ASTNode[];
-  parameters?: ASTNode[];
-  body?: ASTNode;
-  attributes?: string[];
-  left?: ASTNode;
-  right?: ASTNode;
-  operator?: string;
-  value?: { type: string; value: string; text: string };
-  elements?: ASTNode[];
-  cond?: ASTNode;
-  then?: ASTNode;
-  else?: ASTNode;
-  guard?: ASTNode;
-  // ... other properties of your AST nodes
-};
 
 export type InspectionRule = {
   inspection: string;
@@ -29,23 +14,23 @@ export type InspectionRule = {
 export type AnalysisResult = {
   rule: InspectionRule;
   passed: boolean;
-  actual?: any; // To store the actual value found during inspection
+  actual?: any;
   error?: string;
 };
 
 type InspectionHandlerMap = {
   [key: string]: (
-    ast: ASTNode[],
+    ast: any,
     args: Record<string, any>,
     findings: Map<string, any>
   ) => { result: boolean };
 };
 
 class ASTAnalyzer {
-  private ast: ASTNode[];
-  private findings: Map<string, any> = new Map(); // Store collected data for inspections
+  private ast: any;
+  private findings: Map<string, any> = new Map();
 
-  constructor(ast: ASTNode[]) {
+  constructor(ast: any) {
     this.ast = ast;
   }
 
@@ -54,29 +39,29 @@ class ASTAnalyzer {
       const bindingName = args.name;
       let found = false;
       traverse(ast, {
-        function: (node: ASTNode) => {
+        function: (node: FunctionGroup) => {
           if (node.name && node.name.value === bindingName) {
             found = true;
           }
         },
-        TypeAlias: (node: ASTNode) => {
+        TypeAlias: (node: TypeAlias) => {
           if (node.name && node.name.value === bindingName) {
             found = true;
           }
         },
-        Record: (node: ASTNode) => {
+        Record: (node: any) => {
           if (node.name && node.name.value === bindingName) {
             found = true;
           }
         },
-        TypeSignature: (node: ASTNode) => {
+        TypeSignature: (node: FunctionTypeSignature) => {
           if (node.name && node.name.value === bindingName) {
             found = true;
           }
         },
       });
       return {
-        result: found
+        result: found,
       };
     },
 
@@ -84,7 +69,7 @@ class ASTAnalyzer {
       const functionName = args.name;
       let usesGuards = false;
       traverse(ast, {
-        function: (node: ASTNode) => {
+        function: (node: FunctionGroup) => {
           if (node.name && node.name.value === functionName) {
             if (Array.isArray(node.contents)) {
               for (const content of node.contents) {
@@ -101,7 +86,7 @@ class ASTAnalyzer {
         },
       });
       return {
-        result: usesGuards
+        result: usesGuards,
       };
     },
 
@@ -109,7 +94,7 @@ class ASTAnalyzer {
       const functionName = args.name;
       let usesAnonymous = false;
       traverse(ast, {
-        function: (node: ASTNode) => {
+        function: (node: FunctionGroup) => {
           if (node.name && node.name.value === functionName) {
             traverse(node, {
               WildcardPattern() {
@@ -120,7 +105,7 @@ class ASTAnalyzer {
         },
       });
       return {
-        result: usesAnonymous
+        result: usesAnonymous,
       };
     },
 
@@ -128,14 +113,14 @@ class ASTAnalyzer {
       const functionName = args.name;
       let hasPatternMathing = false;
       traverse(ast, {
-        function: (node: ASTNode) => {
+        function: (node: FunctionGroup) => {
           if (node.name.value === functionName && node.contents.length > 1) {
             hasPatternMathing = true;
           }
         },
       });
       return {
-        result: hasPatternMathing
+        result: hasPatternMathing,
       };
     },
 
@@ -144,7 +129,7 @@ class ASTAnalyzer {
       const usageName = args.usage;
       let uses = false;
       traverse(ast, {
-        function: (node: ASTNode) => {
+        function: (node: FunctionGroup) => {
           if (node.name.value === functionName) {
             traverse(node, {
               "*"(symbolNode) {
@@ -156,7 +141,7 @@ class ASTAnalyzer {
         },
       });
       return {
-        result: uses
+        result: uses,
       };
     },
 
@@ -164,7 +149,7 @@ class ASTAnalyzer {
       const functionName = args.name;
       let hasLambdaExpression = false;
       traverse(ast, {
-        function: (node: ASTNode) => {
+        function: (node: FunctionGroup) => {
           if (node.name.value === functionName) {
             traverse(node, {
               LambdaExpression() {
@@ -175,7 +160,7 @@ class ASTAnalyzer {
         },
       });
       return {
-        result: hasLambdaExpression
+        result: hasLambdaExpression,
       };
     },
 
@@ -183,7 +168,7 @@ class ASTAnalyzer {
       const functionName = args.name;
       let hasArithmetic = false;
       traverse(ast, {
-        function: (node: ASTNode) => {
+        function: (node: FunctionGroup) => {
           if (node.name.value === functionName) {
             traverse(node, {
               Arithmetic() {
@@ -194,7 +179,7 @@ class ASTAnalyzer {
         },
       });
       return {
-        result: hasArithmetic
+        result: hasArithmetic,
       };
     },
 
@@ -202,7 +187,7 @@ class ASTAnalyzer {
       const functionName = args.name;
       let hasComposition = false;
       traverse(ast, {
-        function: (node: ASTNode) => {
+        function: (node: FunctionGroup) => {
           if (node.name && node.name.value === functionName) {
             traverse(node, {
               CompositionExpression() {
@@ -213,7 +198,7 @@ class ASTAnalyzer {
         },
       });
       return {
-        result: hasComposition
+        result: hasComposition,
       };
     },
   };
@@ -222,11 +207,32 @@ class ASTAnalyzer {
    * Registers a new custom inspection handler.
    * @param name The name of the inspection (e.g., "CustomCheck").
    * @param handler The function that implements the inspection logic.
+   *
+   * @example
+   * // Create HasArithmetic inspection
+   * const analyzer = new ASTAnalyzer(ast);
+   * analyzer.registerInspection("HasArithmetic", (ast, args) => {
+   *   let hasArithmetic = false;
+   *   traverse(ast, {
+   *     function: (node: FunctionGroup) => {
+   *       if (node.name.value === args.name) {
+   *         traverse(node, {
+   *           Arithmetic() {
+   *             hasArithmetic = true;
+   *           },
+   *         });
+   *       }
+   *     },
+   *   });
+   *   return {
+   *     result: hasArithmetic
+   *   };
+   * });
    */
   public registerInspection(
     name: string,
     handler: (
-      ast: ASTNode[],
+      ast: any,
       args: Record<string, any>,
       findings: Map<string, any>
     ) => { result: boolean; details?: string }
@@ -234,11 +240,6 @@ class ASTAnalyzer {
     this.inspectionHandlers[name] = handler;
   }
 
-  /**
-   * Runs a single inspection rule against the AST.
-   * @param rule The inspection rule to run.
-   * @returns The analysis result for the rule.
-   */
   private runInspection(rule: InspectionRule): AnalysisResult {
     const handler = this.inspectionHandlers[rule.inspection];
     if (!handler) {
@@ -271,6 +272,21 @@ class ASTAnalyzer {
    * Runs a list of inspection rules against the AST.
    * @param rules The array of inspection rules to run.
    * @returns An array of analysis results.
+   * @example
+   * const rules: InspectionRule[] = [
+   *  {
+   *    inspection: "HasBinding",
+   *    args: { name: "minimoEntre" },
+   *    expected: false,
+   *  },
+   *  {
+   *    inspection: "HasBinding",
+   *    args: { name: "squareList" },
+   *    expected: true,
+   *  }
+   * ]
+   * const analyzer = new ASTAnalyzer(ast);
+   * const analysisResults = analyzer.analyze(expectations);
    */
   public analyze(rules: InspectionRule[]): AnalysisResult[] {
     const results: AnalysisResult[] = [];

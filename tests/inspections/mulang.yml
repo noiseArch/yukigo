@@ -1,0 +1,19 @@
+expectations:
+  - !ruby/hash:ActiveSupport::HashWithIndifferentAccess
+    binding: squareList
+    inspection: HasBinding
+  - !ruby/hash:ActiveSupport::HashWithIndifferentAccess
+    binding: squareList
+    inspection: HasLambdaExpression
+  - !ruby/hash:ActiveSupport::HashWithIndifferentAccess
+    binding: square
+    inspection: HasArithmetic
+  - !ruby/hash:ActiveSupport::HashWithIndifferentAccess
+    binding: doble
+    inspection: Not:HasBinding
+  - !ruby/hash:ActiveSupport::HashWithIndifferentAccess
+    binding: square
+    inspection: Uses:n
+  - !ruby/hash:ActiveSupport::HashWithIndifferentAccess
+    binding: squareList2
+    inspection: Uses:map
