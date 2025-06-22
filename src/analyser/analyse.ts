@@ -2,7 +2,7 @@ import fs from "fs";
 import { parse } from "../parser/parser";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
-import ASTAnalyzer from "../ast/inspector";
+import ASTAnalyzer, { InspectionRule } from "../ast/inspector";
 import { translateMulangToInspectionRules } from "../utils/mulangToYukigo";
 import { traverse } from "../ast/visitor";
 import { FunctionGroup } from "../parser/paradigms/functional";
@@ -61,7 +61,7 @@ analyzer.registerInspection("HasArithmetic", (ast, args) => {
   };
 });
 
-let expectations: any;
+let expectations: InspectionRule[];
 if (argv.e) {
   const expectationsContent = fs.readFileSync(argv.e, "utf-8");
   expectations = argv.m

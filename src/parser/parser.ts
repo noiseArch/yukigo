@@ -3,6 +3,7 @@ import nearley from "nearley";
 import grammar from "./langs/haskell/grammar";
 import { argv } from "process";
 import { FunctionDeclaration, FunctionGroup } from "./paradigms/functional";
+import { astToTypescript } from "../ast/translator";
 
 export function groupFunctionDeclarations(ast: any[]): any[] {
   const groups: Record<string, FunctionDeclaration[]> = {};
@@ -47,6 +48,8 @@ try {
   console.log(`Parsing: ${filePath}`);
   const code = fs.readFileSync(filePath, "utf-8");
   const ast = parse(code);
+  const tsCode = astToTypescript(ast[0]);
+  fs.writeFileSync("generated.ts", tsCode);
   fs.writeFileSync("./output.json", JSON.stringify(ast, null, 2));
 } catch (err) {
   console.error("Error:", err);

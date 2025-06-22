@@ -7,5 +7,6 @@
     "sourceMap": true,
     "outDir": "dist"
   },
+  "exclude": ["generated.ts"],
   "lib": ["es2015"]
 }

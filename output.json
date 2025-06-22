@@ -4,50 +4,115 @@
       "type": "TypeSignature",
       "name": {
         "type": "symbol",
-        "value": "factorial"
+        "value": "squareList"
       },
       "inputTypes": [
         {
           "type": "symbol",
-          "name": "Integer"
+          "name": "["
+        },
+        {
+          "type": "symbol",
+          "name": "Int"
+        },
+        {
+          "type": "symbol",
+          "name": "]"
+        },
+        {
+          "type": "symbol",
+          "name": "["
+        },
+        {
+          "type": "symbol",
+          "name": "Int"
         }
       ],
       "returnType": {
         "type": "symbol",
-        "name": "Integer"
+        "name": "]"
       }
     },
     {
       "type": "function",
       "name": {
         "type": "symbol",
-        "value": "factorial"
+        "value": "squareList"
       },
       "parameters": [
         {
-          "type": "LiteralPattern",
-          "name": "0"
+          "type": "VariablePattern",
+          "name": "xs"
         }
       ],
       "body": {
-        "type": "number",
-        "numericType": "number",
-        "value": "1"
+        "type": "application",
+        "left": {
+          "type": "symbol",
+          "value": "map"
+        },
+        "operator": "$",
+        "right": {
+          "type": "application",
+          "body": [
+            {
+              "type": "LambdaExpression",
+              "parameters": [
+                {
+                  "type": "symbol"
+                }
+              ],
+              "body": {
+                "type": "Arithmetic",
+                "operator": "*",
+                "left": {
+                  "type": "symbol",
+                  "value": "n"
+                },
+                "right": {
+                  "type": "symbol",
+                  "value": "n"
+                }
+              }
+            },
+            {
+              "type": "symbol",
+              "value": "xs"
+            }
+          ]
+        }
       },
       "attributes": [
         "UnguardedBody"
       ]
     },
     {
+      "type": "TypeSignature",
+      "name": {
+        "type": "symbol",
+        "value": "square"
+      },
+      "inputTypes": [
+        {
+          "type": "symbol",
+          "name": "Int"
+        }
+      ],
+      "returnType": {
+        "type": "symbol",
+        "name": "Int"
+      }
+    },
+    {
       "type": "function",
       "name": {
         "type": "symbol",
-        "value": "factorial"
+        "value": "square"
       },
       "parameters": [
         {
           "type": "VariablePattern",
-          "name": "y"
+          "name": "n"
         }
       ],
       "body": {
@@ -58,26 +123,64 @@
           "value": "n"
         },
         "right": {
-          "type": "application",
-          "body": [
-            {
-              "type": "symbol",
-              "value": "factorial"
-            },
-            {
-              "type": "Arithmetic",
-              "operator": "-",
-              "left": {
-                "type": "symbol",
-                "value": "n"
-              },
-              "right": {
-                "type": "number",
-                "numericType": "number",
-                "value": "1"
-              }
-            }
-          ]
+          "type": "symbol",
+          "value": "n"
+        }
+      },
+      "attributes": [
+        "UnguardedBody"
+      ]
+    },
+    {
+      "type": "TypeSignature",
+      "name": {
+        "type": "symbol",
+        "value": "squareList2"
+      },
+      "inputTypes": [
+        {
+          "type": "symbol",
+          "name": "["
+        },
+        {
+          "type": "symbol",
+          "name": "Int"
+        },
+        {
+          "type": "symbol",
+          "name": "]"
+        },
+        {
+          "type": "symbol",
+          "name": "["
+        },
+        {
+          "type": "symbol",
+          "name": "Int"
+        }
+      ],
+      "returnType": {
+        "type": "symbol",
+        "name": "]"
+      }
+    },
+    {
+      "type": "function",
+      "name": {
+        "type": "symbol",
+        "value": "squareList2"
+      },
+      "parameters": [],
+      "body": {
+        "type": "application",
+        "left": {
+          "type": "symbol",
+          "value": "map"
+        },
+        "operator": "$",
+        "right": {
+          "type": "symbol",
+          "value": "square"
         }
       },
       "attributes": [
