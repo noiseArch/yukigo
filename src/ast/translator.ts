@@ -84,7 +84,7 @@ function expressionToTs(expr: any): string {
   }
 }
 
-export function astToTypescript(ast: ASTNode): string {
+export function astToTypescript(ast: any): string {
   let typeAliases: string[] = [];
   let records: string[] = [];
   let functions: { [name: string]: any[] } = {};
