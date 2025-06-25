@@ -1,14 +1,12 @@
 import { traverse } from "./visitor";
 
-type ASTNode = any;
-
 function mapType(typeNode: any): string {
   if (!typeNode) return "any";
   if (typeNode.type === "symbol") {
     switch (typeNode.name || typeNode.value) {
       case "Int":
       case "Double":
-      case "Number":
+      case "Float":
         return "number";
       case "String":
         return "string";
@@ -48,13 +46,17 @@ function expressionToTs(expr: any): string {
     case "symbol":
       return expr.value;
     case "Arithmetic":
-      return `${expressionToTs(expr.left)} ${expr.operator} ${expressionToTs(expr.right)}`;
+      return `${expressionToTs(expr.left)} ${expr.operator} ${expressionToTs(
+        expr.right
+      )}`;
     case "concatenation":
       return `${expressionToTs(expr.left)} + ${expressionToTs(expr.right)}`;
     case "list":
       return `[${(expr.elements || []).map(expressionToTs).join(", ")}]`;
     case "DataExpression":
-      return `new ${expr.name.value}({ ${expr.contents.map((f: any) => `${f.name.value}: ${expressionToTs(f.contents)}`).join(", ")} })`;
+      return `new ${expr.name.value}({ ${expr.contents
+        .map((f: any) => `${f.name.value}: ${expressionToTs(f.contents)}`)
+        .join(", ")} })`;
     case "FieldExpression":
       return expressionToTs(expr.contents);
     case "application":
@@ -66,11 +68,17 @@ function expressionToTs(expr: any): string {
       }
       break;
     case "if":
-      return `(${expressionToTs(expr.cond)} ? ${expressionToTs(expr.then)} : ${expressionToTs(expr.else)})`;
+      return `(${expressionToTs(expr.cond)} ? ${expressionToTs(
+        expr.then
+      )} : ${expressionToTs(expr.else)})`;
     case "comparison":
-      return `${expressionToTs(expr.left)} ${expr.operator || "==="} ${expressionToTs(expr.right)}`;
+      return `${expressionToTs(expr.left)} ${
+        expr.operator || "==="
+      } ${expressionToTs(expr.right)}`;
     case "infix_application":
-      return `${expressionToTs(expr.left)} ${expr.operator} ${expressionToTs(expr.right)}`;
+      return `${expressionToTs(expr.left)} ${expr.operator} ${expressionToTs(
+        expr.right
+      )}`;
     default:
       return "undefined";
   }
@@ -80,7 +88,7 @@ export function astToTypescript(ast: ASTNode): string {
   let typeAliases: string[] = [];
   let records: string[] = [];
   let functions: { [name: string]: any[] } = {};
-  let signatures: { [name: string]: { params: string[], ret: string } } = {};
+  let signatures: { [name: string]: { params: string[]; ret: string } } = {};
 
   traverse(ast, {
     TypeAlias(node) {
@@ -112,10 +120,9 @@ export function astToTypescript(ast: ASTNode): string {
     function(node) {
       const name = node.name.value;
       if (!functions[name]) functions[name] = [];
-      functions[name].push(node);
-    }
+      functions[name].push(...node.contents);
+    },
   });
-
   const functionStrings: string[] = [];
   for (const [name, clauses] of Object.entries(functions)) {
     const sig = signatures[name] || { params: [], ret: "any" };
@@ -124,9 +131,13 @@ export function astToTypescript(ast: ASTNode): string {
     if (clauses.length === 1 && !Array.isArray(clauses[0].body)) {
       // Simple function
       const node = clauses[0];
-      const params = (node.parameters || []).map((p: any, i: number) => p.name || `arg${i}`).join(", ");
+      const params = (node.parameters || [])
+        .map((p: any, i: number) => p.name || `arg${i}`)
+        .join(", ");
       functionStrings.push(
-        `export function ${name}(${params}): ${sig.ret} { return ${expressionToTs(node.body)}; }`
+        `export function ${name}(${params}): ${
+          sig.ret
+        } { return ${expressionToTs(node.body)}; }`
       );
     } else {
       // Pattern matching and/or guards
@@ -136,12 +147,18 @@ export function astToTypescript(ast: ASTNode): string {
         if (Array.isArray(clause.body)) {
           for (const guardClause of clause.body) {
             let guardCond = "";
-            if (guardClause.guard.type === "symbol" && guardClause.guard.value === "otherwise") {
-              guardCond = "true";
+            if (guardClause.guard.value === "otherwise") {
+              guardCond = null;
+            } else if (guardClause.guard.type === "symbol") {
+              guardCond = guardClause.guard.value;
             } else {
               guardCond = expressionToTs(guardClause.guard);
             }
-            body += `if (${guardCond}) return ${expressionToTs(guardClause.body)};\n`;
+            body += guardCond
+              ? `if (${guardCond}) return ${expressionToTs(
+                  guardClause.body
+                )};\n`
+              : `return ${expressionToTs(clause.body)};\n`;
           }
         } else {
           // Pattern matching
@@ -149,18 +166,18 @@ export function astToTypescript(ast: ASTNode): string {
             .map((p: any, i: number) => patternToCondition(p, paramNames[i]))
             .filter(Boolean)
             .join(" && ");
-          body += `if (${cond || "true"}) return ${expressionToTs(clause.body)};\n`;
+          body += cond
+            ? `if (${cond}) return ${expressionToTs(clause.body)};\n`
+            : `return ${expressionToTs(clause.body)};\n`;
         }
       }
       functionStrings.push(
-        `export function ${name}(${paramNames.join(", ")}): ${sig.ret} {\n${body}throw new Error("No match");\n}`
+        `export function ${name}(${paramNames.join(", ")}): ${
+          sig.ret
+        } {\n${body}\n}`
       );
     }
   }
 
-  return [
-    ...typeAliases,
-    ...records,
-    ...functionStrings
-  ].join("\n\n");
+  return [...typeAliases, ...records, ...functionStrings].join("\n\n");
 }

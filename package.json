@@ -13,7 +13,7 @@
     "yargs": "^18.0.0"
   },
   "scripts": {
-    "parse": "nearleyc ./src/parser/langs/prolog/grammar.ne -o ./src/parser/langs/prolog/grammar.ts && npx tsc && node ./dist/parser/parser.js",
+    "parse": "nearleyc ./src/parser/langs/haskell/grammar.ne -o ./src/parser/langs/haskell/grammar.ts && npx tsc && node ./dist/parser/parser.js",
     "lex": "npx tsc && node ./dist/parser/lexer.js",
     "analyse": "nearleyc ./src/parser/langs/haskell/grammar.ne -o ./src/parser/langs/haskell/grammar.ts && npx tsc && node ./dist/analyser/analyse.js",
     "mulang": "npx tsc && node ./dist/parser/mulang.js",

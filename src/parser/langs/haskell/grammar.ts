@@ -13,7 +13,7 @@ declare var identifier: any;
 declare var WS: any;
 
 import { HSLexer } from "./lexer"
-import { parseFunction, parsePrimary, parseExpression, parseFunctionExpression, parseCompositionExpression, parseTypeAlias, parseFunctionType, parseLambda} from "./parser";
+import { parseFunction, parsePrimary, parseExpression, parseCompositionExpression, parseTypeAlias, parseFunctionType, parseLambda} from "./parser";
 import util from "util";
 
 const filter = d => {
@@ -87,7 +87,7 @@ const grammar: Grammar = {
     {"name": "primary", "symbols": [(HSLexer.has("bool") ? {type: "bool"} : bool)], "postprocess": (d) => ({type: "Boolean", value: d[0]})},
     {"name": "primary", "symbols": ["identifier"], "postprocess": (d) => d[0]},
     {"name": "primary", "symbols": [{"literal":"("}, "_", "expression", "_", {"literal":")"}], "postprocess": (d) => d[2]},
-    {"name": "primary", "symbols": ["list_literal"], "postprocess": (d) => parsePrimary({type: "list", body: d[0]})},
+    {"name": "primary", "symbols": ["list_literal"], "postprocess": (d) => parsePrimary({type: "list", body: filter(d[0])})},
     {"name": "primary", "symbols": ["composition_expression"], "postprocess": (d) => {return d[0]}},
     {"name": "primary", "symbols": ["lambda_expression"], "postprocess": (d) => {return d[0]}},
     {"name": "primary", "symbols": ["if_expression"], "postprocess": d => d[0]},
@@ -141,18 +141,18 @@ const grammar: Grammar = {
     {"name": "pattern", "symbols": [{"literal":"("}, "_", "pattern", "_", {"literal":")"}]},
     {"name": "composition_expression", "symbols": ["identifier", "_", {"literal":"."}, "_", "identifier"], "postprocess": (d) => parseCompositionExpression([d[0], d[4]])},
     {"name": "identifier", "symbols": [(HSLexer.has("identifier") ? {type: "identifier"} : identifier)], "postprocess": (d) => parsePrimary(d[0])},
-    {"name": "type_declaration", "symbols": [{"literal":"type"}, "__", "identifier", "_", {"literal":"="}, "_", "type_list"], "postprocess": (d) => parseTypeAlias(d)},
+    {"name": "type_declaration", "symbols": [{"literal":"type"}, "__", "identifier", "_", {"literal":"="}, "_", "type_list"], "postprocess": (d) => parseTypeAlias(filter(d))},
     {"name": "type_list$subexpression$1$ebnf$1", "symbols": [{"literal":"["}], "postprocess": id},
     {"name": "type_list$subexpression$1$ebnf$1", "symbols": [], "postprocess": () => null},
     {"name": "type_list$subexpression$1$ebnf$2", "symbols": [{"literal":"]"}], "postprocess": id},
     {"name": "type_list$subexpression$1$ebnf$2", "symbols": [], "postprocess": () => null},
     {"name": "type_list$subexpression$1", "symbols": ["type_list$subexpression$1$ebnf$1", "identifier", "type_list$subexpression$1$ebnf$2"]},
-    {"name": "type_list", "symbols": ["type_list$subexpression$1", "_", {"literal":"->"}, "_", "type_list"], "postprocess": (d) => filter(d)},
+    {"name": "type_list", "symbols": ["type_list$subexpression$1", "_", {"literal":"->"}, "_", "type_list"], "postprocess": (d) => ([{...d[0][1], isArray: d[0][0] !== null}, ...d[4]])},
     {"name": "type_list$ebnf$1", "symbols": [{"literal":"["}], "postprocess": id},
     {"name": "type_list$ebnf$1", "symbols": [], "postprocess": () => null},
     {"name": "type_list$ebnf$2", "symbols": [{"literal":"]"}], "postprocess": id},
     {"name": "type_list$ebnf$2", "symbols": [], "postprocess": () => null},
-    {"name": "type_list", "symbols": ["type_list$ebnf$1", "identifier", "type_list$ebnf$2"], "postprocess": (d) => filter(d)},
+    {"name": "type_list", "symbols": ["type_list$ebnf$1", "identifier", "type_list$ebnf$2"], "postprocess": (d) => ([{...d[1], isArray: d[0] !== null}])},
     {"name": "list_literal", "symbols": [{"literal":"["}, "_", "expression_list", "_", {"literal":"]"}], "postprocess": (d) => d},
     {"name": "expression_list", "symbols": ["expression", "_", {"literal":","}, "_", "expression_list"], "postprocess": (d) => filter([d[0], d[4]]).flat(Infinity)},
     {"name": "expression_list", "symbols": ["expression"], "postprocess": (d) => [d[0]]},

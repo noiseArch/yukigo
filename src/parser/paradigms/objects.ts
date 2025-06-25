@@ -1,7 +1,6 @@
 import {
-  BaseOperation,
   BooleanPrimitive,
-  Primitive,
+  Expression,
   SourceLocation,
   StringPrimitive,
   SymbolPrimitive,
@@ -23,7 +22,7 @@ export interface ClassDefinition {
 export interface ObjectInstance {
   type: "object";
   classRef: ClassReference;
-  fields: { [key: string]: Expression };
+  fields: { [key: string]: ObjectsExpression };
   loc: SourceLocation;
 }
 
@@ -31,7 +30,7 @@ export interface FieldDefinition {
   type: "field";
   name: StringPrimitive;
   //valueType: TypeAnnotation;
-  defaultValue?: Expression;
+  defaultValue?: ObjectsExpression;
   accessModifier: "public" | "private" | "protected";
   isStatic: BooleanPrimitive;
   loc: SourceLocation;
@@ -62,7 +61,7 @@ export interface Parameter {
   type: "parameter";
   name: StringPrimitive;
   //valueType: TypeAnnotation;
-  defaultValue?: Expression;
+  defaultValue?: ObjectsExpression;
   loc: SourceLocation;
 }
 
@@ -84,21 +83,21 @@ export interface BlockExpression {
 export interface NewExpression {
   type: "new";
   classRef: ClassReference;
-  arguments: Expression[];
+  arguments: ObjectsExpression[];
   loc: SourceLocation;
 }
 
 export interface MethodCall {
   type: "methodCall";
-  object: Expression;
+  object: ObjectsExpression;
   methodName: StringPrimitive;
-  arguments: Expression[];
+  arguments: ObjectsExpression[];
   loc: SourceLocation;
 }
 
 export interface PropertyAccess {
   type: "propertyAccess";
-  object: Expression;
+  object: ObjectsExpression;
   propertyName: StringPrimitive;
   loc: SourceLocation;
 }
@@ -115,7 +114,7 @@ export interface SuperExpression {
 
 export interface InstanceOfExpression {
   type: "instanceOf";
-  object: Expression;
+  object: ObjectsExpression;
   classRef: ClassReference;
   loc: SourceLocation;
 }
@@ -124,7 +123,7 @@ export interface VariableDeclaration {
   type: "variableDeclaration";
   name: SymbolPrimitive;
   //valueType: TypeAnnotation;
-  value: Expression;
+  value: ObjectsExpression;
   isMutable: boolean;
   accessModifier?: "public" | "private" | "protected" | "package";
   //loc: SourceLocation;
@@ -132,7 +131,7 @@ export interface VariableDeclaration {
 
 export interface ReturnStatement {
   type: "return";
-  value?: Expression;
+  value?: ObjectsExpression;
   loc: SourceLocation;
 }
 
@@ -144,21 +143,21 @@ export interface BaseControlFlow {
 // Conditional statements
 export interface IfStatement extends BaseControlFlow {
   type: "if";
-  condition: Expression;
+  condition: ObjectsExpression;
   thenBlock: BlockExpression;
   elseBlock?: BlockExpression | IfStatement; // For else-if chains
 }
 
 export interface SwitchStatement extends BaseControlFlow {
   type: "switch";
-  expression: Expression;
+  expression: ObjectsExpression;
   cases: SwitchCase[];
   defaultCase?: BlockExpression;
 }
 
 export interface SwitchCase {
   type: "case";
-  value: Expression;
+  value: ObjectsExpression;
   block: BlockExpression;
   loc: SourceLocation;
 }
@@ -166,35 +165,35 @@ export interface SwitchCase {
 // Looping statements
 export interface WhileStatement extends BaseControlFlow {
   type: "while";
-  condition: Expression;
+  condition: ObjectsExpression;
   body: BlockExpression;
 }
 
 export interface DoWhileStatement extends BaseControlFlow {
   type: "doWhile";
-  condition: Expression;
+  condition: ObjectsExpression;
   body: BlockExpression;
 }
 
 export interface ForStatement extends BaseControlFlow {
   type: "for";
-  init?: VariableDeclaration | Expression;
-  condition?: Expression;
-  update?: Expression;
+  init?: VariableDeclaration | ObjectsExpression;
+  condition?: ObjectsExpression;
+  update?: ObjectsExpression;
   body: BlockExpression;
 }
 
 export interface ForInStatement extends BaseControlFlow {
   type: "forIn";
   variable: VariableDeclaration | StringPrimitive;
-  iterable: Expression;
+  iterable: ObjectsExpression;
   body: BlockExpression;
 }
 
 export interface ForOfStatement extends BaseControlFlow {
   type: "forOf";
   variable: VariableDeclaration | StringPrimitive;
-  iterable: Expression;
+  iterable: ObjectsExpression;
   body: BlockExpression;
 }
 
@@ -211,7 +210,7 @@ export interface ContinueStatement extends BaseControlFlow {
 
 export interface ThrowStatement extends BaseControlFlow {
   type: "throw";
-  expression: Expression;
+  expression: ObjectsExpression;
 }
 
 export interface TryCatchStatement extends BaseControlFlow {
@@ -237,9 +236,8 @@ export type ControlFlowStatement =
   | ThrowStatement
   | TryCatchStatement;
 
-export type Expression =
-  | Primitive
-  | BaseOperation
+export type ObjectsExpression =
+  | Expression
   | NewExpression
   | MethodCall
   | PropertyAccess
@@ -248,7 +246,7 @@ export type Expression =
   | InstanceOfExpression;
 
 export type Statement =
-  | Expression
+  | ObjectsExpression
   | ClassDefinition
   | VariableDeclaration
   | ReturnStatement

@@ -1,6 +1,6 @@
 @{%
 import { HSLexer } from "./lexer"
-import { parseFunction, parsePrimary, parseExpression, parseFunctionExpression, parseCompositionExpression, parseTypeAlias, parseFunctionType, parseLambda} from "./parser";
+import { parseFunction, parsePrimary, parseExpression, parseCompositionExpression, parseTypeAlias, parseFunctionType, parseLambda} from "./parser";
 import util from "util";
 
 const filter = d => {
@@ -62,7 +62,7 @@ primary ->
     | %bool {% (d) => ({type: "Boolean", value: d[0]}) %}
     | identifier {% (d) => d[0] %} ## No need to reprocess
     | "(" _ expression _ ")" {% (d) => d[2] %}
-    | list_literal {% (d) => parsePrimary({type: "list", body: d[0]}) %}
+    | list_literal {% (d) => parsePrimary({type: "list", body: filter(d[0])}) %}
     | composition_expression {% (d) => {return d[0]} %}
     | lambda_expression {% (d) => {return d[0]} %}
     | if_expression {% d => d[0] %}
@@ -149,11 +149,11 @@ identifier -> %identifier {% (d) => parsePrimary(d[0]) %}
 ## 
 ## let_binding -> identifier _ "=" _ expression _ ";" {% (d) => ({ name: d[0].value, value: d[4] }) %}
 
-type_declaration -> "type" __ identifier _ "=" _ type_list {% (d) => parseTypeAlias(d) %}
+type_declaration -> "type" __ identifier _ "=" _ type_list {% (d) => parseTypeAlias(filter(d)) %}
 
 type_list -> 
-    ("[":? identifier "]":?) _ "->" _ type_list {% (d) => filter(d) %}
-    | "[":? identifier "]":? {% (d) => filter(d) %}
+    ("[":? identifier "]":?) _ "->" _ type_list {% (d) => ([{...d[0][1], isArray: d[0][0] !== null}, ...d[4]]) %}
+    | "[":? identifier "]":? {% (d) => ([{...d[1], isArray: d[0] !== null}]) %}
 
 list_literal -> "[" _ expression_list _ "]" {% (d) => d %}
 

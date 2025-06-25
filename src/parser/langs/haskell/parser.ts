@@ -1,23 +1,22 @@
 import {
+  ListPrimitive,
   NumberPrimitive,
+  Primitive,
   StringPrimitive,
   SymbolPrimitive,
+  YukigoPrimitive,
 } from "../../globals";
 import {
   CompositionExpression,
-  FunctionExpression,
   FunctionTypeSignature,
-  TypeAlias
+  TypeAlias,
 } from "../../paradigms/functional";
 import {
   HSExpression,
   HSFunctionDeclaration,
   HSLamdaExpression,
-  HSListPrimitive,
+  HSPattern,
 } from "./definition";
-
-// For now BaseMooToken it's just for reference, can't be sure if the tokens of each function are of one type.
-// TODO: Remove every any and have proper types
 
 interface BaseMooToken {
   type: string;
@@ -30,11 +29,40 @@ interface BaseMooToken {
   col: number;
 }
 
+interface ListToken {
+  type: "list";
+  body: [
+    {
+      type: "lsquare";
+      value: "[";
+      text: "[";
+      toString: () => string;
+      offset: 1143;
+      lineBreaks: 0;
+      line: 55;
+      col: 13;
+    },
+    Primitive[],
+    {
+      type: "rsquare";
+      value: "]";
+      text: "]";
+      toString: [Function: () => string];
+      offset: 1157;
+      lineBreaks: 0;
+      line: 55;
+      col: 27;
+    }
+  ];
+}
+
+type Token = BaseMooToken | ListToken;
+
 function parseFunction(token: {
   type: "function";
   name: SymbolPrimitive;
   params: SymbolPrimitive[];
-  body: any;
+  body: HSExpression;
   attributes: string[];
 }) {
   //console.log("Function", util.inspect(token, false, null, true));
@@ -49,118 +77,93 @@ function parseFunction(token: {
   return funcDecl;
 }
 
-function parseFunctionType(token: any) {
-  const bodyType: SymbolPrimitive[] = token[1]
-    .flat(Infinity)
-    .filter((t) => t !== null && t.type !== "typeArrow")
-    .map((t) => ({ type: "symbol", name: t.value }));
+function parseFunctionType(token: [SymbolPrimitive, [SymbolPrimitive & {isArray: boolean}]]) {
+  //console.log("FunctionSignature", util.inspect(token, false, null, true));
 
+  const bodyType: SymbolPrimitive[] = token[1].map(
+    (t) => ({ type: "YuSymbol", value: t.value } satisfies SymbolPrimitive)
+  );
   const inputTypes = bodyType.length > 1 ? bodyType.slice(0, -1) : [];
   const returnType = bodyType[bodyType.length - 1];
   const functionType: FunctionTypeSignature = {
     type: "TypeSignature",
-    name: { type: "symbol", value: token[0].value },
+    name: { type: "YuSymbol", value: token[0].value },
     inputTypes: inputTypes,
     returnType: returnType,
   };
   return functionType;
 }
 
-function parseTypeAlias(token: any) {
+function parseTypeAlias(
+  token: [Token, SymbolPrimitive, Token, SymbolPrimitive[]]
+) {
   //console.log(token);
   const typeAlias: TypeAlias = {
     type: "TypeAlias",
-    name: { type: "symbol", value: token[2].value },
-    typeParameters: token[6],
+    name: token[1],
+    typeParameters: token[3],
   };
   return typeAlias;
 }
 
-function parseExpression(token: any) {
-  if (token.type == "application") {
-    const expression: HSExpression = {
-      type: "application",
-      left: token.body[0],
-      operator: "$",
-      right: token.body[1],
-    };
-    //console.log("App. Expr.", expression);
-    return expression;
-  }
-  if (!token[1]) return token;
-  const expression: HSExpression = {
-    type: "expression",
-    left: token[0],
-    operator: token[1].value,
-    right: token[2],
-  };
-  return expression;
+function parseExpression(token: HSExpression) {
+  //console.log("Expression", util.inspect(token, false, null, true));
+  return token;
 }
 
-function parseLambda(token: any) {
+function parseLambda(token: [HSPattern[], HSExpression]) {
   //console.log("Lambda", util.inspect(token, false, null, true));
   const lambda: HSLamdaExpression = {
     type: "LambdaExpression",
-    parameters: token[0].map((param: any) => {
-      return { type: "symbol", value: param.value };
+    parameters: token[0].map((param) => {
+      return { type: "YuSymbol", value: param.name } satisfies SymbolPrimitive;
     }),
     body: token[1],
   };
   return lambda;
 }
 
-function parseFunctionExpression(token: any) {
-  //console.log("Function Expression", util.inspect(token, false, null, true));
-  const funcExpr: FunctionExpression = {
-    type: "function_expression",
-    name: { type: "symbol", value: token[0].value },
-    parameters: token[2]
-      ? token[2].map((param: any) => {
-          return { type: "symbol", value: param.value };
-        })
-      : [],
-  };
-  return funcExpr;
-}
-
-function parseCompositionExpression(token: any) {
+function parseCompositionExpression(
+  token: { type: YukigoPrimitive; value: string }[]
+) {
+  //console.log("Composition Expr", util.inspect(token, false, null, true));
   const compositionExpression: CompositionExpression = {
     type: "CompositionExpression",
-    left: { type: "symbol", value: token[0].value },
-    right: { type: "symbol", value: token[1].value },
+    left: { type: "YuSymbol", value: token[0].value },
+    right: { type: "YuSymbol", value: token[1].value },
   };
   return compositionExpression;
 }
 
-function parsePrimary(token: any) {
+function parsePrimary(token: Token) {
   //console.log("Primary", util.inspect(token, false, null, true));
   switch (token.type) {
     case "identifier": {
       const identifierPrimitive: SymbolPrimitive = {
-        type: "symbol",
+        type: "YuSymbol",
         value: token.value,
       };
       return identifierPrimitive;
     }
     case "number": {
       const numberPrimitive: NumberPrimitive = {
-        type: "number",
+        type: "YuNumber",
         numericType: "number", // Assuming all numbers are of type "number"
-        value: token.value,
+        value: Number(token.value),
       };
       return numberPrimitive;
     }
     case "string": {
       const stringPrimitive: StringPrimitive = {
-        type: "string",
+        type: "YuString",
         value: token.value,
       };
       return stringPrimitive;
     }
     case "list": {
-      const listPrimitive: HSListPrimitive = {
-        type: "list",
-        elements: token.body[2],
+      const listPrimitive: ListPrimitive = {
+        type: "YuList",
+        elements: (token as ListToken).body[1],
       };
       return listPrimitive;
     }
@@ -175,7 +178,6 @@ export {
   parseFunction,
   parsePrimary,
   parseExpression,
-  parseFunctionExpression,
   parseCompositionExpression,
   parseTypeAlias,
   parseFunctionType,

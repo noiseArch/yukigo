@@ -1,7 +1,11 @@
-import { SymbolPrimitive } from "../../globals";
+import {
+  Expression,
+  Modify,
+  SymbolPrimitive,
+  YukigoPrimitive,
+} from "../../globals";
 import {
   FunctionDeclaration,
-  Expression,
   FunctionExpression,
   ListPrimitive,
   LambdaExpression,
@@ -35,9 +39,21 @@ export const keywords = [
   "foreign",
 ];
 
-export type HSFunctionDeclaration = FunctionDeclaration;
+export type HSFunctionDeclaration = Modify<
+  FunctionDeclaration,
+  { body: HSExpression }
+>;
 export type HSFunctionExpression = FunctionExpression;
 export type HSExpression = Expression | ApplicationExpression;
+
+export const typeMappings: { [key: string]: YukigoPrimitive } = {
+  Float: "YuNumber",
+  Double: "YuNumber",
+  Int: "YuNumber",
+  String: "YuString",
+  Char: "YuChar",
+  Boolean: "YuBoolean",
+};
 
 export interface ApplicationExpression {
   type: "application_expression";
@@ -48,6 +64,14 @@ export interface ApplicationExpression {
 
 export type HSListPrimitive = ListPrimitive;
 
-export interface HSLamdaExpression extends LambdaExpression {
-  body: HSExpression;
+export interface HSPattern {
+  type: "VariablePattern" | "LiteralPattern" | "WildcardPattern";
+  name: string;
 }
+
+export type HSLamdaExpression = Modify<
+  LambdaExpression,
+  {
+    body: HSExpression;
+  }
+>;

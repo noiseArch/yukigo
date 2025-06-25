@@ -22,7 +22,11 @@ export function groupFunctionDeclarations(ast: any[]): any[] {
     ([name, contents]) => ({
       type: "function",
       name: contents[0].name,
-      contents: contents.map((func: FunctionDeclaration) => ({parameters: func.parameters, body: func.body, attributes: func.attributes})),
+      contents: contents.map((func: FunctionDeclaration) => ({
+        parameters: func.parameters,
+        body: func.body,
+        attributes: func.attributes,
+      })),
     })
   );
 
@@ -34,12 +38,12 @@ export function parse(code: string) {
   parser.feed(code);
   parser.finish();
   console.log("Amount of possibles ASTs:", parser.results.length);
-/*   if (parser.results.length > 1)
+  if (parser.results.length > 1)
     throw Error("Too much ambiguity. Output not generated.");
   if (parser.results.length == 0)
     throw Error("Parser did not generate an AST.");
-  const groupedAst = groupFunctionDeclarations(parser.results[0]); */
-  return parser.results;
+  const groupedAst = groupFunctionDeclarations(parser.results[0]);
+  return [groupedAst];
 }
 
 try {

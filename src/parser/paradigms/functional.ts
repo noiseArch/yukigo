@@ -1,4 +1,4 @@
-import { BaseOperation, Primitive, SymbolPrimitive } from "../globals";
+import { Expression, SymbolPrimitive } from "../globals";
 import { BlockExpression } from "./objects";
 
 export interface FunctionDeclaration {
@@ -33,8 +33,6 @@ export interface CompositionExpression {
   right: SymbolPrimitive;
   //loc: SourceLocation;
 }
-
-export type Expression = Primitive | BaseOperation;
 
 export type ListPrimitive = {
   type: "list";

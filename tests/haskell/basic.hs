@@ -13,7 +13,7 @@ datita = UnDatita {atributito = "Hola", atributote = 42}
 datita' :: Datita
 datita' = UnDatita "Hola" 42
 
-numInt :: Int
+numInt :: Number
 numInt = 42
 
 -- Floating-point numbers

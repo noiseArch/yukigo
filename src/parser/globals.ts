@@ -1,10 +1,16 @@
-/* 
-##### VALUES
-*/
+export type Modify<T, R> = Omit<T, keyof R> & R;
 
-import { Expression } from "./paradigms/objects";
 
 // Universal primitive value types
+export type YukigoPrimitive =
+  | "YuNumber"
+  | "YuString"
+  | "YuChar"
+  | "YuBoolean"
+  | "YuList"
+  | "YuNull"
+  | "YuUndefined"
+  | "YuSymbol";
 export type PrimitiveValue =
   | number
   | boolean
@@ -20,8 +26,8 @@ export type PrimitiveValue =
  * - Language-agnostic representation
  */
 export interface BasePrimitive {
-  type: string;
-  value: PrimitiveValue;
+  type: YukigoPrimitive;
+  value: PrimitiveValue | PrimitiveValue[];
   //loc: SourceLocation;
 }
 
@@ -30,7 +36,7 @@ export interface BasePrimitive {
  * - Represents all numeric types across languages
  */
 export interface NumberPrimitive extends BasePrimitive {
-  type: "number";
+  type: "YuNumber";
   numericType: string;
   value: number | bigint;
 }
@@ -40,7 +46,7 @@ export interface NumberPrimitive extends BasePrimitive {
  * - Universal truth values
  */
 export interface BooleanPrimitive extends BasePrimitive {
-  type: "boolean";
+  type: "YuBoolean";
   value: boolean;
 }
 
@@ -50,7 +56,7 @@ export interface BooleanPrimitive extends BasePrimitive {
  * - Includes encoding information when relevant
  */
 export interface StringPrimitive extends BasePrimitive {
-  type: "string";
+  type: "YuString";
   value: string;
   encoding?: "utf8" | "utf16" | "ascii"; // Default: utf8
 }
@@ -60,7 +66,7 @@ export interface StringPrimitive extends BasePrimitive {
  * - Explicit absence of value
  */
 export interface NullPrimitive extends BasePrimitive {
-  type: "null";
+  type: "YuNull";
   value: null;
 }
 
@@ -69,7 +75,7 @@ export interface NullPrimitive extends BasePrimitive {
  * - Represents uninitialized state
  */
 export interface UndefinedPrimitive extends BasePrimitive {
-  type: "undefined";
+  type: "YuUndefined";
   value: undefined;
 }
 
@@ -78,10 +84,19 @@ export interface UndefinedPrimitive extends BasePrimitive {
  * - Unique identifier primitive
  */
 export interface SymbolPrimitive extends BasePrimitive {
-  type: "symbol";
+  type: "YuSymbol";
   value: string;
   description?: string;
 }
+/**
+ * Symbol primitive
+ * - Unique identifier primitive
+ */
+export interface ListPrimitive {
+  type: "YuList";
+  elements: Expression[];
+  //loc: SourceLocation;
+};
 
 // Union export type for all primitives
 export type Primitive =
@@ -90,8 +105,8 @@ export type Primitive =
   | StringPrimitive
   | NullPrimitive
   | UndefinedPrimitive
-  | SymbolPrimitive;
-
+  | SymbolPrimitive
+  | ListPrimitive;
 
 // Source location information
 export interface SourceLocation {
@@ -158,7 +173,11 @@ export interface BitwiseOperation extends BaseOperation {
   operator: "&" | "|" | "^" | "~" | "<<" | ">>" | ">>>";
 }
 
-export type Operation = ArithmeticOperation | ComparisonOperation | LogicalOperation | BitwiseOperation 
+export type Operation =
+  | ArithmeticOperation
+  | ComparisonOperation
+  | LogicalOperation
+  | BitwiseOperation;
 
 /* 
 ### COLLECTIONS
@@ -203,3 +222,6 @@ export interface MapEntry {
   key: Expression;
   value: Expression;
 }
+
+
+export type Expression = Primitive | Operation 
