@@ -25,6 +25,7 @@ export function groupFunctionDeclarations(ast: any[]): any[] {
       contents: contents.map((func: FunctionDeclaration) => ({
         parameters: func.parameters,
         body: func.body,
+        return: func.return,
         attributes: func.attributes,
       })),
     })

@@ -1,6 +1,5 @@
 export type Modify<T, R> = Omit<T, keyof R> & R;
 
-
 // Universal primitive value types
 export type YukigoPrimitive =
   | "YuNumber"
@@ -96,7 +95,7 @@ export interface ListPrimitive {
   type: "YuList";
   elements: Expression[];
   //loc: SourceLocation;
-};
+}
 
 // Union export type for all primitives
 export type Primitive =
@@ -122,9 +121,7 @@ export interface Position {
   offset: number;
 }
 
-/* 
-##### OPERATIONS
-*/
+// OPERATORS
 
 /**
  * Base interface for all operations
@@ -171,6 +168,25 @@ export interface LogicalOperation extends BaseOperation {
 export interface BitwiseOperation extends BaseOperation {
   type: "bitwise";
   operator: "&" | "|" | "^" | "~" | "<<" | ">>" | ">>>";
+}
+/**
+ * Transform operations
+ * - Higher-order functions map-like
+ * - Used for transforming collections
+ */
+export interface TransformOperation {
+  type: "Transform";
+  operator: "map";
+  function: Expression;
+  list: Expression;
+  //loc: SourceLocation;
+}
+export interface SelectOperation {
+  type: "Select";
+  operator: "filter";
+  function: Expression;
+  list: Expression;
+  //loc: SourceLocation;
 }
 
 export type Operation =
@@ -223,5 +239,13 @@ export interface MapEntry {
   value: Expression;
 }
 
+export type Expression = Primitive | Operation;
 
-export type Expression = Primitive | Operation 
+export type Type =
+  | { kind: "primitive"; name: string }
+  | { kind: "function"; parameters: Type[]; return: Type }
+  | { kind: "list"; elementType: Type }
+  | { kind: "tuple"; elements: Type[] }
+  | { kind: "variable"; id: number }; // For generics/inference
+
+export type Environment = Map<string, Type>;

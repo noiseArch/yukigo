@@ -1,4 +1,5 @@
 import {
+  Expression,
   ListPrimitive,
   NumberPrimitive,
   Primitive,
@@ -12,11 +13,13 @@ import {
   TypeAlias,
 } from "../../paradigms/functional";
 import {
+  ApplicationExpression,
   HSExpression,
   HSFunctionDeclaration,
   HSLamdaExpression,
   HSPattern,
 } from "./definition";
+import util from "util";
 
 interface BaseMooToken {
   type: string;
@@ -63,6 +66,7 @@ function parseFunction(token: {
   name: SymbolPrimitive;
   params: SymbolPrimitive[];
   body: HSExpression;
+  return: HSExpression
   attributes: string[];
 }) {
   //console.log("Function", util.inspect(token, false, null, true));
@@ -71,18 +75,19 @@ function parseFunction(token: {
     name: token.name,
     parameters: token.params,
     body: token.body,
+    return: token.return,
     attributes: token.attributes,
   };
 
   return funcDecl;
 }
 
-function parseFunctionType(token: [SymbolPrimitive, [SymbolPrimitive & {isArray: boolean}]]) {
+function parseFunctionType(
+  token: [SymbolPrimitive, [SymbolPrimitive & { isArray: boolean }]]
+) {
   //console.log("FunctionSignature", util.inspect(token, false, null, true));
 
-  const bodyType: SymbolPrimitive[] = token[1].map(
-    (t) => ({ type: "YuSymbol", value: t.value } satisfies SymbolPrimitive)
-  );
+  const bodyType = token[1];
   const inputTypes = bodyType.length > 1 ? bodyType.slice(0, -1) : [];
   const returnType = bodyType[bodyType.length - 1];
   const functionType: FunctionTypeSignature = {
@@ -108,7 +113,7 @@ function parseTypeAlias(
 
 function parseExpression(token: HSExpression) {
   //console.log("Expression", util.inspect(token, false, null, true));
-  return token;
+  return { type: "Expression", body: token };
 }
 
 function parseLambda(token: [HSPattern[], HSExpression]) {
@@ -133,6 +138,13 @@ function parseCompositionExpression(
     right: { type: "YuSymbol", value: token[1].value },
   };
   return compositionExpression;
+}
+
+function parseApplication(
+  token: [SymbolPrimitive, Expression[]]
+): ApplicationExpression {
+  //console.log("Application", util.inspect(token, false, null, true));
+  return { type: "Application", function: token[0], parameters: token[1] };
 }
 
 function parsePrimary(token: Token) {
@@ -181,5 +193,6 @@ export {
   parseCompositionExpression,
   parseTypeAlias,
   parseFunctionType,
+  parseApplication,
   parseLambda,
 };

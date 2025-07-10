@@ -17,7 +17,9 @@
     "lex": "npx tsc && node ./dist/parser/lexer.js",
     "analyse": "nearleyc ./src/parser/langs/haskell/grammar.ne -o ./src/parser/langs/haskell/grammar.ts && npx tsc && node ./dist/analyser/analyse.js",
     "mulang": "npx tsc && node ./dist/parser/mulang.js",
-    "test": "npx tsc && node ./dist/tester/test.js"
+    "test": "npx tsc && node ./dist/tester/test.js",
+    "infer": "nearleyc ./src/parser/langs/haskell/grammar.ne -o ./src/parser/langs/haskell/grammar.ts && npx tsc && node ./dist/analyser/infer.js"
+
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",

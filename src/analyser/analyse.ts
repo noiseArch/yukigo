@@ -71,7 +71,13 @@ if (argv.e) {
   throw Error("You must provide an expectations file with -e");
 }
 
-const analysisResults = analyzer.analyze(expectations);
+const analysisResults = analyzer.analyze([
+  {
+    inspection: "TypeCheck",
+    args: { language: "haskell" },
+    expected: true,
+  },
+]);
 
 if (argv.o) {
   fs.writeFileSync(argv.o, JSON.stringify(analysisResults, null, 2));

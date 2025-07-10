@@ -13,7 +13,7 @@ declare var identifier: any;
 declare var WS: any;
 
 import { HSLexer } from "./lexer"
-import { parseFunction, parsePrimary, parseExpression, parseCompositionExpression, parseTypeAlias, parseFunctionType, parseLambda} from "./parser";
+import { parseFunction, parsePrimary, parseApplication, parseExpression, parseCompositionExpression, parseTypeAlias, parseFunctionType, parseLambda} from "./parser";
 import util from "util";
 
 const filter = d => {
@@ -80,8 +80,10 @@ const grammar: Grammar = {
             right: d[8]
         }) },
     {"name": "infix_operator_expression", "symbols": ["application"], "postprocess": d => d[0]},
-    {"name": "application", "symbols": ["primary", "__", "application"], "postprocess": (d) => {return {type: "application", body: filter(d).flat(Infinity)}}},
-    {"name": "application", "symbols": ["primary"], "postprocess": (d) => { return d[0] }},
+    {"name": "application$ebnf$1", "symbols": []},
+    {"name": "application$ebnf$1$subexpression$1", "symbols": ["__", "primary"]},
+    {"name": "application$ebnf$1", "symbols": ["application$ebnf$1", "application$ebnf$1$subexpression$1"], "postprocess": (d) => d[0].concat([d[1]])},
+    {"name": "application", "symbols": ["primary", "application$ebnf$1"], "postprocess": (d) => parseApplication([d[0], filter(d[1].flat(Infinity))])},
     {"name": "primary", "symbols": [(HSLexer.has("number") ? {type: "number"} : number)], "postprocess": (d) => parsePrimary(d[0])},
     {"name": "primary", "symbols": [(HSLexer.has("string") ? {type: "string"} : string)], "postprocess": (d) => parsePrimary(d[0])},
     {"name": "primary", "symbols": [(HSLexer.has("bool") ? {type: "bool"} : bool)], "postprocess": (d) => ({type: "Boolean", value: d[0]})},
@@ -116,12 +118,12 @@ const grammar: Grammar = {
     {"name": "function_declaration$ebnf$1", "symbols": [], "postprocess": () => null},
     {"name": "function_declaration$ebnf$2", "symbols": ["guarded_rhs_list"]},
     {"name": "function_declaration$ebnf$2", "symbols": ["function_declaration$ebnf$2", "guarded_rhs_list"], "postprocess": (d) => d[0].concat([d[1]])},
-    {"name": "function_declaration", "symbols": ["identifier", "__", "function_declaration$ebnf$1", "function_declaration$ebnf$2"], "postprocess": (d) => {return parseFunction({type: "function", name: d[0], params: d[2].flat(Infinity), body: d[3], attributes: ["GuardedBody"]})}},
+    {"name": "function_declaration", "symbols": ["identifier", "__", "function_declaration$ebnf$1", "function_declaration$ebnf$2"], "postprocess": (d) => {return parseFunction({type: "function", name: d[0], params: d[2].flat(Infinity), body: d[3], return: d[3], attributes: ["GuardedBody"]})}},
     {"name": "function_declaration$ebnf$3", "symbols": ["parameter_list"], "postprocess": id},
     {"name": "function_declaration$ebnf$3", "symbols": [], "postprocess": () => null},
-    {"name": "function_declaration", "symbols": ["identifier", "__", "function_declaration$ebnf$3", "_", {"literal":"="}, "_", "expression"], "postprocess": (d) => {return parseFunction({type: "function", name: d[0], params: d[2] ? d[2].flat(Infinity) : [], body: d[6], attributes: ["UnguardedBody"]})}},
+    {"name": "function_declaration", "symbols": ["identifier", "__", "function_declaration$ebnf$3", "_", {"literal":"="}, "_", "expression"], "postprocess": (d) => {return parseFunction({type: "function", name: d[0], params: d[2] ? d[2].flat(Infinity) : [], body: d[6], return: d[6], attributes: ["UnguardedBody"]})}},
     {"name": "guarded_rhs_list", "symbols": ["_", {"literal":"|"}, "_", "guarded_rhs"], "postprocess": (d) => d[3]},
-    {"name": "guarded_rhs", "symbols": ["expression", "_", {"literal":"="}, "_", "expression"], "postprocess": (d) => {return { guard: d[0], body: d[4] }}},
+    {"name": "guarded_rhs", "symbols": ["expression", "_", {"literal":"="}, "_", "expression"], "postprocess": (d) => {return { guard: d[0], body: d[4], return: d[4] }}},
     {"name": "parameter_list", "symbols": ["pattern", "__", "parameter_list"], "postprocess": (d) => filter(d.flat(Infinity))},
     {"name": "parameter_list", "symbols": ["pattern"], "postprocess": (d) => [d[0]]},
     {"name": "pattern", "symbols": ["identifier"], "postprocess": (d) => ({type: "VariablePattern", name: d[0].value})},

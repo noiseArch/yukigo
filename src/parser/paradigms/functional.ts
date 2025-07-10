@@ -6,6 +6,7 @@ export interface FunctionDeclaration {
   name: SymbolPrimitive;
   parameters: SymbolPrimitive[];
   body: Expression | BlockExpression;
+  return: Expression;
   attributes: string[];
   //loc: SourceLocation;
 }
@@ -17,6 +18,7 @@ export interface FunctionGroup {
     parameters: SymbolPrimitive[];
     body: Expression | BlockExpression;
     attributes: string[];
+    return: Expression;
   }[];
 }
 
@@ -53,10 +55,9 @@ export interface TypeAlias {
   typeParameters: SymbolPrimitive[]; // Optional type parameters
 }
 
-
 export interface FunctionTypeSignature {
   type: "TypeSignature";
   name: SymbolPrimitive;
-  inputTypes: SymbolPrimitive[];
-  returnType: SymbolPrimitive;
+  inputTypes: (SymbolPrimitive & { isArray: boolean })[];
+  returnType: SymbolPrimitive & { isArray: boolean };
 }

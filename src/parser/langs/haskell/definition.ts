@@ -2,6 +2,7 @@ import {
   Expression,
   Modify,
   SymbolPrimitive,
+  Type,
   YukigoPrimitive,
 } from "../../globals";
 import {
@@ -41,7 +42,7 @@ export const keywords = [
 
 export type HSFunctionDeclaration = Modify<
   FunctionDeclaration,
-  { body: HSExpression }
+  { body: HSExpression; return: HSExpression }
 >;
 export type HSFunctionExpression = FunctionExpression;
 export type HSExpression = Expression | ApplicationExpression;
@@ -50,16 +51,71 @@ export const typeMappings: { [key: string]: YukigoPrimitive } = {
   Float: "YuNumber",
   Double: "YuNumber",
   Int: "YuNumber",
+  Integer: "YuNumber",
   String: "YuString",
   Char: "YuChar",
   Boolean: "YuBoolean",
 };
 
+export const haskellStdLib: Map<string, Type> = new Map([
+  [
+    "map",
+    {
+      kind: "function",
+      parameters: [
+        {
+          kind: "function",
+          parameters: [{ kind: "variable", id: 0 }],
+          return: { kind: "variable", id: 1 },
+        },
+        {
+          kind: "list",
+          elementType: { kind: "variable", id: 0 },
+        },
+      ],
+      return: {
+        kind: "list",
+        elementType: { kind: "variable", id: 1 },
+      },
+    },
+  ],
+
+  [
+    "filter",
+    {
+      kind: "function",
+      parameters: [
+        {
+          kind: "function",
+          parameters: [{ kind: "variable", id: 0 }],
+          return: { kind: "primitive", name: "Bool" },
+        },
+        {
+          kind: "list",
+          elementType: { kind: "variable", id: 0 },
+        },
+      ],
+      return: {
+        kind: "list",
+        elementType: { kind: "variable", id: 0 },
+      },
+    },
+  ],
+
+  [
+    "even",
+    {
+      kind: "function",
+      parameters: [{ kind: "primitive", name: "Int" }],
+      return: { kind: "primitive", name: "Bool" },
+    },
+  ],
+]);
+
 export interface ApplicationExpression {
-  type: "application_expression";
-  left: SymbolPrimitive;
-  operator: "$";
-  right: SymbolPrimitive;
+  type: "Application";
+  function: SymbolPrimitive;
+  parameters: Expression[];
 }
 
 export type HSListPrimitive = ListPrimitive;

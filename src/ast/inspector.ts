@@ -1,3 +1,4 @@
+import { haskellTypeChecker, TypeError } from "../parser/langs/haskell/type";
 import {
   FunctionGroup,
   FunctionTypeSignature,
@@ -26,14 +27,24 @@ type InspectionHandlerMap = {
   ) => { result: boolean };
 };
 
+// type SupportedLanguage = "haskell";
+
 class ASTAnalyzer {
   private ast: any;
   private findings: Map<string, any> = new Map();
+  private typeCheckers: Map<string, (ast: any) => TypeError[]> = new Map();
 
   constructor(ast: any) {
     this.ast = ast;
   }
 
+  private languageTypeCheckers: Record<string, (ast: any) => TypeError[]> = {
+    haskell: haskellTypeChecker,
+  };
+
+  registerTypeChecker(language: string, checker: (ast: any) => TypeError[]) {
+    this.typeCheckers.set(language, checker);
+  }
   private inspectionHandlers: InspectionHandlerMap = {
     HasBinding: (ast, args, findings) => {
       const bindingName = args.name;
@@ -64,7 +75,24 @@ class ASTAnalyzer {
         result: found,
       };
     },
-
+    TypeCheck: (ast, args, findings) => {
+      const language = args.language || "haskell";
+      const checker = this.languageTypeCheckers[language];
+      
+      if (!checker) {
+        return {
+          result: false,
+          details: `No type checker for language: ${language}`
+        };
+      }
+      
+      const errors = checker(ast);
+      console.log(errors)
+      return {
+        result: errors.length === 0,
+        details: errors
+      };
+    },
     UsesGuards: (ast, args, findings) => {
       const functionName = args.name;
       let usesGuards = false;

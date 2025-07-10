@@ -1,6 +1,6 @@
 @{%
 import { HSLexer } from "./lexer"
-import { parseFunction, parsePrimary, parseExpression, parseCompositionExpression, parseTypeAlias, parseFunctionType, parseLambda} from "./parser";
+import { parseFunction, parsePrimary, parseApplication, parseExpression, parseCompositionExpression, parseTypeAlias, parseFunctionType, parseLambda} from "./parser";
 import util from "util";
 
 const filter = d => {
@@ -52,9 +52,7 @@ infix_operator_expression ->
     }) %}
     | application {% d => d[0] %}
 
-application ->
-    primary __ application {% (d) => {return {type: "application", body: filter(d).flat(Infinity)}} %}
-    | primary {% (d) => { return d[0] } %}
+application -> primary (__ primary):* {% (d) => parseApplication([d[0], filter(d[1].flat(Infinity))]) %}
 
 primary ->
     %number {% (d) => parsePrimary(d[0]) %}
@@ -91,12 +89,12 @@ field -> identifier _ "::" _ type_list {% (d) => ({type: "Field", name: d[0], co
 function_type_declaration -> identifier _ "::" _ type_list {% (d) => parseFunctionType([d[0], d[4]]) %}
 
 function_declaration -> 
-    identifier __ parameter_list:? guarded_rhs_list:+ {% (d) => {return parseFunction({type: "function", name: d[0], params: d[2].flat(Infinity), body: d[3], attributes: ["GuardedBody"]})} %}
-    | identifier __ parameter_list:? _ "=" _ expression {% (d) => {return parseFunction({type: "function", name: d[0], params: d[2] ? d[2].flat(Infinity) : [], body: d[6], attributes: ["UnguardedBody"]})} %}
+    identifier __ parameter_list:? guarded_rhs_list:+ {% (d) => {return parseFunction({type: "function", name: d[0], params: d[2].flat(Infinity), body: d[3], return: d[3], attributes: ["GuardedBody"]})} %}
+    | identifier __ parameter_list:? _ "=" _ expression {% (d) => {return parseFunction({type: "function", name: d[0], params: d[2] ? d[2].flat(Infinity) : [], body: d[6], return: d[6], attributes: ["UnguardedBody"]})} %}
 
 guarded_rhs_list -> _ "|" _ guarded_rhs {% (d) => d[3] %}
 
-guarded_rhs -> expression _ "=" _ expression {% (d) => {return { guard: d[0], body: d[4] }} %}
+guarded_rhs -> expression _ "=" _ expression {% (d) => {return { guard: d[0], body: d[4], return: d[4] }} %}
 
 parameter_list -> 
     pattern __ parameter_list {% (d) => filter(d.flat(Infinity)) %}
