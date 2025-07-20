@@ -6,6 +6,7 @@ import ASTAnalyzer, { InspectionRule } from "../ast/inspector";
 import { translateMulangToInspectionRules } from "../utils/mulangToYukigo";
 import { traverse } from "../ast/visitor";
 import { FunctionGroup } from "../parser/paradigms/functional";
+import { TypeChecker } from "./infer";
 
 const argv = yargs(hideBin(process.argv))
   .usage("Usage: yukigo analyse <filepath> [options]")
@@ -71,13 +72,7 @@ if (argv.e) {
   throw Error("You must provide an expectations file with -e");
 }
 
-const analysisResults = analyzer.analyze([
-  {
-    inspection: "TypeCheck",
-    args: { language: "haskell" },
-    expected: true,
-  },
-]);
+const analysisResults = analyzer.analyze(expectations);
 
 if (argv.o) {
   fs.writeFileSync(argv.o, JSON.stringify(analysisResults, null, 2));
@@ -99,3 +94,8 @@ if (argv.o) {
     console.log(analysisResults);
   }
 }
+
+console.log("-------- Type Errors --------")
+const typeChecker = new TypeChecker();
+const errors = typeChecker.check(ast);
+console.log(errors)

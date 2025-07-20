@@ -25,21 +25,21 @@ lambda_expression ->
     "(" _ "\\" _ parameter_list _ "->" _ expression _ ")" {% (d) => parseLambda([d[4], d[8]]) %}
 
 concatenation ->
-    comparison _ "++" _ concatenation {% (d) => ({ type: "concatenation", operator: d[2].value, left: d[0], right: d[4] }) %}
+    comparison _ "++" _ concatenation {% (d) => ({ type: "Concat", operator: d[2].value, left: {type: "Expression", body:d[0]}, right: {type: "Expression", body:d[4]} }) %}
     | comparison {% (d) => d[0] %}
 
 comparison ->
-    addition _ comparison_operator _ comparison {% (d) => ({ type: "comparison", operator: d[2].value, left: d[0], right: d[4] }) %}
+    addition _ comparison_operator _ comparison {% (d) => ({ type: "Comparison", operator: d[2].value, left: {type: "Expression", body:d[0]}, right: {type: "Expression", body:d[4]} }) %}
     | addition {% (d) => d[0] %}
 
 addition -> 
-    multiplication _ "+" _ addition {% (d) => ({ type: "Arithmetic", operator: d[2].value, left: d[0], right: d[4] }) %}
-    | multiplication _ "-" _ addition {% (d) => ({ type: "Arithmetic", operator: d[2].value, left: d[0], right: d[4] }) %}
+    multiplication _ "+" _ addition {% (d) => ({ type: "Arithmetic", operator: d[2].value, left: {type: "Expression", body:d[0]}, right: {type: "Expression", body:d[4]} }) %}
+    | multiplication _ "-" _ addition {% (d) => ({ type: "Arithmetic", operator: d[2].value, left: {type: "Expression", body:d[0]}, right: {type: "Expression", body:d[4]} }) %}
     | multiplication {% (d) => d[0] %}
 
 multiplication ->
-    infix_operator_expression _ "*" _ multiplication {% (d) => ({ type: "Arithmetic", operator: d[2].value, left: d[0], right: d[4] }) %}
-    | infix_operator_expression _ "/" _ multiplication {% (d) => ({ type: "Arithmetic", operator: d[2].value, left: d[0], right: d[4] }) %}
+    infix_operator_expression _ "*" _ multiplication {% (d) => ({ type: "Arithmetic", operator: d[2].value, left: {type: "Expression", body:d[0]}, right: {type: "Expression", body:d[4]} }) %}
+    | infix_operator_expression _ "/" _ multiplication {% (d) => ({ type: "Arithmetic", operator: d[2].value, left: {type: "Expression", body:d[0]}, right: {type: "Expression", body:d[4]} }) %}
     | infix_operator_expression {% (d) => d[0] %}
 
 infix_operator_expression ->

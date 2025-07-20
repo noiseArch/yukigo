@@ -1,7 +1,6 @@
 import {
   Expression,
   Modify,
-  SymbolPrimitive,
   Type,
   YukigoPrimitive,
 } from "../../globals";
@@ -10,6 +9,7 @@ import {
   FunctionExpression,
   ListPrimitive,
   LambdaExpression,
+  ApplicationExpression,
 } from "../../paradigms/functional";
 
 export const keywords = [
@@ -112,18 +112,7 @@ export const haskellStdLib: Map<string, Type> = new Map([
   ],
 ]);
 
-export interface ApplicationExpression {
-  type: "Application";
-  function: SymbolPrimitive;
-  parameters: Expression[];
-}
-
 export type HSListPrimitive = ListPrimitive;
-
-export interface HSPattern {
-  type: "VariablePattern" | "LiteralPattern" | "WildcardPattern";
-  name: string;
-}
 
 export type HSLamdaExpression = Modify<
   LambdaExpression,

@@ -9,17 +9,16 @@ import {
 } from "../../globals";
 import {
   CompositionExpression,
+  ApplicationExpression,
   FunctionTypeSignature,
   TypeAlias,
+  Pattern,
 } from "../../paradigms/functional";
 import {
-  ApplicationExpression,
   HSExpression,
   HSFunctionDeclaration,
   HSLamdaExpression,
-  HSPattern,
 } from "./definition";
-import util from "util";
 
 interface BaseMooToken {
   type: string;
@@ -64,9 +63,9 @@ type Token = BaseMooToken | ListToken;
 function parseFunction(token: {
   type: "function";
   name: SymbolPrimitive;
-  params: SymbolPrimitive[];
+  params: Pattern[];
   body: HSExpression;
-  return: HSExpression
+  return: HSExpression;
   attributes: string[];
 }) {
   //console.log("Function", util.inspect(token, false, null, true));
@@ -100,7 +99,12 @@ function parseFunctionType(
 }
 
 function parseTypeAlias(
-  token: [Token, SymbolPrimitive, Token, SymbolPrimitive[]]
+  token: [
+    Token,
+    SymbolPrimitive,
+    Token,
+    (SymbolPrimitive & { isArray: boolean })[]
+  ]
 ) {
   //console.log(token);
   const typeAlias: TypeAlias = {
@@ -116,7 +120,7 @@ function parseExpression(token: HSExpression) {
   return { type: "Expression", body: token };
 }
 
-function parseLambda(token: [HSPattern[], HSExpression]) {
+function parseLambda(token: [Pattern[], HSExpression]) {
   //console.log("Lambda", util.inspect(token, false, null, true));
   const lambda: HSLamdaExpression = {
     type: "LambdaExpression",
@@ -142,8 +146,11 @@ function parseCompositionExpression(
 
 function parseApplication(
   token: [SymbolPrimitive, Expression[]]
-): ApplicationExpression {
+): ApplicationExpression | SymbolPrimitive {
   //console.log("Application", util.inspect(token, false, null, true));
+  if (token[1].length == 0) {
+    return token[0];
+  }
   return { type: "Application", function: token[0], parameters: token[1] };
 }
 
@@ -175,7 +182,10 @@ function parsePrimary(token: Token) {
     case "list": {
       const listPrimitive: ListPrimitive = {
         type: "YuList",
-        elements: (token as ListToken).body[1],
+        elements: (token as ListToken).body[1].map((t) => ({
+          type: "Expression",
+          body: t,
+        })),
       };
       return listPrimitive;
     }

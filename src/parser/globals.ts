@@ -1,3 +1,13 @@
+import {
+  ApplicationExpression,
+  CompositionExpression,
+  FunctionDeclaration,
+  FunctionGroup,
+  FunctionTypeSignature,
+  LambdaExpression,
+  TypeAlias,
+} from "./paradigms/functional";
+
 export type Modify<T, R> = Omit<T, keyof R> & R;
 
 // Universal primitive value types
@@ -37,7 +47,7 @@ export interface BasePrimitive {
 export interface NumberPrimitive extends BasePrimitive {
   type: "YuNumber";
   numericType: string;
-  value: number | bigint;
+  value: number;
 }
 
 /**
@@ -139,7 +149,7 @@ export interface BaseOperation {
  * - Common across all languages
  */
 export interface ArithmeticOperation extends BaseOperation {
-  type: "arithmetic";
+  type: "Arithmetic";
   operator: "+" | "-" | "*" | "/" | "%" | "**";
 }
 
@@ -148,7 +158,7 @@ export interface ArithmeticOperation extends BaseOperation {
  * - Universal comparison semantics
  */
 export interface ComparisonOperation extends BaseOperation {
-  type: "comparison";
+  type: "Comparison";
   operator: "==" | "!=" | "===" | "!==" | "<" | ">" | "<=" | ">=";
 }
 
@@ -189,11 +199,21 @@ export interface SelectOperation {
   //loc: SourceLocation;
 }
 
+export interface ConcatOperation {
+  type: "Concat";
+  operator: string;
+  left: Expression;
+  right: Expression;
+}
+
+export type StringOperation = ConcatOperation;
+
 export type Operation =
   | ArithmeticOperation
   | ComparisonOperation
   | LogicalOperation
-  | BitwiseOperation;
+  | BitwiseOperation
+  | StringOperation;
 
 /* 
 ### COLLECTIONS
@@ -239,7 +259,18 @@ export interface MapEntry {
   value: Expression;
 }
 
-export type Expression = Primitive | Operation;
+export type BodyExpression =
+  | Primitive
+  | Operation
+  // Functional expressions
+  | CompositionExpression
+  | LambdaExpression
+  | ApplicationExpression;
+
+export type Expression = {
+  type: "Expression";
+  body: BodyExpression;
+};
 
 export type Type =
   | { kind: "primitive"; name: string }
@@ -249,3 +280,7 @@ export type Type =
   | { kind: "variable"; id: number }; // For generics/inference
 
 export type Environment = Map<string, Type>;
+
+
+export type AST = (TypeAlias | FunctionTypeSignature | FunctionDeclaration)[]
+export type ASTGrouped = (TypeAlias | FunctionTypeSignature | FunctionGroup)[]

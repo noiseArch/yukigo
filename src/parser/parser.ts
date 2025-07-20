@@ -4,10 +4,11 @@ import grammar from "./langs/haskell/grammar";
 import { argv } from "process";
 import { FunctionDeclaration, FunctionGroup } from "./paradigms/functional";
 import { astToTypescript } from "../ast/translator";
+import { AST, ASTGrouped } from "./globals";
 
-export function groupFunctionDeclarations(ast: any[]): any[] {
+export function groupFunctionDeclarations(ast: AST): ASTGrouped {
   const groups: Record<string, FunctionDeclaration[]> = {};
-  const others: any[] = [];
+  const others: ASTGrouped = []; // Cumple ASTGrouped porque no tiene objetos FunctionDeclaration 
 
   for (const node of ast) {
     if (node.type == "function") {
@@ -19,7 +20,7 @@ export function groupFunctionDeclarations(ast: any[]): any[] {
     }
   }
   const functionGroups: FunctionGroup[] = Object.entries(groups).map(
-    ([name, contents]) => ({
+    ([, contents]) => ({
       type: "function",
       name: contents[0].name,
       contents: contents.map((func: FunctionDeclaration) => ({
@@ -44,7 +45,7 @@ export function parse(code: string) {
   if (parser.results.length == 0)
     throw Error("Parser did not generate an AST.");
   const groupedAst = groupFunctionDeclarations(parser.results[0]);
-  return [groupedAst];
+  return groupedAst;
 }
 
 try {

@@ -4,22 +4,31 @@ import { BlockExpression } from "./objects";
 export interface FunctionDeclaration {
   type: "function";
   name: SymbolPrimitive;
-  parameters: SymbolPrimitive[];
+  parameters: Pattern[];
   body: Expression | BlockExpression;
   return: Expression;
   attributes: string[];
   //loc: SourceLocation;
 }
 
+export interface Pattern {
+  type: "VariablePattern" | "LiteralPattern" | "WildcardPattern";
+  name: string;
+}
+
+export interface Func {
+  parameters: {
+    type: "VariablePattern" | "LiteralPattern" | "WildcardPattern";
+    name: string;
+  }[];
+  body: Expression | BlockExpression;
+  attributes: string[];
+  return: Expression;
+}
 export interface FunctionGroup {
   type: "function";
   name: SymbolPrimitive;
-  contents: {
-    parameters: SymbolPrimitive[];
-    body: Expression | BlockExpression;
-    attributes: string[];
-    return: Expression;
-  }[];
+  contents: Func[];
 }
 
 export interface FunctionExpression {
@@ -49,10 +58,16 @@ export interface LambdaExpression {
   //loc: SourceLocation;
 }
 
+export interface ApplicationExpression {
+  type: "Application";
+  function: SymbolPrimitive;
+  parameters: Expression[];
+}
+
 export interface TypeAlias {
   type: "TypeAlias";
   name: SymbolPrimitive;
-  typeParameters: SymbolPrimitive[]; // Optional type parameters
+  typeParameters: (SymbolPrimitive & { isArray: boolean })[]; // Optional type parameters
 }
 
 export interface FunctionTypeSignature {

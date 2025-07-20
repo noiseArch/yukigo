@@ -1,84 +1,230 @@
-import fs from "fs";
-import { argv } from "process";
-import { parse } from "../parser/parser";
+import { ASTGrouped, BodyExpression, YukigoPrimitive } from "../parser/globals";
 import { traverse } from "../ast/visitor";
 import {
   FunctionGroup,
   FunctionTypeSignature,
+  TypeAlias,
 } from "../parser/paradigms/functional";
-import util from "util";
-import {
-  ArithmeticOperation,
-  Expression,
-  NumberPrimitive,
-  SymbolPrimitive,
-  YukigoPrimitive,
-} from "../parser/globals";
 import { typeMappings } from "../parser/langs/haskell/definition";
-const filePath = argv[2];
-console.log(filePath);
-console.log(`Parsing: ${filePath}`);
-const code = fs.readFileSync(filePath, "utf-8");
-const ast = parse(code);
 
-const parameterTypes: Map<string, { type: YukigoPrimitive; isArray: boolean }> =
-  new Map();
+type ProcessedType = { type: YukigoPrimitive; isArray: boolean };
+type ProcessedSignature = {
+  input: ProcessedType[];
+  return: ProcessedType;
+};
+type ProcessedTypeAlias = {
+  type: YukigoPrimitive;
+  isArray: boolean;
+}[];
+type InferredType = {
+  kind: "primitive" | "function" | "unknown";
+  type: YukigoPrimitive | "unknown";
+  isArray: boolean;
+};
 
-const inferType = (node: any): string => {
-  switch (node.type) {
-    case "function":
-      if (node.name) {
-        let i = 0;
-        traverse(node, {
-          VariablePattern: (pattern: { type: string; name: string }) => {
-            traverse(ast, {
-              TypeSignature: (typeSig: FunctionTypeSignature) => {
-                if (node.name.value === typeSig.name.value) {
-                  const yukigoEq = typeMappings[typeSig.inputTypes[i].value];
-                  parameterTypes.set(pattern.name, {
-                    type: yukigoEq,
-                    isArray: typeSig.inputTypes[i].isArray,
-                  });
-                  i++;
-                }
-              },
-            });
+export class TypeChecker {
+  private errors: string[] = [];
+  private signatureMap = new Map<string, ProcessedSignature>();
+  private typeAliasMap = new Map<string, ProcessedTypeAlias>();
+
+  public check(ast: ASTGrouped): string[] {
+    traverse(ast, {
+      TypeAlias: (node: TypeAlias) => {
+        if (this.typeAliasMap.has(node.name.value))
+          return this.errors.push(
+            `There are multiple declarations of type alias: ${node.name.value}`
+          );
+        this.typeAliasMap.set(node.name.value, node.typeParameters);
+      },
+      TypeSignature: (node: FunctionTypeSignature) => {
+        if (this.signatureMap.has(node.name.value))
+          return this.errors.push(
+            `There are multiple signatures for function: ${node.name.value}`
+          );
+
+        this.signatureMap.set(node.name.value, {
+          input: node.inputTypes.map((type) => ({
+            type: typeMappings[type.value],
+            isArray: type.isArray,
+          })),
+          return: {
+            type: typeMappings[node.returnType.value],
+            isArray: node.returnType.isArray,
           },
         });
-        console.log(parameterTypes);
-        const returnTypes = node.contents
-          .filter((content: any) => content.return)
-          .map((content: any) => inferType(content.return.body));
-        return returnTypes.length === 1
-          ? returnTypes[0]
-          : returnTypes.join(" ");
-      }
-      break;
-    case "Arithmetic": {
-      const leftType = inferType(node.left);
-      const rightType = inferType(node.right);
-      return leftType + " " + rightType;
-    }
-    case "Application": {
-      const functionType = inferType(node.function);
-      return functionType;
-    }
-    case "YuNumber": {
-      return "YuNumber";
-    }
-    case "YuSymbol": {
-      console.log(node);
-      if (parameterTypes.has(node.value)) {
-        return parameterTypes.get(node.value).type;
-      }
-      return "YuSymbol";
-    }
-    default:
-      return "Unknown";
+      },
+    });
+    traverse(ast, {
+      function: (node: FunctionGroup) => {
+        const funcName = node.name.value;
+        if (!this.signatureMap.has(funcName))
+          return this.errors.push(
+            `There is no signature for function: ${funcName}`
+          );
+        const funcSignature = this.signatureMap.get(funcName);
+        for (const func of node.contents) {
+          const symbolMap = new Map<
+            string,
+            { type: YukigoPrimitive; isArray: boolean }
+          >();
+          func.parameters.forEach((param, i) => {
+            const type = funcSignature.input[i];
+            if (param.type == "VariablePattern") {
+              symbolMap.set(param.name, type);
+            }
+          });
+          console.log(funcName, symbolMap);
+          const funcInferredType = this.inferType(func.return.body, symbolMap);
+          console.log(funcName, funcInferredType, funcSignature);
+          if (
+            funcInferredType.type !== funcSignature.return.type ||
+            funcInferredType.isArray !== funcSignature.return.isArray
+          )
+            this.errors.push(
+              `Function '${funcName}' does not match it's signature. Expected to return ${
+                funcSignature.return.type
+              }${funcSignature.return.isArray ? "[]" : ""} and got ${
+                funcInferredType.type
+              }${funcInferredType.isArray ? "[]" : ""}`
+            );
+        }
+      },
+    });
+
+    return this.errors;
   }
-};
-traverse(ast, {
-  function: (func: FunctionGroup) => {
-    console.log(inferType(func));
-  },
-});
+  private inferType(
+    node: BodyExpression,
+    symbolMap: Map<string, ProcessedType>
+  ): InferredType {
+    switch (node.type) {
+      case "YuString": {
+        return { kind: "primitive", type: "YuString", isArray: false };
+      }
+      case "YuNumber":
+        return { kind: "primitive", type: "YuNumber", isArray: false };
+      case "YuSymbol": {
+        if (symbolMap.has(node.value)) {
+          const symbol = symbolMap.get(node.value);
+          return {
+            kind: "primitive",
+            type: symbol.type,
+            isArray: symbol.isArray,
+          };
+        }
+        if (this.signatureMap.has(node.value)) {
+          const signature = this.signatureMap.get(node.value);
+          return {
+            kind: "function",
+            type: signature.return.type,
+            isArray: signature.return.isArray,
+          };
+        }
+        this.errors.push(
+          `Symbol ${node.value} was not found in local env and global env`
+        );
+        return {
+          kind: "unknown",
+          type: "unknown",
+          isArray: false,
+        };
+      }
+      case "Arithmetic": {
+        const leftHandType = this.inferType(node.left.body, symbolMap);
+        const rightHandType = this.inferType(node.right.body, symbolMap);
+        if (leftHandType.type !== "YuNumber" || leftHandType.isArray)
+          this.errors.push(
+            `Left-hand of arithmetic operation is not a number: ${
+              leftHandType.type
+            }${leftHandType.isArray ? "[]" : ""}`
+          );
+        if (rightHandType.type !== "YuNumber" || rightHandType.isArray)
+          this.errors.push(
+            `Right-hand of arithmetic operation is not a number: ${
+              rightHandType.type
+            }${rightHandType.isArray ? "[]" : ""}`
+          );
+
+        return { kind: "primitive", type: "YuNumber", isArray: false };
+      }
+      case "CompositionExpression": {
+        const leftHandType = this.inferType(node.left, symbolMap);
+        const rightHandType = this.inferType(node.right, symbolMap);
+        if (leftHandType.kind !== "function")
+          this.errors.push(
+            `Left-hand of composition operation is not a function: ${leftHandType.type}`
+          );
+        if (rightHandType.kind !== "function")
+          this.errors.push(
+            `Right-hand of composition operation is not a function: ${rightHandType.type}`
+          );
+        if (!this.signatureMap.has(node.left.value)) {
+          this.errors.push(
+            `Left function in composition operation does not have a signature: ${node.left.value}`
+          );
+        }
+        if (!this.signatureMap.has(node.right.value)) {
+          this.errors.push(
+            `Right function in composition operation does not have a signature: ${node.left.value}`
+          );
+        }
+
+        const leftSignature = this.signatureMap.get(node.left.value);
+        const rightSignature = this.signatureMap.get(node.right.value);
+        const leftInput = leftSignature.input[0].type;
+        const rightReturn = rightSignature.return.type;
+        if (
+          leftInput !== rightReturn ||
+          leftSignature.input[0].isArray !== rightSignature.return.isArray
+        )
+          this.errors.push(
+            `Right function of composition operation does not match type of left function: Right returns -> ${leftInput}${
+              leftSignature.input[0].isArray ? "[]" : ""
+            } ; Left inputs -> ${rightReturn}${
+              rightSignature.return.isArray ? "[]" : ""
+            }`
+          );
+        return {
+          kind: "primitive",
+          type: leftHandType.type,
+          isArray: leftHandType.isArray,
+        };
+      }
+      case "Concat": {
+        const leftHandType = this.inferType(node.left.body, symbolMap);
+        const rightHandType = this.inferType(node.right.body, symbolMap);
+        if (
+          leftHandType.isArray == true &&
+          leftHandType.isArray == rightHandType.isArray
+        ) {
+          if (leftHandType.type !== rightHandType.type)
+            this.errors.push(
+              `Type mismatch while concatenating two lists: Left type ${leftHandType.type}[] | Right type ${rightHandType.type}[]`
+            );
+        } else {
+          if (leftHandType.type !== "YuString")
+            this.errors.push(
+              `Left-hand of concat operation is not a string: ${
+                leftHandType.type
+              }${leftHandType.isArray ? "[]" : ""}`
+            );
+          if (rightHandType.type !== "YuString")
+            this.errors.push(
+              `Right-hand of concat operation is not a string: ${
+                rightHandType.type
+              }${rightHandType.isArray ? "[]" : ""}`
+            );
+        }
+
+        return {
+          kind: "primitive",
+          type: "YuString",
+          isArray:
+            leftHandType.isArray == true && rightHandType.isArray == true,
+        };
+      }
+      default:
+        break;
+    }
+  }
+}
