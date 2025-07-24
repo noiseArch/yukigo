@@ -56,7 +56,7 @@ export interface NumberPrimitive extends BasePrimitive {
  */
 export interface BooleanPrimitive extends BasePrimitive {
   type: "YuBoolean";
-  value: boolean;
+  value: string;
 }
 
 /**
@@ -254,6 +254,11 @@ export interface MapCollection {
   loc: SourceLocation;
 }
 
+export interface TupleExpression {
+  type: "TupleExpression";
+  elements: Expression[];
+}
+
 export interface MapEntry {
   key: Expression;
   value: Expression;
@@ -262,6 +267,7 @@ export interface MapEntry {
 export type BodyExpression =
   | Primitive
   | Operation
+  | TupleExpression
   // Functional expressions
   | CompositionExpression
   | LambdaExpression
@@ -281,6 +287,5 @@ export type Type =
 
 export type Environment = Map<string, Type>;
 
-
-export type AST = (TypeAlias | FunctionTypeSignature | FunctionDeclaration)[]
-export type ASTGrouped = (TypeAlias | FunctionTypeSignature | FunctionGroup)[]
+export type AST = (TypeAlias | FunctionTypeSignature | FunctionDeclaration)[];
+export type ASTGrouped = (TypeAlias | FunctionTypeSignature | FunctionGroup)[];

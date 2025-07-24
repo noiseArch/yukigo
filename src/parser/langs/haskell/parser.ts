@@ -1,11 +1,13 @@
+import { inspect } from "util";
 import {
+  BodyExpression,
+  BooleanPrimitive,
   Expression,
   ListPrimitive,
   NumberPrimitive,
   Primitive,
   StringPrimitive,
   SymbolPrimitive,
-  YukigoPrimitive,
 } from "../../globals";
 import {
   CompositionExpression,
@@ -13,12 +15,10 @@ import {
   FunctionTypeSignature,
   TypeAlias,
   Pattern,
+  TypeNode,
+  LambdaExpression,
+  Func,
 } from "../../paradigms/functional";
-import {
-  HSExpression,
-  HSFunctionDeclaration,
-  HSLamdaExpression,
-} from "./definition";
 
 interface BaseMooToken {
   type: string;
@@ -49,7 +49,7 @@ interface ListToken {
       type: "rsquare";
       value: "]";
       text: "]";
-      toString: [Function: () => string];
+      toString: [() => string];
       offset: 1157;
       lineBreaks: 0;
       line: 55;
@@ -64,12 +64,12 @@ function parseFunction(token: {
   type: "function";
   name: SymbolPrimitive;
   params: Pattern[];
-  body: HSExpression;
-  return: HSExpression;
+  body: Expression;
+  return: Expression;
   attributes: string[];
-}) {
-  //console.log("Function", util.inspect(token, false, null, true));
-  const funcDecl: HSFunctionDeclaration = {
+}): Func {
+  //console.log("Function", inspect(token, false, null, true));
+  const funcDecl = {
     type: "function",
     name: token.name,
     parameters: token.params,
@@ -82,79 +82,69 @@ function parseFunction(token: {
 }
 
 function parseFunctionType(
-  token: [SymbolPrimitive, [SymbolPrimitive & { isArray: boolean }]]
-) {
-  //console.log("FunctionSignature", util.inspect(token, false, null, true));
-
-  const bodyType = token[1];
-  const inputTypes = bodyType.length > 1 ? bodyType.slice(0, -1) : [];
-  const returnType = bodyType[bodyType.length - 1];
-  const functionType: FunctionTypeSignature = {
+  token: [SymbolPrimitive, TypeNode]
+): FunctionTypeSignature {
+  if (token[1].type !== "FunctionType")
+    return {
+      type: "TypeSignature",
+      name: token[0],
+      inputTypes: [token[1]],
+      returnType: token[1],
+    };
+  //console.log("Signature", inspect(token, false, null, true));
+  return {
     type: "TypeSignature",
-    name: { type: "YuSymbol", value: token[0].value },
-    inputTypes: inputTypes,
-    returnType: returnType,
+    name: token[0],
+    inputTypes: token[1].from,
+    returnType: token[1].to,
   };
-  return functionType;
 }
 
-function parseTypeAlias(
-  token: [
-    Token,
-    SymbolPrimitive,
-    Token,
-    (SymbolPrimitive & { isArray: boolean })[]
-  ]
-) {
+function parseTypeAlias(token: [SymbolPrimitive, TypeNode[]]): TypeAlias {
   //console.log(token);
   const typeAlias: TypeAlias = {
     type: "TypeAlias",
-    name: token[1],
-    typeParameters: token[3],
+    name: token[0],
+    value: token[1],
   };
   return typeAlias;
 }
 
-function parseExpression(token: HSExpression) {
-  //console.log("Expression", util.inspect(token, false, null, true));
+function parseExpression(token: BodyExpression): Expression {
+  //console.log("Expression", inspect(token, false, null, true));
   return { type: "Expression", body: token };
 }
 
-function parseLambda(token: [Pattern[], HSExpression]) {
+function parseLambda(token: [Pattern[], Expression]): LambdaExpression {
   //console.log("Lambda", util.inspect(token, false, null, true));
-  const lambda: HSLamdaExpression = {
+  const lambda: LambdaExpression = {
     type: "LambdaExpression",
-    parameters: token[0].map((param) => {
-      return { type: "YuSymbol", value: param.name } satisfies SymbolPrimitive;
-    }),
+    parameters: token[0],
     body: token[1],
   };
   return lambda;
 }
 
 function parseCompositionExpression(
-  token: { type: YukigoPrimitive; value: string }[]
-) {
+  token: [SymbolPrimitive, SymbolPrimitive]
+): CompositionExpression {
   //console.log("Composition Expr", util.inspect(token, false, null, true));
   const compositionExpression: CompositionExpression = {
     type: "CompositionExpression",
-    left: { type: "YuSymbol", value: token[0].value },
-    right: { type: "YuSymbol", value: token[1].value },
+    left: token[0],
+    right: token[1],
   };
   return compositionExpression;
 }
 
 function parseApplication(
-  token: [SymbolPrimitive, Expression[]]
+  token: [Expression, Primitive]
 ): ApplicationExpression | SymbolPrimitive {
   //console.log("Application", util.inspect(token, false, null, true));
-  if (token[1].length == 0) {
-    return token[0];
-  }
-  return { type: "Application", function: token[0], parameters: token[1] };
+  return { type: "Application", function: token[0], parameter: token[1] };
 }
 
-function parsePrimary(token: Token) {
+function parsePrimary(token: Token): Primitive {
   //console.log("Primary", util.inspect(token, false, null, true));
   switch (token.type) {
     case "identifier": {
@@ -188,6 +178,13 @@ function parsePrimary(token: Token) {
         })),
       };
       return listPrimitive;
+    }
+    case "bool": {
+      const booleanPrimitive: BooleanPrimitive = {
+        type: "YuBoolean",
+        value: token.value,
+      };
+      return booleanPrimitive;
     }
     default:
       throw new Error(

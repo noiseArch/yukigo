@@ -54,8 +54,8 @@ try {
   console.log(`Parsing: ${filePath}`);
   const code = fs.readFileSync(filePath, "utf-8");
   const ast = parse(code);
-  const tsCode = astToTypescript(ast[0]);
-  fs.writeFileSync("generated.ts", tsCode);
+  //const tsCode = astToTypescript(ast[0]);
+  //fs.writeFileSync("generated.ts", tsCode);
   fs.writeFileSync("./output.json", JSON.stringify(ast, null, 2));
 } catch (err) {
   console.error("Error:", err);

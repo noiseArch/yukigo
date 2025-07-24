@@ -1,4 +1,4 @@
-import { haskellTypeChecker, TypeError } from "../parser/langs/haskell/type";
+import { ASTGrouped } from "../parser/globals";
 import {
   FunctionGroup,
   FunctionTypeSignature,
@@ -21,7 +21,7 @@ export type AnalysisResult = {
 
 type InspectionHandlerMap = {
   [key: string]: (
-    ast: any,
+    ast: ASTGrouped,
     args: Record<string, any>,
     findings: Map<string, any>
   ) => { result: boolean };
@@ -30,19 +30,15 @@ type InspectionHandlerMap = {
 // type SupportedLanguage = "haskell";
 
 class ASTAnalyzer {
-  private ast: any;
+  private ast: ASTGrouped;
   private findings: Map<string, any> = new Map();
-  private typeCheckers: Map<string, (ast: any) => TypeError[]> = new Map();
+  private typeCheckers: Map<string, (ast: ASTGrouped) => TypeError[]> = new Map();
 
-  constructor(ast: any) {
+  constructor(ast: ASTGrouped) {
     this.ast = ast;
   }
 
-  private languageTypeCheckers: Record<string, (ast: any) => TypeError[]> = {
-    haskell: haskellTypeChecker,
-  };
-
-  registerTypeChecker(language: string, checker: (ast: any) => TypeError[]) {
+  registerTypeChecker(language: string, checker: (ast: ASTGrouped) => TypeError[]) {
     this.typeCheckers.set(language, checker);
   }
   private inspectionHandlers: InspectionHandlerMap = {
@@ -73,24 +69,6 @@ class ASTAnalyzer {
       });
       return {
         result: found,
-      };
-    },
-    TypeCheck: (ast, args, findings) => {
-      const language = args.language || "haskell";
-      const checker = this.languageTypeCheckers[language];
-      
-      if (!checker) {
-        return {
-          result: false,
-          details: `No type checker for language: ${language}`
-        };
-      }
-      
-      const errors = checker(ast);
-      console.log(errors)
-      return {
-        result: errors.length === 0,
-        details: errors
       };
     },
     UsesGuards: (ast, args, findings) => {
@@ -260,7 +238,7 @@ class ASTAnalyzer {
   public registerInspection(
     name: string,
     handler: (
-      ast: any,
+      ast: ASTGrouped,
       args: Record<string, any>,
       findings: Map<string, any>
     ) => { result: boolean; details?: string }

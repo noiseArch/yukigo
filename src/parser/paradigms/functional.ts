@@ -1,4 +1,4 @@
-import { Expression, SymbolPrimitive } from "../globals";
+import { Expression, Primitive, SymbolPrimitive } from "../globals";
 import { BlockExpression } from "./objects";
 
 export interface FunctionDeclaration {
@@ -11,16 +11,19 @@ export interface FunctionDeclaration {
   //loc: SourceLocation;
 }
 
-export interface Pattern {
+export interface VariablePattern {
   type: "VariablePattern" | "LiteralPattern" | "WildcardPattern";
   name: string;
 }
+export interface TuplePattern {
+  type: "TuplePattern"
+  elements: Pattern[]
+}
+
+export type Pattern = VariablePattern | TuplePattern
 
 export interface Func {
-  parameters: {
-    type: "VariablePattern" | "LiteralPattern" | "WildcardPattern";
-    name: string;
-  }[];
+  parameters: Pattern[];
   body: Expression | BlockExpression;
   attributes: string[];
   return: Expression;
@@ -53,26 +56,35 @@ export type ListPrimitive = {
 
 export interface LambdaExpression {
   type: "LambdaExpression";
-  parameters: SymbolPrimitive[];
+  parameters: Pattern[];
   body: Expression | BlockExpression;
   //loc: SourceLocation;
 }
 
 export interface ApplicationExpression {
   type: "Application";
-  function: SymbolPrimitive;
-  parameters: Expression[];
+  function: Expression;
+  parameter: Primitive;
 }
 
 export interface TypeAlias {
   type: "TypeAlias";
   name: SymbolPrimitive;
-  typeParameters: (SymbolPrimitive & { isArray: boolean })[]; // Optional type parameters
+  value: TypeNode[]; // Optional type parameters
 }
+
+// Recursive type structure for new type system
+export type TypeNode =
+  | { type: "TypeVar"; name: string }
+  | { type: "TypeConstructor"; name: string }
+  | { type: "FunctionType"; from: TypeNode[]; to: TypeNode }
+  | { type: "TypeApplication"; base: TypeNode; args: TypeNode[] }
+  | { type: "ListType"; element: TypeNode }
+  | { type: "TupleType"; elements: TypeNode[] };
 
 export interface FunctionTypeSignature {
   type: "TypeSignature";
   name: SymbolPrimitive;
-  inputTypes: (SymbolPrimitive & { isArray: boolean })[];
-  returnType: SymbolPrimitive & { isArray: boolean };
+  inputTypes: TypeNode[];
+  returnType: TypeNode;
 }

@@ -33,13 +33,13 @@ comparison ->
     | addition {% (d) => d[0] %}
 
 addition -> 
-    multiplication _ "+" _ addition {% (d) => ({ type: "Arithmetic", operator: d[2].value, left: {type: "Expression", body:d[0]}, right: {type: "Expression", body:d[4]} }) %}
-    | multiplication _ "-" _ addition {% (d) => ({ type: "Arithmetic", operator: d[2].value, left: {type: "Expression", body:d[0]}, right: {type: "Expression", body:d[4]} }) %}
+    multiplication _ "+" _ addition {% (d) => ({ type: "Arithmetic", operator: d[2].value, left: {type: "Expression", body: d[0]}, right: {type: "Expression", body: d[4]} }) %}
+    | multiplication _ "-" _ addition {% (d) => ({ type: "Arithmetic", operator: d[2].value, left: {type: "Expression", body: d[0]}, right: {type: "Expression", body: d[4]} }) %}
     | multiplication {% (d) => d[0] %}
 
 multiplication ->
-    infix_operator_expression _ "*" _ multiplication {% (d) => ({ type: "Arithmetic", operator: d[2].value, left: {type: "Expression", body:d[0]}, right: {type: "Expression", body:d[4]} }) %}
-    | infix_operator_expression _ "/" _ multiplication {% (d) => ({ type: "Arithmetic", operator: d[2].value, left: {type: "Expression", body:d[0]}, right: {type: "Expression", body:d[4]} }) %}
+    infix_operator_expression _ "*" _ multiplication {% (d) => ({ type: "Arithmetic", operator: d[2].value, left: {type: "Expression", body: d[0]}, right: {type: "Expression", body: d[4]} }) %}
+    | infix_operator_expression _ "/" _ multiplication {% (d) => ({ type: "Arithmetic", operator: d[2].value, left: {type: "Expression", body: d[0]}, right: {type: "Expression", body: d[4]} }) %}
     | infix_operator_expression {% (d) => d[0] %}
 
 infix_operator_expression ->
@@ -52,21 +52,27 @@ infix_operator_expression ->
     }) %}
     | application {% d => d[0] %}
 
-application -> primary (__ primary):* {% (d) => parseApplication([d[0], filter(d[1].flat(Infinity))]) %}
+application -> 
+    expression __ primary {% (d) => parseApplication([d[0], d[2]]) %}
+    | primary {% (d) => d[0] %}
 
 primary ->
     %number {% (d) => parsePrimary(d[0]) %}
     | %string {% (d) => parsePrimary(d[0]) %}
-    | %bool {% (d) => ({type: "Boolean", value: d[0]}) %}
+    | %bool {% (d) => parsePrimary(d[0]) %}
     | identifier {% (d) => d[0] %} ## No need to reprocess
+    | tuple_expression {% (d) => d[0] %}
     | "(" _ expression _ ")" {% (d) => d[2] %}
     | list_literal {% (d) => parsePrimary({type: "list", body: filter(d[0])}) %}
-    | composition_expression {% (d) => {return d[0]} %}
-    | lambda_expression {% (d) => {return d[0]} %}
+    | composition_expression {% (d) => d[0] %}
+    | lambda_expression {% (d) => d[0] %}
     | if_expression {% d => d[0] %}
     | case_expression {% d => d[0] %}
     | data_expression {% d => d[0] %}
     | let_in_expression {% d => d[0] %}
+
+# Tuple expression: (expr, expr, ...)
+tuple_expression -> "(" _ expression (_ "," _ expression):+ _ ")" {% (d) => ({ type: "TupleExpression", elements: [d[2], ...d[3].map(x => x[3])] }) %}
 
 data_expression -> identifier _ %lbracket fields_expressions %rbracket {% (d) => ({type: "DataExpression", name: d[0], contents: d[3]}) %}
 
@@ -84,9 +90,9 @@ data_declaration -> "data" __ identifier _ "=" _ identifier _ %lbracket field_li
 
 field_list -> _ field _ ("," _ field):* {% (d) => {return filter(d.flat(Infinity)).filter(tok => tok.type !== "comma")}%}
 
-field -> identifier _ "::" _ type_list {% (d) => ({type: "Field", name: d[0], contents: d[4]}) %}
+field -> identifier _ "::" _ type {% (d) => ({type: "Field", name: d[0], contents: d[4]}) %}
 
-function_type_declaration -> identifier _ "::" _ type_list {% (d) => parseFunctionType([d[0], d[4]]) %}
+function_type_declaration -> identifier _ "::" _ type {% (d) => parseFunctionType([d[0], d[4]]) %}
 
 function_declaration -> 
     identifier __ parameter_list:? guarded_rhs_list:+ {% (d) => {return parseFunction({type: "function", name: d[0], params: d[2].flat(Infinity), body: d[3], return: d[3], attributes: ["GuardedBody"]})} %}
@@ -106,7 +112,7 @@ pattern ->
   | %string {% (d) => ({type: "LiteralPattern", name: d[0].value}) %}
   | %anonymousVariable {% (d) => ({type: "WildcardPattern", name: d[0].value}) %}
   | identifier pattern:+
-  | "(" _ pattern (_ "," _ pattern):* _ ")"
+  | "(" _ pattern (_ "," _ pattern):* _ ")" {% (d) => ({type: "TuplePattern", elements: [d[2], ...d[3].map(x => x[3])] }) %}
   | "[" _ parameter_list:? _ "]"
   | "(" _ pattern _ ")"
 
@@ -147,11 +153,28 @@ identifier -> %identifier {% (d) => parsePrimary(d[0]) %}
 ## 
 ## let_binding -> identifier _ "=" _ expression _ ";" {% (d) => ({ name: d[0].value, value: d[4] }) %}
 
-type_declaration -> "type" __ identifier _ "=" _ type_list {% (d) => parseTypeAlias(filter(d)) %}
 
-type_list -> 
-    ("[":? identifier "]":?) _ "->" _ type_list {% (d) => ([{...d[0][1], isArray: d[0][0] !== null}, ...d[4]]) %}
-    | "[":? identifier "]":? {% (d) => ([{...d[1], isArray: d[0] !== null}]) %}
+type_declaration -> "type" __ identifier _ "=" _ type {% (d) => parseTypeAlias([d[2], d[6]]) %}
+
+# Full type parsing
+type -> function_type {% (d) => d[0] %}
+
+function_type ->
+    (application_type _ "->" _):* application_type {% (d) => ({ type: "FunctionType", from: d[0].map(x => x[0]), to: d[1] }) %}
+
+application_type ->
+    simple_type (_ simple_type):* {% (d) =>
+        d[1].length === 0 ? d[0] : { type: "TypeApplication", base: d[0], args: d[1].map(x => x[1]) }
+    %}
+
+simple_type ->
+    %identifier {% (d) => ({ type: "TypeVar", name: d[0].value }) %}
+    | %constructor {% (d) => ({ type: "TypeConstructor", name: d[0].value }) %}
+    | "[" _ type _ "]" {% (d) => ({ type: "ListType", element: d[2] }) %}
+    | "(" _ type (_ "," _ type):+ _ ")" {% (d) =>
+        ({ type: "TupleType", elements: [d[2], ...d[3].map(x => x[3])] })
+    %}
+    | "(" _ type _ ")" {% (d) => d[2] %}
 
 list_literal -> "[" _ expression_list _ "]" {% (d) => d %}
 
