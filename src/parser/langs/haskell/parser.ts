@@ -100,8 +100,8 @@ function parseFunctionType(
   };
 }
 
-function parseTypeAlias(token: [SymbolPrimitive, TypeNode[]]): TypeAlias {
-  //console.log(token);
+function parseTypeAlias(token: [SymbolPrimitive, TypeNode]): TypeAlias {
+  //console.log(inspect(token, false, null, true));
   const typeAlias: TypeAlias = {
     type: "TypeAlias",
     name: token[0],

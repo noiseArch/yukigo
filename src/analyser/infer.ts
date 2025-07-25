@@ -8,7 +8,6 @@ import {
   TypeNode,
 } from "../parser/paradigms/functional";
 import { typeMappings } from "../parser/langs/haskell/definition";
-import { inspect } from "util";
 import assert from "assert";
 
 type Substitution = Map<string, TypeNode>;
@@ -16,7 +15,7 @@ type Substitution = Map<string, TypeNode>;
 export class TypeChecker {
   private errors: string[] = [];
   private signatureMap = new Map<string, TypeNode>();
-  private typeAliasMap = new Map<string, TypeNode[]>();
+  private typeAliasMap = new Map<string, TypeNode>();
 
   public check(ast: ASTGrouped): string[] {
     this.buildGlobalEnvironment(ast);
@@ -37,26 +36,35 @@ export class TypeChecker {
 
           const substitutions: Substitution = new Map();
 
-          const paramTypes: TypeNode[] = funcType.from;
+          const paramTypes: TypeNode[] = funcType.from.map((t) =>
+            this.mapTypeNodePrimitives(t)
+          );
           const returnType: TypeNode = funcType.to;
           const symbolMap = new Map<string, TypeNode>();
           func.parameters.forEach((param, i) => {
             this.resolvePatterns(param, symbolMap, paramTypes, i);
           });
-          console.log(`Local env of ${funcName}`, symbolMap);
           const funcInferredType = this.inferType(
             func.return.body,
             symbolMap,
             substitutions
           );
-          console.log("Func Body:", func.return.body);
-          try {
-            this.unify(
-              this.applySubstitution(returnType, substitutions),
-              this.applySubstitution(funcInferredType, substitutions)
+          const subReturnType = this.applySubstitution(
+            returnType,
+            substitutions
+          );
+          const subInferredType = this.applySubstitution(
+            funcInferredType,
+            substitutions
+          );
+          console.log(subReturnType);
+          console.log(subInferredType);
+          if (!this.typeEquals(subReturnType, subInferredType)) {
+            this.errors.push(
+              `Type mismatch in function '${funcName}'. Expected ${JSON.stringify(
+                subReturnType
+              )} and got ${JSON.stringify(subInferredType)}`
             );
-          } catch (e) {
-            this.errors.push(`Function '${funcName}': ${e.message}`);
           }
         }
       },
@@ -104,51 +112,60 @@ export class TypeChecker {
     }
   }
 
-  private buildGlobalEnvironment(ast: ASTGrouped) {
-    function mapTypeNodePrimitives(type: TypeNode): TypeNode {
-      switch (type.type) {
-        case "TypeConstructor":
-          if (type.name in typeMappings) {
-            return { ...type, name: typeMappings[type.name] };
-          }
-          return type;
-        case "FunctionType":
+  private mapTypeNodePrimitives(type: TypeNode): TypeNode {
+    switch (type.type) {
+      case "TypeVar":
+      case "TypeConstructor":
+        if (this.typeAliasMap.has(type.name)) {
+          return this.typeAliasMap.get(type.name);
+        }
+        if (type.name in typeMappings) {
           return {
-            type: "FunctionType",
-            from: type.from.map(mapTypeNodePrimitives),
-            to: mapTypeNodePrimitives(type.to),
+            ...type,
+            type: "TypeConstructor",
+            name: typeMappings[type.name],
           };
-        case "TypeApplication":
-          return {
-            type: "TypeApplication",
-            base: type.base,
-            args: type.args.map((t) => mapTypeNodePrimitives(t)),
-          };
-        case "ListType":
-          return {
-            type: "ListType",
-            element: mapTypeNodePrimitives(type.element),
-          };
-        case "TupleType":
-          return {
-            type: "TupleType",
-            elements: type.elements.map((t) => mapTypeNodePrimitives(t)),
-          };
+        }
+        return type;
+      case "FunctionType":
+        return {
+          type: "FunctionType",
+          from: type.from.map((t) => this.mapTypeNodePrimitives(t)),
+          to: this.mapTypeNodePrimitives(type.to),
+        };
+      case "TypeApplication":
+        return {
+          type: "TypeApplication",
+          base: type.base,
+          args: type.args.map((t) => this.mapTypeNodePrimitives(t)),
+        };
+      case "ListType":
+        return {
+          type: "ListType",
+          element: this.mapTypeNodePrimitives(type.element),
+        };
+      case "TupleType":
+        return {
+          type: "TupleType",
+          elements: type.elements.map((t) => this.mapTypeNodePrimitives(t)),
+        };
 
-        default:
-          return type;
-      }
+      default:
+        return type;
     }
+  }
 
+  private buildGlobalEnvironment(ast: ASTGrouped) {
     traverse(ast, {
       TypeAlias: (node: TypeAlias) => {
+        console.log(node);
         if (this.typeAliasMap.has(node.name.value))
           return this.errors.push(
             `There are multiple declarations of type alias: ${node.name.value}`
           );
         this.typeAliasMap.set(
           node.name.value,
-          node.value.map(mapTypeNodePrimitives)
+          this.mapTypeNodePrimitives(node.value)
         );
       },
       TypeSignature: (node: FunctionTypeSignature) => {
@@ -158,7 +175,7 @@ export class TypeChecker {
           );
         this.signatureMap.set(
           node.name.value,
-          mapTypeNodePrimitives({
+          this.mapTypeNodePrimitives({
             type: "FunctionType",
             from: node.inputTypes,
             to: node.returnType,
@@ -195,13 +212,15 @@ export class TypeChecker {
       case "Arithmetic": {
         const left = this.inferType(node.left.body, symbolMap, substitutions);
         const right = this.inferType(node.right.body, symbolMap, substitutions);
-        //console.log(left, right);
-        if (left.type !== "TypeConstructor" || left.name !== "YuNumber")
+        if (left.type !== "TypeConstructor" || left.name !== "YuNumber") {
+          console.log(node.left.body, node.right.body);
+          console.log(left, right);
           this.errors.push(
             `Left-hand of arithmetic operation is not YuNumber: ${JSON.stringify(
               left
             )}`
           );
+        }
         if (right.type !== "TypeConstructor" || right.name !== "YuNumber")
           this.errors.push(
             `Right-hand of arithmetic operation is not YuNumber: ${JSON.stringify(
@@ -277,37 +296,53 @@ export class TypeChecker {
           symbolMap,
           substitutions
         );
-        console.log("funcType",funcType)
-        console.log("node.function.body",node.function.body)
         const argType = this.inferType(
           node.parameter,
           symbolMap,
           substitutions
         );
+        if (funcType.type === "FunctionType" && funcType.from.length > 0) {
+          const firstArgType = this.applySubstitution(
+            funcType.from[0],
+            substitutions
+          );
+          try {
+            const newSub = this.unify(firstArgType, argType);
+            newSub.forEach((value, key) => substitutions.set(key, value));
+          } catch (error) {
+            this.errors.push(
+              `Error while unifying ApplicationExpression: ${error.message}`
+            );
+            return { type: "TypeVar", name: "Error" };
+          }
+          const remainingArgs = funcType.from
+            .slice(1)
+            .map((t) => this.applySubstitution(t, substitutions));
+          const returnType = this.applySubstitution(funcType.to, substitutions);
 
-        const returnType: TypeNode = {
-          type: "TypeVar",
-          name: `ret_${Math.random()}`,
-        };
-        const expectedFuncType: TypeNode = {
-          type: "FunctionType",
-          from: [argType],
-          to: returnType,
-        };
-
-        try {
-          //console.log("funcType", funcType);
-          //console.log("expectedFuncType", expectedFuncType);
-          const newSub = this.unify(funcType, expectedFuncType);
-          console.log("New sub", newSub);
-          newSub.forEach((value, key) => substitutions.set(key, value));
-          //console.log("Return type:", returnType)
-          //console.log("Subs:", substitutions)
-          return this.applySubstitution(returnType, substitutions);
-        } catch (e) {
-          console.log(e);
-          this.errors.push(`In function application: ${e.message}`);
-          return { type: "TypeVar", name: "Error" };
+          return remainingArgs.length > 0
+            ? { type: "FunctionType", from: remainingArgs, to: returnType }
+            : returnType;
+        } else {
+          const returnType: TypeNode = {
+            type: "TypeVar",
+            name: `ret_${Math.random()}`,
+          };
+          const expectedFuncType: TypeNode = {
+            type: "FunctionType",
+            from: [argType],
+            to: returnType,
+          };
+          try {
+            const newSub = this.unify(funcType, expectedFuncType);
+            newSub.forEach((value, key) => substitutions.set(key, value));
+            return returnType;
+          } catch (error) {
+            this.errors.push(
+              `Error while unifying ApplicationExpression: ${error.message}`
+            );
+            return { type: "TypeVar", name: "Error" };
+          }
         }
       }
       case "TupleExpression": {
@@ -414,13 +449,11 @@ export class TypeChecker {
   ): Substitution {
     if (Array.isArray(t1) && Array.isArray(t2)) {
       let combinedSub: Substitution = new Map();
-      for (let i = 0; i < t1.length; i++) {
-        console.log("T1", t1[i])
-        console.log("T2", t2[i])
+      const minLength = Math.min(t1.length, t2.length);
+
+      for (let i = 0; i < minLength; i++) {
         const el1 = this.applySubstitution(t1[i], combinedSub);
         const el2 = this.applySubstitution(t2[i], combinedSub);
-        console.log("sub1",el1)
-        console.log("sub2",el2)
         const newSub = this.unify(el1, el2);
         combinedSub = new Map([...combinedSub, ...newSub]);
       }
@@ -438,14 +471,10 @@ export class TypeChecker {
 
       if (t1.type === "FunctionType" && t2.type === "FunctionType") {
         const sub1 = this.unify(t1.from, t2.from);
-        //console.log("sub1", sub1);
-
         const sub2 = this.unify(
           this.applySubstitution(t1.to, sub1),
           this.applySubstitution(t2.to, sub1)
         );
-        //console.log("sub2", sub2);
-        //console.log("subs", new Map([...sub1, ...sub2]));
         return new Map([...sub1, ...sub2]);
       }
 

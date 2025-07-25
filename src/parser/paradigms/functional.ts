@@ -70,7 +70,7 @@ export interface ApplicationExpression {
 export interface TypeAlias {
   type: "TypeAlias";
   name: SymbolPrimitive;
-  value: TypeNode[]; // Optional type parameters
+  value: TypeNode; // Optional type parameters
 }
 
 // Recursive type structure for new type system
