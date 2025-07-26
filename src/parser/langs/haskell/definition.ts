@@ -55,6 +55,7 @@ export const typeMappings: { [key: string]: YukigoPrimitive } = {
   String: "YuString",
   Char: "YuChar",
   Boolean: "YuBoolean",
+  Bool: "YuBoolean",
 };
 
 export const haskellStdLib: Map<string, Type> = new Map([

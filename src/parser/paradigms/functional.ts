@@ -1,4 +1,4 @@
-import { Expression, Primitive, SymbolPrimitive } from "../globals";
+import { BodyExpression, Expression, SymbolPrimitive } from "../globals";
 import { BlockExpression } from "./objects";
 
 export interface FunctionDeclaration {
@@ -64,7 +64,7 @@ export interface LambdaExpression {
 export interface ApplicationExpression {
   type: "Application";
   function: Expression;
-  parameter: Primitive;
+  parameter:  Expression | BodyExpression;
 }
 
 export interface TypeAlias {
@@ -73,14 +73,24 @@ export interface TypeAlias {
   value: TypeNode; // Optional type parameters
 }
 
+
+export type TypeVar = { type: "TypeVar"; name: string }
+export type TypeConstructor = { type: "TypeConstructor"; name: string }
+export type FunctionType = { type: "FunctionType"; from: TypeNode[]; to: TypeNode }
+export type TypeApplication = { type: "TypeApplication"; base: TypeNode; args: TypeNode[] }
+export type ListType = { type: "ListType"; element: TypeNode }
+export type TupleType = { type: "TupleType"; elements: TypeNode[] }
+export type DataType = { type: "DataType"; name: string; constructor: string, fields: TypeNode[] }
+
 // Recursive type structure for new type system
 export type TypeNode =
-  | { type: "TypeVar"; name: string }
-  | { type: "TypeConstructor"; name: string }
-  | { type: "FunctionType"; from: TypeNode[]; to: TypeNode }
-  | { type: "TypeApplication"; base: TypeNode; args: TypeNode[] }
-  | { type: "ListType"; element: TypeNode }
-  | { type: "TupleType"; elements: TypeNode[] };
+  | TypeVar
+  | TypeConstructor
+  | FunctionType
+  | TypeApplication
+  | ListType
+  | TupleType
+  | DataType;
 
 export interface FunctionTypeSignature {
   type: "TypeSignature";

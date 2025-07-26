@@ -2,10 +2,15 @@ import { inspect } from "util";
 import {
   BodyExpression,
   BooleanPrimitive,
+  CharPrimitive,
+  DataExpression,
   Expression,
+  Field,
+  FieldExpression,
   ListPrimitive,
   NumberPrimitive,
   Primitive,
+  Record,
   StringPrimitive,
   SymbolPrimitive,
 } from "../../globals";
@@ -44,7 +49,7 @@ interface ListToken {
       line: 55;
       col: 13;
     },
-    Primitive[],
+    Expression[],
     {
       type: "rsquare";
       value: "]";
@@ -84,30 +89,29 @@ function parseFunction(token: {
 function parseFunctionType(
   token: [SymbolPrimitive, TypeNode]
 ): FunctionTypeSignature {
-  if (token[1].type !== "FunctionType")
+  if (token[1].type === "FunctionType") {
     return {
       type: "TypeSignature",
       name: token[0],
-      inputTypes: [token[1]],
-      returnType: token[1],
+      inputTypes: token[1].from,
+      returnType: token[1].to,
     };
-  //console.log("Signature", inspect(token, false, null, true));
+  }
   return {
     type: "TypeSignature",
     name: token[0],
-    inputTypes: token[1].from,
-    returnType: token[1].to,
+    inputTypes: [],
+    returnType: token[1],
   };
 }
 
 function parseTypeAlias(token: [SymbolPrimitive, TypeNode]): TypeAlias {
-  //console.log(inspect(token, false, null, true));
-  const typeAlias: TypeAlias = {
+  console.log("Type Alias TypeNode", inspect(token, false, null, true));
+  return {
     type: "TypeAlias",
     name: token[0],
     value: token[1],
   };
-  return typeAlias;
 }
 
 function parseExpression(token: BodyExpression): Expression {
@@ -138,14 +142,34 @@ function parseCompositionExpression(
 }
 
 function parseApplication(
-  token: [Expression, Primitive]
-): ApplicationExpression | SymbolPrimitive {
+  token: [BodyExpression, Expression | BodyExpression]
+): ApplicationExpression {
   //console.log("Application", util.inspect(token, false, null, true));
-  return { type: "Application", function: token[0], parameter: token[1] };
+  return {
+    type: "Application",
+    function: { type: "Expression", body: token[0] },
+    parameter: token[1],
+  };
+}
+
+function parseDataExpression(
+  token: [SymbolPrimitive, FieldExpression[]]
+): DataExpression {
+  return { type: "DataExpression", name: token[0], contents: token[1] };
+}
+
+function parseDataDeclaration(
+  token: [SymbolPrimitive, SymbolPrimitive, Field[]]
+): Record {
+  return {
+    type: "Record",
+    name: token[0],
+    constructor: token[1],
+    contents: token[2],
+  };
 }
 
 function parsePrimary(token: Token): Primitive {
-  //console.log("Primary", util.inspect(token, false, null, true));
   switch (token.type) {
     case "identifier": {
       const identifierPrimitive: SymbolPrimitive = {
@@ -162,6 +186,13 @@ function parsePrimary(token: Token): Primitive {
       };
       return numberPrimitive;
     }
+    case "char": {
+      const stringPrimitive: CharPrimitive = {
+        type: "YuChar",
+        value: token.value,
+      };
+      return stringPrimitive;
+    }
     case "string": {
       const stringPrimitive: StringPrimitive = {
         type: "YuString",
@@ -170,12 +201,11 @@ function parsePrimary(token: Token): Primitive {
       return stringPrimitive;
     }
     case "list": {
+      console.log("YuList", inspect(token, false, null, true));
+
       const listPrimitive: ListPrimitive = {
         type: "YuList",
-        elements: (token as ListToken).body[1].map((t) => ({
-          type: "Expression",
-          body: t,
-        })),
+        elements: (token as ListToken).body[1],
       };
       return listPrimitive;
     }
@@ -199,7 +229,9 @@ export {
   parseExpression,
   parseCompositionExpression,
   parseTypeAlias,
+  parseDataDeclaration,
   parseFunctionType,
   parseApplication,
+  parseDataExpression,
   parseLambda,
 };

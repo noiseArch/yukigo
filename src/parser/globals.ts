@@ -6,6 +6,7 @@ import {
   FunctionTypeSignature,
   LambdaExpression,
   TypeAlias,
+  TypeNode,
 } from "./paradigms/functional";
 
 export type Modify<T, R> = Omit<T, keyof R> & R;
@@ -64,10 +65,13 @@ export interface BooleanPrimitive extends BasePrimitive {
  * - Represents textual data
  * - Includes encoding information when relevant
  */
+export interface CharPrimitive extends BasePrimitive {
+  type: "YuChar";
+  value: string;
+}
 export interface StringPrimitive extends BasePrimitive {
   type: "YuString";
   value: string;
-  encoding?: "utf8" | "utf16" | "ascii"; // Default: utf8
 }
 
 /**
@@ -111,6 +115,7 @@ export interface ListPrimitive {
 export type Primitive =
   | NumberPrimitive
   | BooleanPrimitive
+  | CharPrimitive
   | StringPrimitive
   | NullPrimitive
   | UndefinedPrimitive
@@ -259,6 +264,18 @@ export interface TupleExpression {
   elements: Expression[];
 }
 
+export interface FieldExpression {
+  type: "FieldExpression";
+  name: SymbolPrimitive;
+  expression: Expression;
+}
+
+export interface DataExpression {
+  type: "DataExpression";
+  name: SymbolPrimitive;
+  contents: FieldExpression[];
+}
+
 export interface MapEntry {
   key: Expression;
   value: Expression;
@@ -269,6 +286,7 @@ export type BodyExpression =
   | Operation
   | TupleExpression
   // Functional expressions
+  | DataExpression
   | CompositionExpression
   | LambdaExpression
   | ApplicationExpression;
@@ -277,6 +295,19 @@ export type Expression = {
   type: "Expression";
   body: BodyExpression;
 };
+
+export interface Field {
+  type: "Field";
+  name: SymbolPrimitive;
+  value: TypeNode;
+}
+
+export interface Record {
+  type: "Record";
+  name: SymbolPrimitive;
+  constructor: SymbolPrimitive;
+  contents: Field[];
+}
 
 export type Type =
   | { kind: "primitive"; name: string }

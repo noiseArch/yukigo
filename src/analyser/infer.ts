@@ -1,6 +1,7 @@
-import { ASTGrouped, BodyExpression } from "../parser/globals";
+import { ASTGrouped, BodyExpression, Record } from "../parser/globals";
 import { traverse } from "../ast/visitor";
 import {
+  DataType,
   FunctionGroup,
   FunctionTypeSignature,
   Pattern,
@@ -15,6 +16,7 @@ type Substitution = Map<string, TypeNode>;
 export class TypeChecker {
   private errors: string[] = [];
   private signatureMap = new Map<string, TypeNode>();
+  private recordMap = new Map<string, DataType>();
   private typeAliasMap = new Map<string, TypeNode>();
 
   public check(ast: ASTGrouped): string[] {
@@ -44,21 +46,23 @@ export class TypeChecker {
           func.parameters.forEach((param, i) => {
             this.resolvePatterns(param, symbolMap, paramTypes, i);
           });
+
           const funcInferredType = this.inferType(
             func.return.body,
             symbolMap,
             substitutions
           );
+
           const subReturnType = this.applySubstitution(
             returnType,
             substitutions
           );
+          console.log("subReturnType", subReturnType);
           const subInferredType = this.applySubstitution(
             funcInferredType,
             substitutions
           );
-          console.log(subReturnType);
-          console.log(subInferredType);
+          console.log("subInferredType", subInferredType);
           if (!this.typeEquals(subReturnType, subInferredType)) {
             this.errors.push(
               `Type mismatch in function '${funcName}'. Expected ${JSON.stringify(
@@ -158,33 +162,87 @@ export class TypeChecker {
   private buildGlobalEnvironment(ast: ASTGrouped) {
     traverse(ast, {
       TypeAlias: (node: TypeAlias) => {
-        console.log(node);
-        if (this.typeAliasMap.has(node.name.value))
-          return this.errors.push(
+        if (this.typeAliasMap.has(node.name.value)) {
+          this.errors.push(
             `There are multiple declarations of type alias: ${node.name.value}`
           );
+          return;
+        }
         this.typeAliasMap.set(
           node.name.value,
           this.mapTypeNodePrimitives(node.value)
         );
       },
       TypeSignature: (node: FunctionTypeSignature) => {
-        if (this.signatureMap.has(node.name.value))
-          return this.errors.push(
+        if (this.signatureMap.has(node.name.value)) {
+          this.errors.push(
             `There are multiple signatures for function: ${node.name.value}`
           );
-        this.signatureMap.set(
-          node.name.value,
-          this.mapTypeNodePrimitives({
+          return;
+        }
+        try {
+          const resolvedInputs = node.inputTypes.map((t) =>
+            this.mapTypeNodePrimitives(t)
+          );
+          const resolvedReturn = this.mapTypeNodePrimitives(node.returnType);
+          let finalInputs = resolvedInputs;
+          let finalReturn = resolvedReturn;
+
+          if (
+            (node.returnType.type === "TypeVar" ||
+              node.returnType.type === "TypeConstructor") &&
+            resolvedReturn.type === "FunctionType"
+          ) {
+            finalInputs = [...resolvedInputs, ...resolvedReturn.from];
+            finalReturn = resolvedReturn.to;
+          }
+          this.signatureMap.set(node.name.value, {
             type: "FunctionType",
-            from: node.inputTypes,
-            to: node.returnType,
-          })
-        );
+            from: finalInputs,
+            to: finalReturn,
+          });
+        } catch (e) {
+          this.errors.push(
+            `In signature for '${node.name.value}': ${e.message}`
+          );
+        }
+      },
+      Record: (node: Record) => {
+        // Check identifier of data for multiple
+        if (this.recordMap.has(node.name.value)) {
+          this.errors.push(
+            `There are multiple declarations of: ${node.name.value}`
+          );
+          return;
+        }
+        // Check identifier of constructor for multiple
+        if (
+          Array.from(this.recordMap).some(
+            (record) => record[1].constructor === node.constructor.value
+          )
+        ) {
+          this.errors.push(
+            `There are multiple declarations of: ${node.name.value}`
+          );
+          return;
+        }
+        // Save identifier, constructor, and field types
+        try {
+          const resolvedInputs = node.contents.map((t) =>
+            this.mapTypeNodePrimitives(t.value)
+          );
+          this.recordMap.set(node.name.value, {
+            type: "DataType",
+            name: node.name.value,
+            constructor: node.constructor.value,
+            fields: resolvedInputs,
+          });
+        } catch (e) {
+          this.errors.push(`In record '${node.name.value}': ${e.message}`);
+        }
       },
     });
-    //console.log(inspect(this.signatureMap, false, null, true));
-    //console.log(this.typeAliasMap);
+    console.log(this.recordMap);
   }
 
   private inferType(
@@ -193,16 +251,46 @@ export class TypeChecker {
     substitutions: Substitution
   ): TypeNode {
     switch (node.type) {
+      case "YuChar":
       case "YuString":
-        return { type: "TypeConstructor", name: "YuString" };
       case "YuNumber":
-        return { type: "TypeConstructor", name: "YuNumber" };
+      case "YuBoolean":
+        return { type: "TypeConstructor", name: node.type };
+      case "YuList": {
+        const elementInferredTypes = node.elements.map((element) =>
+          this.inferType(element.body, symbolMap, substitutions)
+        );
+        const firstType = elementInferredTypes[0];
+        const allElementsMatch = elementInferredTypes.every((element) =>
+          this.typeEquals(firstType, element)
+        );
+        if (allElementsMatch) {
+          return {
+            type: "ListType",
+            element: firstType,
+          };
+        }
+        this.errors.push(`Elements of list aren't all the same.`);
+        return {
+          type: "ListType",
+          element: { type: "TypeVar", name: "Error" },
+        };
+      }
       case "YuSymbol": {
         if (symbolMap.has(node.value)) {
           return symbolMap.get(node.value);
         }
         if (this.signatureMap.has(node.value)) {
           return this.signatureMap.get(node.value);
+        }
+        const dataName = Array.from(this.recordMap).find(
+          (record) => record[1].constructor === node.value
+        );
+        if (dataName) {
+          return dataName[1];
+        }
+        if (this.typeAliasMap.has(node.value)) {
+          return this.typeAliasMap.get(node.value);
         }
         this.errors.push(
           `Symbol '${node.value}' was not found in local env and global env`
@@ -213,8 +301,6 @@ export class TypeChecker {
         const left = this.inferType(node.left.body, symbolMap, substitutions);
         const right = this.inferType(node.right.body, symbolMap, substitutions);
         if (left.type !== "TypeConstructor" || left.name !== "YuNumber") {
-          console.log(node.left.body, node.right.body);
-          console.log(left, right);
           this.errors.push(
             `Left-hand of arithmetic operation is not YuNumber: ${JSON.stringify(
               left
@@ -250,40 +336,28 @@ export class TypeChecker {
           this.errors.push(
             `Right-hand of composition operation is not a function: ${rightHandType.type}`
           );
-        if (!this.signatureMap.has(node.left.value)) {
-          this.errors.push(
-            `Left function in composition operation does not have a signature: ${node.left.value}`
-          );
-        }
-        if (!this.signatureMap.has(node.right.value)) {
-          this.errors.push(
-            `Right function in composition operation does not have a signature: ${node.left.value}`
-          );
-        }
 
-        const leftSignature = this.signatureMap.get(node.left.value);
-        const rightSignature = this.signatureMap.get(node.right.value);
         if (
-          leftSignature.type == "FunctionType" &&
+          leftHandType.type == "FunctionType" &&
           rightHandType.type == "FunctionType"
         ) {
-          if (!this.typeEquals(leftSignature, rightSignature))
+          if (!this.typeEquals(leftHandType, rightHandType))
             this.errors.push(
               `Right function of composition operation does not match type of left function`
             );
           if (
-            leftSignature.to &&
-            (leftSignature.to.type === "TypeConstructor" ||
-              leftSignature.to.type === "TypeVar")
+            leftHandType.to &&
+            (leftHandType.to.type === "TypeConstructor" ||
+              leftHandType.to.type === "TypeVar")
           ) {
             return {
               type: "TypeConstructor",
-              name: leftSignature.to.name,
+              name: leftHandType.to.name,
             };
           }
           this.errors.push(
             `Cannot determine return type name for composition: ${JSON.stringify(
-              leftSignature.to
+              leftHandType.to
             )}`
           );
           return { type: "TypeConstructor", name: "Unknown" };
@@ -291,13 +365,17 @@ export class TypeChecker {
         return { type: "TypeConstructor", name: "Unknown" };
       }
       case "Application": {
+        console.log("node.function.body", node.function.body)
         const funcType = this.inferType(
           node.function.body,
           symbolMap,
           substitutions
         );
+        console.log("funcType", funcType)
         const argType = this.inferType(
-          node.parameter,
+          node.parameter.type === "Expression"
+            ? node.parameter.body
+            : node.parameter,
           symbolMap,
           substitutions
         );
@@ -311,7 +389,7 @@ export class TypeChecker {
             newSub.forEach((value, key) => substitutions.set(key, value));
           } catch (error) {
             this.errors.push(
-              `Error while unifying ApplicationExpression: ${error.message}`
+              `Error while unifying ApplicationExpression: ${error}`
             );
             return { type: "TypeVar", name: "Error" };
           }
@@ -344,6 +422,26 @@ export class TypeChecker {
             return { type: "TypeVar", name: "Error" };
           }
         }
+      }
+      case "DataExpression": {
+        const dataName = Array.from(this.recordMap).find(
+          (record) => record[1].constructor === node.name.value
+        )[1];
+        if (!dataName) {
+          this.errors.push(`Not in scope: data constructor ${node.name.value}`);
+          return { type: "TypeVar", name: "Error" };
+        }
+
+        const inferredFields = node.contents.map((field) =>
+          this.inferType(field.expression.body, symbolMap, substitutions)
+        );
+        // dataName is only used to retrieve the name. The actual types should be inferred not dataName.fields xd
+        return {
+          type: "DataType",
+          name: dataName.name,
+          constructor: dataName.constructor,
+          fields: inferredFields,
+        };
       }
       case "TupleExpression": {
         const elementTypes = node.elements.map((el) => {
@@ -385,6 +483,7 @@ export class TypeChecker {
         break;
     }
   }
+
   private typeEquals(
     a: TypeNode | TypeNode[],
     b: TypeNode | TypeNode[]
@@ -433,6 +532,13 @@ export class TypeChecker {
             return (
               a.elements.length === b.elements.length &&
               a.elements.every((el, i) => this.typeEquals(el, b.elements[i]))
+            );
+          return false;
+        case "DataType":
+          if (b.type === "DataType")
+            return (
+              a.constructor === b.constructor &&
+              a.fields.every((el, i) => this.typeEquals(el, b.fields[i]))
             );
           return false;
         default:
@@ -504,6 +610,55 @@ export class TypeChecker {
     );
   }
 
+  private resolveTypeAlias(
+    type: TypeNode,
+    visited: Set<string> = new Set()
+  ): TypeNode {
+    switch (type.type) {
+      case "TypeConstructor":
+      case "TypeVar": {
+        if (visited.has(type.name)) {
+          throw new Error(`Cyclic type alias detected: ${type.name}`);
+        }
+
+        if (this.typeAliasMap.has(type.name)) {
+          visited.add(type.name);
+          return this.resolveTypeAlias(
+            this.typeAliasMap.get(type.name)!,
+            visited
+          );
+        }
+        return type;
+      }
+
+      case "FunctionType":
+        return {
+          type: "FunctionType",
+          from: type.from.map((t) =>
+            this.resolveTypeAlias(t, new Set(visited))
+          ),
+          to: this.resolveTypeAlias(type.to, new Set(visited)),
+        };
+
+      case "ListType":
+        return {
+          type: "ListType",
+          element: this.resolveTypeAlias(type.element, new Set(visited)),
+        };
+
+      case "TupleType":
+        return {
+          type: "TupleType",
+          elements: type.elements.map((el) =>
+            this.resolveTypeAlias(el, new Set(visited))
+          ),
+        };
+
+      default:
+        return type;
+    }
+  }
+
   private bindVariable(name: string, type: TypeNode): Substitution {
     if (type.type === "TypeVar" && type.name === name) {
       return new Map();
@@ -519,9 +674,11 @@ export class TypeChecker {
   private applySubstitution(type: TypeNode, sub: Substitution): TypeNode {
     switch (type.type) {
       case "TypeVar":
-        return sub.has(type.name)
-          ? this.applySubstitution(sub.get(type.name)!, sub)
-          : type;
+        if (sub.has(type.name)) {
+          return this.applySubstitution(sub.get(type.name), sub);
+        } else {
+          return type;
+        }
 
       case "FunctionType":
         return {
@@ -541,6 +698,13 @@ export class TypeChecker {
           type: "TupleType",
           elements: type.elements.map((el) => this.applySubstitution(el, sub)),
         };
+
+      case "DataType":
+        if (this.recordMap.has(type.name)) {
+          return this.recordMap.get(type.name);
+        }
+        this.errors.push(`Could find a definition of ${type.name}`)
+        return type;
 
       case "TypeConstructor":
         return type;

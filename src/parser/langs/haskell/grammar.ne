@@ -1,6 +1,6 @@
 @{%
 import { HSLexer } from "./lexer"
-import { parseFunction, parsePrimary, parseApplication, parseExpression, parseCompositionExpression, parseTypeAlias, parseFunctionType, parseLambda} from "./parser";
+import { parseFunction, parsePrimary, parseDataExpression, parseDataDeclaration, parseApplication, parseExpression, parseCompositionExpression, parseTypeAlias, parseFunctionType, parseLambda} from "./parser";
 import util from "util";
 
 const filter = d => {
@@ -52,12 +52,14 @@ infix_operator_expression ->
     }) %}
     | application {% d => d[0] %}
 
-application -> 
-    expression __ primary {% (d) => parseApplication([d[0], d[2]]) %}
-    | primary {% (d) => d[0] %}
+application -> primary (_ primary):* {% (d) => {
+    if (d[1].length === 0) return d[0];
+    return d[1].reduce((left, right) => parseApplication([left, right[1]]), d[0]);
+} %}
 
 primary ->
     %number {% (d) => parsePrimary(d[0]) %}
+    | %char {% (d) => parsePrimary(d[0]) %}
     | %string {% (d) => parsePrimary(d[0]) %}
     | %bool {% (d) => parsePrimary(d[0]) %}
     | identifier {% (d) => d[0] %} ## No need to reprocess
@@ -74,11 +76,11 @@ primary ->
 # Tuple expression: (expr, expr, ...)
 tuple_expression -> "(" _ expression (_ "," _ expression):+ _ ")" {% (d) => ({ type: "TupleExpression", elements: [d[2], ...d[3].map(x => x[3])] }) %}
 
-data_expression -> identifier _ %lbracket fields_expressions %rbracket {% (d) => ({type: "DataExpression", name: d[0], contents: d[3]}) %}
+data_expression -> identifier _ %lbracket fields_expressions %rbracket {% (d) => parseDataExpression([d[0], d[3]]) %}
 
 fields_expressions -> _ field_exp _ ("," _ field_exp):* {% (d) => {return filter(d.flat(Infinity)).filter(tok => tok.type !== "comma")}%}
 
-field_exp -> identifier _ "=" _ expression {% (d) => ({type: "FieldExpression", name: d[0], contents: d[4]}) %}
+field_exp -> identifier _ "=" _ expression {% (d) => ({type: "FieldExpression", name: d[0], expression: d[4]}) %}
 
 if_expression ->
     "if" _ expression _ "then" _ expression _ "else" _ expression
@@ -86,11 +88,11 @@ if_expression ->
 
 declaration -> function_declaration | function_type_declaration | type_declaration | data_declaration {% (d) => d[0] %}
 
-data_declaration -> "data" __ identifier _ "=" _ identifier _ %lbracket field_list %rbracket {% (d) => ({type: "Record", name: d[6], contents: d[9]}) %}
+data_declaration -> "data" __ identifier _ "=" _ identifier _ %lbracket field_list %rbracket {% (d) => parseDataDeclaration([d[2], d[6], d[9]]) %}
 
 field_list -> _ field _ ("," _ field):* {% (d) => {return filter(d.flat(Infinity)).filter(tok => tok.type !== "comma")}%}
 
-field -> identifier _ "::" _ type {% (d) => ({type: "Field", name: d[0], contents: d[4]}) %}
+field -> identifier _ "::" _ type {% (d) => ({type: "Field", name: d[0], value: d[4]}) %}
 
 function_type_declaration -> identifier _ "::" _ type {% (d) => parseFunctionType([d[0], d[4]]) %}
 
@@ -160,7 +162,7 @@ type_declaration -> "type" __ identifier _ "=" _ type {% (d) => parseTypeAlias([
 type -> function_type {% (d) => d[0] %}
 
 function_type ->
-    (application_type _ "->" _):* application_type {% (d) => ({ type: "FunctionType", from: d[0].map(x => x[0]), to: d[1] }) %}
+    (application_type _ "->" _):* application_type {% (d) => (d[0].length > 0 ? { type: "FunctionType", from: d[0].map(x => x[0]), to: d[1] } : d[1]) %}
 
 application_type ->
     simple_type (_ simple_type):* {% (d) =>

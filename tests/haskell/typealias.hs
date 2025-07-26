@@ -1,8 +1,11 @@
 type Age = Int
+
 type Name = String
+
 type Person = (Name, Age)
 
 type IntTransformer = Int -> Int
+
 type BinaryOp = Int -> Int -> Int
 
 -- Identity function with type alias
@@ -30,14 +33,8 @@ example1 :: Int
 example1 = applyTwice idInt 5
 
 example2 :: IntTransformer
-example2 = composeTransformers idInt (add 1)
+example2 x = composeTransformers idInt (add 1) x
 
 -- Complex example with all features
 processPerson :: Person -> Person
 processPerson (name, age) = (name, applyTwice (add 1) age)
-
-{- main :: IO ()
-main = do
-    let person = createPerson "Alice" 30
-    print $ processPerson person
-    print $ example2 10 -}

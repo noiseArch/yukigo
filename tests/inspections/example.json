@@ -1,37 +1,12 @@
 [
   {
     "inspection": "HasBinding",
-    "args": { "name": "minimoEntre" },
-    "expected": false
-  },
-  {
-    "inspection": "HasBinding",
-    "args": { "name": "squareList" },
+    "args": { "name": "composeTransformers" },
     "expected": true
   },
   {
-    "inspection": "UsesGuards",
-    "args": { "name": "grade" },
-    "expected": true
-  },
-  {
-    "inspection": "UsesGuards",
-    "args": { "name": "squareList" },
-    "expected": false
-  },
-  {
-    "inspection": "UsesAnonymousVariable",
-    "args": { "name": "isSecret" },
-    "expected": true
-  },
-  {
-    "inspection": "UsesAnonymousVariable",
-    "args": { "name": "squareList" },
-    "expected": false
-  },
-  {
-    "inspection": "HasArithmetic",
-    "args": { "name": "addTwoNumbers" },
+    "inspection": "HasComposition",
+    "args": { "name": "composeTransformers" },
     "expected": true
   }
 ]

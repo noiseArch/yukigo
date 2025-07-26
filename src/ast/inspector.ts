@@ -22,8 +22,7 @@ export type AnalysisResult = {
 type InspectionHandlerMap = {
   [key: string]: (
     ast: ASTGrouped,
-    args: Record<string, any>,
-    findings: Map<string, any>
+    args: Record<string, any>
   ) => { result: boolean };
 };
 
@@ -31,18 +30,21 @@ type InspectionHandlerMap = {
 
 class ASTAnalyzer {
   private ast: ASTGrouped;
-  private findings: Map<string, any> = new Map();
-  private typeCheckers: Map<string, (ast: ASTGrouped) => TypeError[]> = new Map();
+  private typeCheckers: Map<string, (ast: ASTGrouped) => TypeError[]> =
+    new Map();
 
   constructor(ast: ASTGrouped) {
     this.ast = ast;
   }
 
-  registerTypeChecker(language: string, checker: (ast: ASTGrouped) => TypeError[]) {
+  registerTypeChecker(
+    language: string,
+    checker: (ast: ASTGrouped) => TypeError[]
+  ) {
     this.typeCheckers.set(language, checker);
   }
   private inspectionHandlers: InspectionHandlerMap = {
-    HasBinding: (ast, args, findings) => {
+    HasBinding: (ast, args) => {
       const bindingName = args.name;
       let found = false;
       traverse(ast, {
@@ -71,7 +73,7 @@ class ASTAnalyzer {
         result: found,
       };
     },
-    UsesGuards: (ast, args, findings) => {
+    UsesGuards: (ast, args) => {
       const functionName = args.name;
       let usesGuards = false;
       traverse(ast, {
@@ -96,7 +98,7 @@ class ASTAnalyzer {
       };
     },
 
-    UsesAnonymousVariable: (ast, args, findings) => {
+    UsesAnonymousVariable: (ast, args) => {
       const functionName = args.name;
       let usesAnonymous = false;
       traverse(ast, {
@@ -115,7 +117,7 @@ class ASTAnalyzer {
       };
     },
 
-    HasPatternMathing: (ast, args, findings) => {
+    HasPatternMathing: (ast, args) => {
       const functionName = args.name;
       let hasPatternMathing = false;
       traverse(ast, {
@@ -130,7 +132,7 @@ class ASTAnalyzer {
       };
     },
 
-    Uses: (ast, args, findings) => {
+    Uses: (ast, args) => {
       const functionName = args.name;
       const usageName = args.usage;
       let uses = false;
@@ -151,7 +153,7 @@ class ASTAnalyzer {
       };
     },
 
-    HasLambdaExpression: (ast, args, findings) => {
+    HasLambdaExpression: (ast, args) => {
       const functionName = args.name;
       let hasLambdaExpression = false;
       traverse(ast, {
@@ -170,7 +172,7 @@ class ASTAnalyzer {
       };
     },
 
-    HasArithmetic: (ast, args, findings) => {
+    HasArithmetic: (ast, args) => {
       const functionName = args.name;
       let hasArithmetic = false;
       traverse(ast, {
@@ -189,7 +191,7 @@ class ASTAnalyzer {
       };
     },
 
-    HasComposition: (ast, args, findings) => {
+    HasComposition: (ast, args) => {
       const functionName = args.name;
       let hasComposition = false;
       traverse(ast, {
@@ -239,8 +241,7 @@ class ASTAnalyzer {
     name: string,
     handler: (
       ast: ASTGrouped,
-      args: Record<string, any>,
-      findings: Map<string, any>
+      args: Record<string, any>
     ) => { result: boolean; details?: string }
   ) {
     this.inspectionHandlers[name] = handler;
@@ -257,7 +258,7 @@ class ASTAnalyzer {
     }
 
     try {
-      const { result } = handler(this.ast, rule.args || {}, this.findings);
+      const { result } = handler(this.ast, rule.args || {});
       const passed = result === rule.expected;
       return {
         rule,
