@@ -316,7 +316,6 @@ export interface Field {
 export interface Record {
   type: "Record";
   name: SymbolPrimitive;
-  constructor: SymbolPrimitive;
   contents: Field[];
 }
 

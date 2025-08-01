@@ -2,7 +2,7 @@ import moo from "moo";
 import { keywords } from "./definition";
 import { makeLexer } from "moo-ignore";
 export const HaskellLexerConfig = {
-  EOF: "__EOF__",
+  EOF: "*__EOF__*",
   anonymousVariable: "_",
   WS: /[ \t]+/,
   comment: /--.*?$|{-[\s\S]*?-}/,
@@ -39,7 +39,7 @@ export const HaskellLexerConfig = {
   },
   op: /[#!$%&*+./<=>?@\\^|~-]+/,
   constructor: {
-    match: /[A-Z_][a-zA-Z0-9_']*/,
+    match: /[A-Z][a-zA-Z0-9']*/,
     type: moo.keywords({
       typeClass: [
         "Bounded",

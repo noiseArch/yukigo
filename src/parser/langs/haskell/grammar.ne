@@ -30,15 +30,23 @@ HSLexer.next = (next => () => {
 @preprocessor typescript
 @lexer HSLexer
 
-program -> (declaration):*  {% (d) => d[0].map(x => x[0]).filter(x => x !== null) %}
+program -> (declaration):* {% (d) => d[0].map(x => x[0]).filter(x => x !== null) %}
 
 declaration -> ((function_declaration) | (function_type_declaration (%NL | %EOF)) | (type_declaration (%NL | %EOF)) | (data_declaration (%NL | %EOF)) | (emptyline)) {% (d) => d[0][0][0] %}
 
 emptyline -> _ (%NL | %EOF) {% (d) => null %}
 
-expression -> concatenation {% (d) => parseExpression(d[0]) %}
+expression -> cons_expression {% (d) => parseExpression(d[0]) %}
 
 # Operation rules
+
+cons_expression ->
+    concatenation _ ":" _ cons_expression {% (d) => ({
+        type: "ConsExpression",
+        head: d[0],
+        tail: d[4]
+    }) %}
+    | concatenation {% (d) => d[0] %}
 
 concatenation ->
     comparison _ "++" _ concatenation {% (d) => ({ type: "Concat", operator: d[2].value, left: {type: "Expression", body:d[0]}, right: {type: "Expression", body:d[4]} }) %}
@@ -59,7 +67,7 @@ multiplication ->
     | infix_operator_expression {% (d) => d[0] %}
 
 infix_operator_expression ->
-    application _ "`" _ %variable _ "`" _ infix_operator_expression {% (d) => parseInfixApplication([d[4], d[0], d[8]]) %}
+    application _ "`" _ variable _ "`" _ infix_operator_expression {% (d) => parseInfixApplication([d[4], d[0], d[8]]) %}
     | application {% d => d[0] %}
 
 application -> primary (_ primary):* {% (d) => {
@@ -84,11 +92,11 @@ primary ->
     | case_expression {% d => d[0] %}
     | data_expression {% d => d[0] %}
     | let_in_expression {% d => d[0] %}
-
+    
 # Expression rules
 
 composition_expression ->
-    %variable _ "." _ %variable {% (d) => parseCompositionExpression([d[0], d[4]]) %}
+    variable _ "." _ %variable {% (d) => parseCompositionExpression([d[0], d[4]]) %}
 
 lambda_expression -> 
     "(" _ "\\" _ parameter_list _ "->" _ expression _ ")" {% (d) => parseLambda([d[4], d[8]]) %}
@@ -99,40 +107,50 @@ data_expression -> %constructor _ %lbracket _ fields_expressions _ %rbracket {% 
 
 fields_expressions -> field_exp (_ "," _ field_exp):* {% (d) => [d[0], ...d[1].map(x => x[3])] %}
 
-field_exp -> %variable _ "=" _ expression {% (d) => ({type: "FieldExpression", name: d[0], expression: d[4]}) %}
+field_exp -> variable _ "=" _ expression {% (d) => ({type: "FieldExpression", name: d[0], expression: d[4]}) %}
 
 if_expression -> "if" _ expression _ (%NL):? _ "then" _ expression _ (%NL):? _ "else" _ expression {% (d) => parseConditional([d[2], d[6], d[10]]) %}
 
 # Data rules
 
-data_declaration -> "data" __ %constructor (__ type_variable):? _ "=" _ constructor_def (__ "|" __ constructor_def):* {% (d) => parseDataDeclaration([d[2], d[7].name, d[7].fields]) %}
+data_declaration -> "data" __ %constructor (__ type_variable):? _ "=" _ constructor_def (_ "|" _ constructor_def):* {% (d) => parseDataDeclaration([d[2], [d[7], ...d[8].map(x => x[3])]]) %}
 
 constructor_def ->
-  %constructor _ (%NL __):? %lbracket _ (%NL _):? field_list _ %NL:? _ %rbracket {% (d) => ({name: d[0].value, fields: d[8]}) %}
-  | %constructor (_ type):* {% (d) => ({name: d[0].value, fields: d[1].map(x => x[1])}) %}
+  %constructor _ (%NL __):? %lbracket _ (%NL _):? field_list _ (%NL _):? %rbracket {% (d) => ({name: d[0].value, fields: d[6]}) %}
+  | %constructor (__ simple_type):* {% (d) => ({name: d[0].value, fields: d[1].map(x => x[1])}) %}
 
 field_list -> field (_ "," _ (%NL _):? field):* {% (d) => ([d[0], ...d[1].map(x => x[5])])%}
 
-field -> %variable _ %typeEquals _ type {% (d) => ({type: "Field", name: d[0], value: d[4]}) %}
+field -> variable _ %typeEquals _ type {% (d) => ({type: "Field", name: d[0], value: d[4]}) %}
 
 # Function rules
 
-function_type_declaration -> %variable _ %typeEquals _ type _ {% (d) => parseFunctionType([d[0], d[4]]) %}
+function_type_declaration -> variable _ %typeEquals _ type _ {% (d) => parseFunctionType([d[0], d[4]]) %}
 
 function_declaration -> 
-    %variable __ parameter_list:? _ (%NL __):? guarded_rhs {% (d) => parseFunction({type: "function", name: d[0], params: d[2] ? d[2] : [], body: d[5], return: d[5], attributes: ["GuardedBody"]}) %}
-    | %variable __ parameter_list:? _ %assign _ (%NL __):? expression {% (d) => parseFunction({type: "function", name: d[0], params: d[2] ? d[2] : [], body: d[7], return: d[7], attributes: ["UnguardedBody"]}) %}
+    variable __ parameter_list:? _ (%NL __):? guarded_rhs {% (d) => parseFunction({type: "function", name: d[0], params: d[2] ? d[2] : [], body: d[5], return: d[5], attributes: ["GuardedBody"]}) %}
+    | variable __ parameter_list:? _ %assign _ (%NL __):? expression (%NL | %EOF) {% (d) => parseFunction({type: "function", name: d[0], params: d[2] ? d[2] : [], body: d[7], return: d[7], attributes: ["UnguardedBody"]}) %}
 
-guarded_rhs -> guarded_branch:+ {% (d) => d[0] %}
+guarded_rhs -> guarded_branch {% (d) => d[0] %}
 
-guarded_branch -> "|" _ expression _ "=" _ expression _ (%NL __):? {% (d) => ({ condition: d[2], body: d[6], return: d[6] }) %}
+guarded_branch -> "|" _ expression _ "=" _ expression ((%NL __ guarded_branch) | %NL | %EOF) {% (d) => ({ condition: d[2], body: d[6], return: d[6] }) %}
 
 parameter_list -> pattern (__ pattern):* {% (d) => [d[0], ...d[1].map(x => x[1])] %}
 
 # Patterns
 
-pattern -> 
-    as_pattern
+pattern -> cons_pattern {% (d) => d[0] %}
+
+cons_pattern -> 
+  simple_pattern _ ":" _ cons_pattern {% (d) => ({
+    type: "ConsPattern",
+    head: d[0],
+    tail: d[4]
+  }) %}
+  | simple_pattern {% (d) => d[0] %}
+
+simple_pattern ->
+  (as_pattern
   | constructor_pattern
   | list_pattern
   | tuple_pattern
@@ -140,24 +158,21 @@ pattern ->
   | literal_pattern
   | variable_pattern
   | wildcard_pattern
-  | paren_pattern
+  | paren_pattern) {% (d) => d[0][0] %}
 
 wildcard_pattern -> %anonymousVariable {% (d) => ({
   type: "WildcardPattern",
   value: "_"
 }) %}
 
+paren_pattern -> "(" _ pattern _ ")" {% (d) => d[2] %}
 
-variable_pattern -> %variable {% (d) => d[0] %}
+variable_pattern -> variable {% (d) => d[0] %}
 
 literal_pattern -> 
   (%number | %char | %string | %bool) {% (d) => parsePrimary(d[0][0]) %} 
 
-as_pattern -> (variable_pattern | wildcard_pattern) _ "@" _ pattern {% (d) => ({
-  type: "AsPattern",
-  alias: d[0],
-  pattern: d[4]
-}) %}
+as_pattern -> (variable_pattern | wildcard_pattern) _ "@" _ pattern {% (d) => ({type: "AsPattern", alias: d[0], pattern: d[4]}) %}
 
 constructor_pattern -> 
   %constructor (_ pattern):* {% (d) => ({
@@ -175,13 +190,15 @@ record_pattern ->
 
 field_pattern_list -> field_pattern (_ "," _ field_pattern):* {% (d) => [d[0], ...d[1].map(x => x[3])] %}
 
-field_pattern -> %variable _ "=" _ pattern {% (d) => ({ field: d[0].value, pattern: d[4] }) %}
+field_pattern -> variable _ "=" _ pattern {% (d) => ({ field: d[0].value, pattern: d[4] }) %}
 
 list_pattern -> 
   "[" _ pattern_list:? _ "]" {% (d) => ({
     type: "ListPattern",
     elements: d[2] || []
   }) %}
+
+pattern_list -> pattern (_ "," _ pattern):* {% (d) => [d[0], ...d[1].map(x => x[3])] %}
 
 tuple_pattern -> 
   "(" _ pattern (_ "," _ pattern):+ _ ")" {% (d) => ({
@@ -262,7 +279,7 @@ simple_type ->
     }) %}
   | "(" _ type _ ")" {% (d) => d[2] %}
 
-type_variable -> %variable {% (d) => ({ type: "TypeVar", name: d[0].value }) %}
+type_variable -> variable {% (d) => ({ type: "TypeVar", name: d[0].value }) %}
 type_constructor -> %constructor {% (d) => ({ type: "TypeConstructor", name: d[0].value }) %}
 
 # Misc rules

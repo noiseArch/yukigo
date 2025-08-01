@@ -179,13 +179,12 @@ function parseDataExpression(
 }
 
 function parseDataDeclaration(
-  token: [SymbolPrimitive, SymbolPrimitive, Field[]]
+  token: [SymbolPrimitive, Field[]]
 ): Record {
   return {
     type: "Record",
     name: token[0],
-    constructor: token[1],
-    contents: token[2],
+    contents: token[1],
   };
 }
 function parseConditional(

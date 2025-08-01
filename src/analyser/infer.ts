@@ -127,9 +127,8 @@ export class TypeChecker {
         const resolvedType = this.mapTypeNodePrimitives(node.value);
         this.typeAliasMap.set(typeAliasIdentifier, resolvedType);
       },
-      Record: (node: Record) => {
+/*       Record: (node: Record) => {
         const recordIdentifier = node.name.value;
-        const recordConstructor = node.constructor;
 
         // check if record identifier is already in the recordMap or another record uses same constructor
         const isConstructorInRecord = Array.from(this.recordMap).some(
@@ -177,7 +176,7 @@ export class TypeChecker {
         } catch (e) {
           this.errors.push(`In record '${recordIdentifier}': ${e.message}`);
         }
-      },
+      }, */
       TypeSignature: (node: FunctionTypeSignature) => {
         const functionName = node.name.value;
         const returnType = node.returnType;
