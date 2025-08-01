@@ -4,6 +4,7 @@ import {
   FunctionDeclaration,
   FunctionGroup,
   FunctionTypeSignature,
+  InfixApplicationExpression,
   LambdaExpression,
   TypeAlias,
   TypeNode,
@@ -281,15 +282,24 @@ export interface MapEntry {
   value: Expression;
 }
 
+export interface ControlFlowConditional {
+  type: "IfThenElse";
+  condition: Expression;
+  then: Expression;
+  else: Expression;
+}
+
 export type BodyExpression =
   | Primitive
   | Operation
   | TupleExpression
+  | ControlFlowConditional
   // Functional expressions
   | DataExpression
   | CompositionExpression
   | LambdaExpression
-  | ApplicationExpression;
+  | ApplicationExpression
+  | InfixApplicationExpression;
 
 export type Expression = {
   type: "Expression";
@@ -301,6 +311,7 @@ export interface Field {
   name: SymbolPrimitive;
   value: TypeNode;
 }
+
 
 export interface Record {
   type: "Record";

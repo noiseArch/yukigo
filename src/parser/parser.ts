@@ -8,7 +8,7 @@ import { AST, ASTGrouped } from "./globals";
 
 export function groupFunctionDeclarations(ast: AST): ASTGrouped {
   const groups: Record<string, FunctionDeclaration[]> = {};
-  const others: ASTGrouped = []; // Cumple ASTGrouped porque no tiene objetos FunctionDeclaration 
+  const others: ASTGrouped = []; // Cumple ASTGrouped porque no tiene objetos FunctionDeclaration
 
   for (const node of ast) {
     if (node.type == "function") {
@@ -37,6 +37,7 @@ export function groupFunctionDeclarations(ast: AST): ASTGrouped {
 
 export function parse(code: string) {
   const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
+  console.log(JSON.stringify(code, null, 0));
   parser.feed(code);
   parser.finish();
   console.log("Amount of possibles ASTs:", parser.results.length);

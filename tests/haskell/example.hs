@@ -1,7 +1,8 @@
-data Datita = UnDatita {
-  atributito :: String,
-  atributote :: Int
-}
+data Datita = UnDatita
+  { atributito :: String,
+    atributote :: Int
+  }
+
 type Number = Int
 
 datita :: Datita

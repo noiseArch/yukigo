@@ -2,15 +2,14 @@ import moo from "moo";
 import { keywords } from "./definition";
 import { makeLexer } from "moo-ignore";
 export const HaskellLexerConfig = {
-  //EOF: "__EOF__",
+  EOF: "__EOF__",
   anonymousVariable: "_",
   WS: /[ \t]+/,
   comment: /--.*?$|{-[\s\S]*?-}/,
   number:
     /0[xX][0-9a-fA-F]+|0[bB][01]+|0[oO][0-7]+|(?:\d*\.\d+|\d+)(?:[eE][+-]?\d+)?/,
   char: /'(?:\\['\\bfnrtv0]|\\u[0-9a-fA-F]{4}|[^'\\\n\r])?'/,
-  string:
-    /"(?:\\["\\bfnrtv0]|\\u[0-9a-fA-F]{4}|[^"\\\n\r])*"/,
+  string: /"(?:\\["\\bfnrtv0]|\\u[0-9a-fA-F]{4}|[^"\\\n\r])*"/,
   //template: /`(?:\\[\s\S]|[^\\`])*`/,
   backtick: "`",
   lparen: "(",
@@ -36,11 +35,37 @@ export const HaskellLexerConfig = {
   equals: "==",
   assign: "=",
   bool: {
-    match: ["True", "False"]
+    match: ["True", "False"],
   },
   op: /[#!$%&*+./<=>?@\\^|~-]+/,
-  identifier: {
-    match: /[a-zA-Z0-9_']+|_[a-zA-Z0-9_']+/,
+  constructor: {
+    match: /[A-Z_][a-zA-Z0-9_']*/,
+    type: moo.keywords({
+      typeClass: [
+        "Bounded",
+        "Enum",
+        "Eq",
+        "Floating",
+        "Fractional",
+        "Functor",
+        "Integral",
+        "Ix",
+        "Monad",
+        "MonadPlus",
+        "Num",
+        "Ord",
+        "Random",
+        "RandomGen",
+        "Read",
+        "Real",
+        "RealFloat",
+        "RealFrac",
+        "Show",
+      ],
+    }),
+  },
+  variable: {
+    match: /[a-z_][a-zA-Z0-9_']*/,
     type: moo.keywords({
       keyword: keywords,
     }),
@@ -48,4 +73,6 @@ export const HaskellLexerConfig = {
   NL: { match: /\r?\n/, lineBreaks: true },
 };
 
-export const HSLexer = makeLexer(HaskellLexerConfig, ["NL", "comment"]);
+export const HSLexer = makeLexer(HaskellLexerConfig, ["comment"], {
+  eof: true,
+});

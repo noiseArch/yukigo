@@ -3,6 +3,7 @@ import {
   BodyExpression,
   BooleanPrimitive,
   CharPrimitive,
+  ControlFlowConditional,
   DataExpression,
   Expression,
   Field,
@@ -22,7 +23,9 @@ import {
   Pattern,
   TypeNode,
   LambdaExpression,
-  Func,
+  FunctionDeclaration,
+  InfixApplicationExpression,
+  Constraint,
 } from "../../paradigms/functional";
 
 interface BaseMooToken {
@@ -72,9 +75,9 @@ function parseFunction(token: {
   body: Expression;
   return: Expression;
   attributes: string[];
-}): Func {
+}): FunctionDeclaration {
   //console.log("Function", inspect(token, false, null, true));
-  const funcDecl = {
+  return {
     type: "function",
     name: token.name,
     parameters: token.params,
@@ -82,31 +85,37 @@ function parseFunction(token: {
     return: token.return,
     attributes: token.attributes,
   };
-
-  return funcDecl;
 }
 
 function parseFunctionType(
   token: [SymbolPrimitive, TypeNode]
 ): FunctionTypeSignature {
-  if (token[1].type === "FunctionType") {
+  let constraints: Constraint[] = [];
+  let body: TypeNode = token[1];
+  if (token[1].type === "ConstrainedType") {
+    constraints = token[1].context;
+    body = token[1].body;
+  }
+  if (body.type === "FunctionType") {
     return {
       type: "TypeSignature",
       name: token[0],
-      inputTypes: token[1].from,
-      returnType: token[1].to,
+      constraints,
+      inputTypes: body.from,
+      returnType: body.to,
     };
   }
   return {
     type: "TypeSignature",
     name: token[0],
+    constraints,
     inputTypes: [],
-    returnType: token[1],
+    returnType: body,
   };
 }
 
 function parseTypeAlias(token: [SymbolPrimitive, TypeNode]): TypeAlias {
-  console.log("Type Alias TypeNode", inspect(token, false, null, true));
+  //console.log("Type Alias TypeNode", inspect(token, false, null, true));
   return {
     type: "TypeAlias",
     name: token[0],
@@ -152,6 +161,17 @@ function parseApplication(
   };
 }
 
+function parseInfixApplication(
+  token: [SymbolPrimitive, BodyExpression, BodyExpression]
+): InfixApplicationExpression {
+  return {
+    type: "InfixApplication",
+    operator: token[0],
+    left: { type: "Expression", body: token[1] },
+    right: { type: "Expression", body: token[2] },
+  };
+}
+
 function parseDataExpression(
   token: [SymbolPrimitive, FieldExpression[]]
 ): DataExpression {
@@ -168,10 +188,22 @@ function parseDataDeclaration(
     contents: token[2],
   };
 }
+function parseConditional(
+  token: [Expression, Expression, Expression]
+): ControlFlowConditional {
+  return {
+    type: "IfThenElse",
+    condition: token[0],
+    then: token[1],
+    else: token[2],
+  };
+}
 
 function parsePrimary(token: Token): Primitive {
+  //console.log("Primary", token);
   switch (token.type) {
-    case "identifier": {
+    case "constructor":
+    case "variable": {
       const identifierPrimitive: SymbolPrimitive = {
         type: "YuSymbol",
         value: token.value,
@@ -201,8 +233,6 @@ function parsePrimary(token: Token): Primitive {
       return stringPrimitive;
     }
     case "list": {
-      console.log("YuList", inspect(token, false, null, true));
-
       const listPrimitive: ListPrimitive = {
         type: "YuList",
         elements: (token as ListToken).body[1],
@@ -227,10 +257,12 @@ export {
   parseFunction,
   parsePrimary,
   parseExpression,
+  parseConditional,
   parseCompositionExpression,
   parseTypeAlias,
   parseDataDeclaration,
   parseFunctionType,
+  parseInfixApplication,
   parseApplication,
   parseDataExpression,
   parseLambda,

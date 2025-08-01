@@ -1,15 +1,11 @@
-import {
-  Expression,
-  Modify,
-  Type,
-  YukigoPrimitive,
-} from "../../globals";
+import { Expression, Modify, Type, YukigoPrimitive } from "../../globals";
 import {
   FunctionDeclaration,
   FunctionExpression,
   ListPrimitive,
   LambdaExpression,
   ApplicationExpression,
+  TypeNode,
 } from "../../paradigms/functional";
 
 export const keywords = [
@@ -57,6 +53,41 @@ export const typeMappings: { [key: string]: YukigoPrimitive } = {
   Boolean: "YuBoolean",
   Bool: "YuBoolean",
 };
+
+export const typeClasses: Map<string, TypeNode[]> = new Map([
+  ["Bounded", []],
+  ["Enum", []],
+  ["Eq", []],
+  ["Floating", []],
+  ["Fractional", []],
+  ["Functor", []],
+  [
+    "Integral",
+    [
+      { type: "TypeConstructor", name: "Int" },
+      { type: "TypeConstructor", name: "Integer" },
+    ],
+  ],
+  ["Ix", []],
+  ["Monad", []],
+  ["MonadPlus", []],
+  [
+    "Num",
+    [
+      { type: "TypeConstructor", name: "Int" },
+      { type: "TypeConstructor", name: "Double" },
+      { type: "TypeConstructor", name: "Float" },
+      { type: "TypeConstructor", name: "Integer" },
+    ],
+  ],
+  ["Random", []],
+  ["RandomGen", []],
+  ["Read", []],
+  ["Real", []],
+  ["RealFloat", []],
+  ["RealFrac", []],
+  ["Show", []],
+]);
 
 export const haskellStdLib: Map<string, Type> = new Map([
   [

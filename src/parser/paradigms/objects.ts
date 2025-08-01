@@ -142,10 +142,10 @@ export interface BaseControlFlow {
 
 // Conditional statements
 export interface IfStatement extends BaseControlFlow {
-  type: "if";
+  type: "IfThenElse";
   condition: ObjectsExpression;
-  thenBlock: BlockExpression;
-  elseBlock?: BlockExpression | IfStatement; // For else-if chains
+  then: BlockExpression;
+  else?: BlockExpression | IfStatement; // For else-if chains
 }
 
 export interface SwitchStatement extends BaseControlFlow {
