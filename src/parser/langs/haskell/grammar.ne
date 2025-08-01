@@ -118,7 +118,7 @@ constructor_def ->
   constr _ (%NL __):? %lbracket _ (%NL _):? field_list _ (%NL _):? %rbracket {% (d) => ({name: d[0].value, fields: d[6]}) %}
   | constr (__ simple_type):* {% (d) => ({name: d[0].value, fields: d[1].map(x => x[1])}) %}
 
-field_list -> field (_ "," _ (%NL _):? field):* {% (d) => ([d[0], ...d[1].map(x => x[5])])%}
+field_list -> field (_ "," _ (%NL _):? field):* {% (d) => d[1][5] ? ([d[0], ...d[1].map(x => x[5])]) : [d[0]]%}
 
 field -> variable _ %typeEquals _ type {% (d) => ({type: "Field", name: d[0], value: d[4]}) %}
 
@@ -128,11 +128,11 @@ function_type_declaration -> variable _ %typeEquals _ type _ {% (d) => parseFunc
 
 function_declaration -> 
     variable __ parameter_list:? _ (%NL __):? guarded_rhs {% (d) => parseFunction({type: "function", name: d[0], params: d[2] ? d[2] : [], body: d[5], return: d[5], attributes: ["GuardedBody"]}) %}
-    | variable __ parameter_list:? _ %assign _ (%NL __):? expression (%NL | %EOF) {% (d) => parseFunction({type: "function", name: d[0], params: d[2] ? d[2] : [], body: d[7], return: d[7], attributes: ["UnguardedBody"]}) %}
+    | variable __ parameter_list:? _ %assign _ (%NL __):? expression _ (%NL | %EOF) {% (d) => parseFunction({type: "function", name: d[0], params: d[2] ? d[2] : [], body: d[7], return: d[7], attributes: ["UnguardedBody"]}) %}
 
 guarded_rhs -> guarded_branch {% (d) => d[0] %}
 
-guarded_branch -> "|" _ expression _ "=" _ expression ((%NL __ guarded_branch) | %NL | %EOF) {% (d) => ({ condition: d[2], body: d[6], return: d[6] }) %}
+guarded_branch -> "|" _ expression _ "=" _ expression _ ((%NL __ guarded_branch) | %NL | %EOF) {% (d) => ({ condition: d[2], body: d[6], return: d[6] }) %}
 
 parameter_list -> pattern (__ pattern):* {% (d) => [d[0], ...d[1].map(x => x[1])] %}
 
