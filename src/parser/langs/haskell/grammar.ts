@@ -9,8 +9,6 @@ declare var number: any;
 declare var char: any;
 declare var string: any;
 declare var bool: any;
-declare var variable: any;
-declare var constructor: any;
 declare var lbracket: any;
 declare var rbracket: any;
 declare var typeEquals: any;
@@ -19,6 +17,8 @@ declare var anonymousVariable: any;
 declare var arrow: any;
 declare var typeClass: any;
 declare var typeArrow: any;
+declare var constructor: any;
+declare var variable: any;
 declare var WS: any;
 
 import { HSLexer } from "./lexer"
@@ -44,7 +44,7 @@ const filter = d => {
 HSLexer.next = (next => () => {
     let tok;
     while ((tok = next.call(HSLexer)) && (tok.type === "comment")) {}
-    //console.log(tok);
+    console.log(tok);
     return tok;
 })(HSLexer.next);
 
@@ -133,8 +133,8 @@ const grammar: Grammar = {
     {"name": "primary", "symbols": [(HSLexer.has("char") ? {type: "char"} : char)], "postprocess": (d) => parsePrimary(d[0])},
     {"name": "primary", "symbols": [(HSLexer.has("string") ? {type: "string"} : string)], "postprocess": (d) => parsePrimary(d[0])},
     {"name": "primary", "symbols": [(HSLexer.has("bool") ? {type: "bool"} : bool)], "postprocess": (d) => parsePrimary(d[0])},
-    {"name": "primary", "symbols": [(HSLexer.has("variable") ? {type: "variable"} : variable)], "postprocess": (d) => parsePrimary(d[0])},
-    {"name": "primary", "symbols": [(HSLexer.has("constructor") ? {type: "constructor"} : constructor)], "postprocess": (d) => parsePrimary(d[0])},
+    {"name": "primary", "symbols": ["variable"], "postprocess": (d) => d[0]},
+    {"name": "primary", "symbols": ["constr"], "postprocess": (d) => d[0]},
     {"name": "primary", "symbols": ["tuple_expression"], "postprocess": (d) => d[0]},
     {"name": "primary", "symbols": [{"literal":"("}, "_", "expression", "_", {"literal":")"}], "postprocess": (d) => d[2]},
     {"name": "primary", "symbols": ["list_literal"], "postprocess": (d) => parsePrimary({type: "list", body: d[0]})},
@@ -144,14 +144,14 @@ const grammar: Grammar = {
     {"name": "primary", "symbols": ["case_expression"], "postprocess": d => d[0]},
     {"name": "primary", "symbols": ["data_expression"], "postprocess": d => d[0]},
     {"name": "primary", "symbols": ["let_in_expression"], "postprocess": d => d[0]},
-    {"name": "composition_expression", "symbols": ["variable", "_", {"literal":"."}, "_", (HSLexer.has("variable") ? {type: "variable"} : variable)], "postprocess": (d) => parseCompositionExpression([d[0], d[4]])},
+    {"name": "composition_expression", "symbols": ["variable", "_", {"literal":"."}, "_", "variable"], "postprocess": (d) => parseCompositionExpression([d[0], d[4]])},
     {"name": "lambda_expression", "symbols": [{"literal":"("}, "_", {"literal":"\\"}, "_", "parameter_list", "_", {"literal":"->"}, "_", "expression", "_", {"literal":")"}], "postprocess": (d) => parseLambda([d[4], d[8]])},
     {"name": "tuple_expression$ebnf$1$subexpression$1", "symbols": ["_", {"literal":","}, "_", "expression"]},
     {"name": "tuple_expression$ebnf$1", "symbols": ["tuple_expression$ebnf$1$subexpression$1"]},
     {"name": "tuple_expression$ebnf$1$subexpression$2", "symbols": ["_", {"literal":","}, "_", "expression"]},
     {"name": "tuple_expression$ebnf$1", "symbols": ["tuple_expression$ebnf$1", "tuple_expression$ebnf$1$subexpression$2"], "postprocess": (d) => d[0].concat([d[1]])},
     {"name": "tuple_expression", "symbols": [{"literal":"("}, "_", "expression", "tuple_expression$ebnf$1", "_", {"literal":")"}], "postprocess": (d) => ({ type: "TupleExpression", elements: [d[2], ...d[3].map(x => x[3])] })},
-    {"name": "data_expression", "symbols": [(HSLexer.has("constructor") ? {type: "constructor"} : constructor), "_", (HSLexer.has("lbracket") ? {type: "lbracket"} : lbracket), "_", "fields_expressions", "_", (HSLexer.has("rbracket") ? {type: "rbracket"} : rbracket)], "postprocess": (d) => parseDataExpression([d[0], d[3]])},
+    {"name": "data_expression", "symbols": ["constr", "_", (HSLexer.has("lbracket") ? {type: "lbracket"} : lbracket), "_", "fields_expressions", "_", (HSLexer.has("rbracket") ? {type: "rbracket"} : rbracket)], "postprocess": (d) => parseDataExpression([d[0], d[3]])},
     {"name": "fields_expressions$ebnf$1", "symbols": []},
     {"name": "fields_expressions$ebnf$1$subexpression$1", "symbols": ["_", {"literal":","}, "_", "field_exp"]},
     {"name": "fields_expressions$ebnf$1", "symbols": ["fields_expressions$ebnf$1", "fields_expressions$ebnf$1$subexpression$1"], "postprocess": (d) => d[0].concat([d[1]])},
@@ -170,7 +170,7 @@ const grammar: Grammar = {
     {"name": "data_declaration$ebnf$2", "symbols": []},
     {"name": "data_declaration$ebnf$2$subexpression$1", "symbols": ["_", {"literal":"|"}, "_", "constructor_def"]},
     {"name": "data_declaration$ebnf$2", "symbols": ["data_declaration$ebnf$2", "data_declaration$ebnf$2$subexpression$1"], "postprocess": (d) => d[0].concat([d[1]])},
-    {"name": "data_declaration", "symbols": [{"literal":"data"}, "__", (HSLexer.has("constructor") ? {type: "constructor"} : constructor), "data_declaration$ebnf$1", "_", {"literal":"="}, "_", "constructor_def", "data_declaration$ebnf$2"], "postprocess": (d) => parseDataDeclaration([d[2], [d[7], ...d[8].map(x => x[3])]])},
+    {"name": "data_declaration", "symbols": [{"literal":"data"}, "__", "constr", "data_declaration$ebnf$1", "_", {"literal":"="}, "_", "constructor_def", "data_declaration$ebnf$2"], "postprocess": (d) => parseDataDeclaration([d[2], [d[7], ...d[8].map(x => x[3])]])},
     {"name": "constructor_def$ebnf$1$subexpression$1", "symbols": [(HSLexer.has("NL") ? {type: "NL"} : NL), "__"]},
     {"name": "constructor_def$ebnf$1", "symbols": ["constructor_def$ebnf$1$subexpression$1"], "postprocess": id},
     {"name": "constructor_def$ebnf$1", "symbols": [], "postprocess": () => null},
@@ -180,11 +180,11 @@ const grammar: Grammar = {
     {"name": "constructor_def$ebnf$3$subexpression$1", "symbols": [(HSLexer.has("NL") ? {type: "NL"} : NL), "_"]},
     {"name": "constructor_def$ebnf$3", "symbols": ["constructor_def$ebnf$3$subexpression$1"], "postprocess": id},
     {"name": "constructor_def$ebnf$3", "symbols": [], "postprocess": () => null},
-    {"name": "constructor_def", "symbols": [(HSLexer.has("constructor") ? {type: "constructor"} : constructor), "_", "constructor_def$ebnf$1", (HSLexer.has("lbracket") ? {type: "lbracket"} : lbracket), "_", "constructor_def$ebnf$2", "field_list", "_", "constructor_def$ebnf$3", (HSLexer.has("rbracket") ? {type: "rbracket"} : rbracket)], "postprocess": (d) => ({name: d[0].value, fields: d[6]})},
+    {"name": "constructor_def", "symbols": ["constr", "_", "constructor_def$ebnf$1", (HSLexer.has("lbracket") ? {type: "lbracket"} : lbracket), "_", "constructor_def$ebnf$2", "field_list", "_", "constructor_def$ebnf$3", (HSLexer.has("rbracket") ? {type: "rbracket"} : rbracket)], "postprocess": (d) => ({name: d[0].value, fields: d[6]})},
     {"name": "constructor_def$ebnf$4", "symbols": []},
     {"name": "constructor_def$ebnf$4$subexpression$1", "symbols": ["__", "simple_type"]},
     {"name": "constructor_def$ebnf$4", "symbols": ["constructor_def$ebnf$4", "constructor_def$ebnf$4$subexpression$1"], "postprocess": (d) => d[0].concat([d[1]])},
-    {"name": "constructor_def", "symbols": [(HSLexer.has("constructor") ? {type: "constructor"} : constructor), "constructor_def$ebnf$4"], "postprocess": (d) => ({name: d[0].value, fields: d[1].map(x => x[1])})},
+    {"name": "constructor_def", "symbols": ["constr", "constructor_def$ebnf$4"], "postprocess": (d) => ({name: d[0].value, fields: d[1].map(x => x[1])})},
     {"name": "field_list$ebnf$1", "symbols": []},
     {"name": "field_list$ebnf$1$subexpression$1$ebnf$1$subexpression$1", "symbols": [(HSLexer.has("NL") ? {type: "NL"} : NL), "_"]},
     {"name": "field_list$ebnf$1$subexpression$1$ebnf$1", "symbols": ["field_list$ebnf$1$subexpression$1$ebnf$1$subexpression$1"], "postprocess": id},
@@ -252,12 +252,12 @@ const grammar: Grammar = {
     {"name": "constructor_pattern$ebnf$1", "symbols": []},
     {"name": "constructor_pattern$ebnf$1$subexpression$1", "symbols": ["_", "pattern"]},
     {"name": "constructor_pattern$ebnf$1", "symbols": ["constructor_pattern$ebnf$1", "constructor_pattern$ebnf$1$subexpression$1"], "postprocess": (d) => d[0].concat([d[1]])},
-    {"name": "constructor_pattern", "symbols": [(HSLexer.has("constructor") ? {type: "constructor"} : constructor), "constructor_pattern$ebnf$1"], "postprocess":  (d) => ({
+    {"name": "constructor_pattern", "symbols": ["constr", "constructor_pattern$ebnf$1"], "postprocess":  (d) => ({
           type: "ConstructorPattern",
           constructor: d[0].value,
           patterns: d[1].map(x => x[1])
         }) },
-    {"name": "record_pattern$ebnf$1", "symbols": [(HSLexer.has("constructor") ? {type: "constructor"} : constructor)], "postprocess": id},
+    {"name": "record_pattern$ebnf$1", "symbols": ["constr"], "postprocess": id},
     {"name": "record_pattern$ebnf$1", "symbols": [], "postprocess": () => null},
     {"name": "record_pattern", "symbols": ["record_pattern$ebnf$1", "_", (HSLexer.has("lbracket") ? {type: "lbracket"} : lbracket), "_", "field_pattern_list", "_", (HSLexer.has("rbracket") ? {type: "rbracket"} : rbracket)], "postprocess":  (d) => ({
           type: "RecordPattern",
@@ -299,7 +299,8 @@ const grammar: Grammar = {
     {"name": "case_alternatives$ebnf$1", "symbols": ["case_alternatives$ebnf$1", "case_alternatives$ebnf$1$subexpression$1"], "postprocess": (d) => d[0].concat([d[1]])},
     {"name": "case_alternatives", "symbols": ["case_alternative", "case_alternatives$ebnf$1"], "postprocess": (d) => [d[0], ...d[1].map(x => x[1])]},
     {"name": "case_alternative", "symbols": ["pattern", "_", {"literal":"->"}, "_", "expression"], "postprocess": (d) => ({ pattern: d[0], body: d[4] })},
-    {"name": "type_declaration", "symbols": [{"literal":"type"}, "__", (HSLexer.has("constructor") ? {type: "constructor"} : constructor), "_", {"literal":"="}, "_", "type"], "postprocess": (d) => parseTypeAlias([d[2], d[6]])},
+    {"name": "type_declaration$subexpression$1", "symbols": [{"literal":"type"}, "__", "constr", "_", {"literal":"="}, "_", "type"]},
+    {"name": "type_declaration", "symbols": ["type_declaration$subexpression$1"], "postprocess": (d) => parseTypeAlias([d[0][2], d[0][6]])},
     {"name": "type", "symbols": ["constrained_type"], "postprocess": (d) => d[0]},
     {"name": "type", "symbols": ["function_type"], "postprocess": (d) => d[0]},
     {"name": "constrained_type", "symbols": ["context", "_", (HSLexer.has("arrow") ? {type: "arrow"} : arrow), "_", "type"], "postprocess":  (d) => ({ 
@@ -347,10 +348,8 @@ const grammar: Grammar = {
         }) },
     {"name": "simple_type", "symbols": [{"literal":"("}, "_", "type", "_", {"literal":")"}], "postprocess": (d) => d[2]},
     {"name": "type_variable", "symbols": ["variable"], "postprocess": (d) => ({ type: "TypeVar", name: d[0].value })},
-    {"name": "type_constructor", "symbols": [(HSLexer.has("constructor") ? {type: "constructor"} : constructor)], "postprocess": (d) => ({ type: "TypeConstructor", name: d[0].value })},
-    {"name": "identifier", "symbols": [(HSLexer.has("constructor") ? {type: "constructor"} : constructor)], "postprocess": (d) => d[0]},
-    {"name": "identifier", "symbols": ["variable"], "postprocess": (d) => d[0]},
-    {"name": "constructor", "symbols": [(HSLexer.has("constructor") ? {type: "constructor"} : constructor)], "postprocess": (d) => parsePrimary(d[0])},
+    {"name": "type_constructor", "symbols": ["constr"], "postprocess": (d) => ({ type: "TypeConstructor", name: d[0].value })},
+    {"name": "constr", "symbols": [(HSLexer.has("constructor") ? {type: "constructor"} : constructor)], "postprocess": (d) => parsePrimary(d[0])},
     {"name": "variable", "symbols": [(HSLexer.has("variable") ? {type: "variable"} : variable)], "postprocess": (d) => parsePrimary(d[0])},
     {"name": "list_literal", "symbols": [{"literal":"["}, "_", {"literal":"]"}], "postprocess": () => []},
     {"name": "list_literal", "symbols": [{"literal":"["}, "_", "expression_list", "_", {"literal":"]"}], "postprocess": (d) => d[2]},

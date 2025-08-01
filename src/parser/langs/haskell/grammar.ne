@@ -80,9 +80,8 @@ primary ->
     | %char {% (d) => parsePrimary(d[0]) %}
     | %string {% (d) => parsePrimary(d[0]) %}
     | %bool {% (d) => parsePrimary(d[0]) %}
-    | %variable {% (d) => parsePrimary(d[0]) %}
-    | %constructor {% (d) => parsePrimary(d[0]) %}
-    #| identifier {% (d) => d[0] %} # No need to reprocess
+    | variable {% (d) => d[0] %}
+    | constr {% (d) => d[0] %}
     | tuple_expression {% (d) => d[0] %}
     | "(" _ expression _ ")" {% (d) => d[2] %}
     | list_literal {% (d) => parsePrimary({type: "list", body: d[0]}) %}
@@ -96,14 +95,14 @@ primary ->
 # Expression rules
 
 composition_expression ->
-    variable _ "." _ %variable {% (d) => parseCompositionExpression([d[0], d[4]]) %}
+    variable _ "." _ variable {% (d) => parseCompositionExpression([d[0], d[4]]) %}
 
 lambda_expression -> 
     "(" _ "\\" _ parameter_list _ "->" _ expression _ ")" {% (d) => parseLambda([d[4], d[8]]) %}
 
 tuple_expression -> "(" _ expression (_ "," _ expression):+ _ ")" {% (d) => ({ type: "TupleExpression", elements: [d[2], ...d[3].map(x => x[3])] }) %}
 
-data_expression -> %constructor _ %lbracket _ fields_expressions _ %rbracket {% (d) => parseDataExpression([d[0], d[3]]) %}
+data_expression -> constr _ %lbracket _ fields_expressions _ %rbracket {% (d) => parseDataExpression([d[0], d[3]]) %}
 
 fields_expressions -> field_exp (_ "," _ field_exp):* {% (d) => [d[0], ...d[1].map(x => x[3])] %}
 
@@ -113,11 +112,11 @@ if_expression -> "if" _ expression _ (%NL):? _ "then" _ expression _ (%NL):? _ "
 
 # Data rules
 
-data_declaration -> "data" __ %constructor (__ type_variable):? _ "=" _ constructor_def (_ "|" _ constructor_def):* {% (d) => parseDataDeclaration([d[2], [d[7], ...d[8].map(x => x[3])]]) %}
+data_declaration -> "data" __ constr (__ type_variable):? _ "=" _ constructor_def (_ "|" _ constructor_def):* {% (d) => parseDataDeclaration([d[2], [d[7], ...d[8].map(x => x[3])]]) %}
 
 constructor_def ->
-  %constructor _ (%NL __):? %lbracket _ (%NL _):? field_list _ (%NL _):? %rbracket {% (d) => ({name: d[0].value, fields: d[6]}) %}
-  | %constructor (__ simple_type):* {% (d) => ({name: d[0].value, fields: d[1].map(x => x[1])}) %}
+  constr _ (%NL __):? %lbracket _ (%NL _):? field_list _ (%NL _):? %rbracket {% (d) => ({name: d[0].value, fields: d[6]}) %}
+  | constr (__ simple_type):* {% (d) => ({name: d[0].value, fields: d[1].map(x => x[1])}) %}
 
 field_list -> field (_ "," _ (%NL _):? field):* {% (d) => ([d[0], ...d[1].map(x => x[5])])%}
 
@@ -175,14 +174,14 @@ literal_pattern ->
 as_pattern -> (variable_pattern | wildcard_pattern) _ "@" _ pattern {% (d) => ({type: "AsPattern", alias: d[0], pattern: d[4]}) %}
 
 constructor_pattern -> 
-  %constructor (_ pattern):* {% (d) => ({
+  constr (_ pattern):* {% (d) => ({
     type: "ConstructorPattern",
     constructor: d[0].value,
     patterns: d[1].map(x => x[1])
   }) %}
 
 record_pattern -> 
-  %constructor:? _ %lbracket _ field_pattern_list _ %rbracket {% (d) => ({
+  constr:? _ %lbracket _ field_pattern_list _ %rbracket {% (d) => ({
     type: "RecordPattern",
     constructor: d[0] ? d[0].value : null,
     fields: d[4]
@@ -232,7 +231,7 @@ case_alternative ->
 
 # Type rules
 
-type_declaration -> "type" __ %constructor _ "=" _ type {% (d) => parseTypeAlias([d[2], d[6]]) %}
+type_declaration -> ("type" __ constr _ "=" _ type) {% (d) => parseTypeAlias([d[0][2], d[0][6]]) %}
 
 type -> 
   constrained_type {% (d) => d[0] %} 
@@ -280,15 +279,11 @@ simple_type ->
   | "(" _ type _ ")" {% (d) => d[2] %}
 
 type_variable -> variable {% (d) => ({ type: "TypeVar", name: d[0].value }) %}
-type_constructor -> %constructor {% (d) => ({ type: "TypeConstructor", name: d[0].value }) %}
+type_constructor -> constr {% (d) => ({ type: "TypeConstructor", name: d[0].value }) %}
 
 # Misc rules
 
-identifier -> 
-  %constructor {% (d) => d[0] %}
-  | variable {% (d) => d[0] %}
-
-constructor -> %constructor {% (d) => parsePrimary(d[0]) %}
+constr -> %constructor {% (d) => parsePrimary(d[0]) %} # constr because js doesnt like rules called constructor
 variable -> %variable {% (d) => parsePrimary(d[0]) %}
 
 list_literal -> 
