@@ -1,4 +1,14 @@
-import { BodyExpression, Expression, SymbolPrimitive } from "../globals";
+import {
+  BodyExpression,
+  BooleanPrimitive,
+  CharPrimitive,
+  Expression,
+  NumberPrimitive,
+  StringPrimitive,
+  SymbolPrimitive,
+} from "../globals";
+
+// function types
 
 interface BaseFunctionDeclaration {
   type: "function";
@@ -7,13 +17,6 @@ interface BaseFunctionDeclaration {
   attributes: string[];
   //loc: SourceLocation; // Uncomment if you need this
 }
-
-interface Guard {
-  condition: Expression;
-  body: Expression;
-  return: Expression;
-}
-
 export interface GuardedFunctionDeclaration extends BaseFunctionDeclaration {
   body: Guard[];
   return: Guard[];
@@ -24,26 +27,80 @@ export interface UnguardedFunctionDeclaration extends BaseFunctionDeclaration {
   return: Expression;
 }
 
+export interface Guard {
+  condition: Expression;
+  body: Expression;
+  return: Expression;
+}
+
 export type FunctionDeclaration =
   | GuardedFunctionDeclaration
   | UnguardedFunctionDeclaration;
-
-export interface VariablePattern {
-  type: "VariablePattern" | "LiteralPattern" | "WildcardPattern";
-  name: string;
-}
-export interface TuplePattern {
-  type: "TuplePattern";
-  elements: Pattern[];
-}
-
-export type Pattern = VariablePattern | TuplePattern;
 
 export interface FunctionGroup {
   type: "function";
   name: SymbolPrimitive;
   contents: Omit<FunctionDeclaration, "name" | "type">[];
 }
+
+export interface FunctionTypeSignature {
+  type: "TypeSignature";
+  name: SymbolPrimitive;
+  constraints: Constraint[];
+  inputTypes: TypeNode[];
+  returnType: TypeNode;
+}
+
+// patterns
+
+export interface WildcardPattern {
+  type: "WildcardPattern";
+  name: "_";
+}
+export interface LiteralPattern {
+  type: "LiteralPattern";
+  name: NumberPrimitive | CharPrimitive | StringPrimitive | BooleanPrimitive;
+}
+export interface VariablePattern {
+  type: "VariablePattern";
+  name: SymbolPrimitive;
+}
+export interface ConstructorPattern {
+  type: "ConstructorPattern";
+  constructor: string;
+  patterns: Pattern[];
+}
+export interface ListPattern {
+  type: "ListPattern";
+  elements: Pattern[];
+}
+export interface ConsPattern {
+  type: "ConsPattern";
+  head: Pattern;
+  tail: Pattern;
+}
+export interface AsPattern {
+  type: "AsPattern";
+  alias: VariablePattern | WildcardPattern;
+  pattern: Pattern;
+}
+
+export interface TuplePattern {
+  type: "TuplePattern";
+  elements: Pattern[];
+}
+
+export type Pattern =
+  | VariablePattern
+  | LiteralPattern
+  | WildcardPattern
+  | ConstructorPattern
+  | ListPattern
+  | ConsPattern
+  | AsPattern
+  | TuplePattern;
+
+// expressions
 
 export interface FunctionExpression {
   type: "function_expression";
@@ -58,12 +115,6 @@ export interface CompositionExpression {
   right: SymbolPrimitive;
   //loc: SourceLocation;
 }
-
-export type ListPrimitive = {
-  type: "list";
-  elements: Expression[];
-  //loc: SourceLocation;
-};
 
 export interface LambdaExpression {
   type: "LambdaExpression";
@@ -84,16 +135,16 @@ export interface ApplicationExpression {
   parameter: Expression | BodyExpression;
 }
 
+// types
+
 export interface TypeAlias {
   type: "TypeAlias";
   name: SymbolPrimitive;
-  value: TypeNode; // Optional type parameters
+  value: TypeNode;
 }
 
 export type TypeVar = { type: "TypeVar"; name: string };
 export type TypeConstructor = { type: "TypeConstructor"; name: string };
-
-
 
 export type Constraint = {
   type: "Constraint";
@@ -105,7 +156,6 @@ export type ConstrainedType = {
   context: Constraint[];
   body: TypeNode;
 };
-
 
 export type FunctionType = {
   type: "FunctionType";
@@ -122,8 +172,7 @@ export type TupleType = { type: "TupleType"; elements: TypeNode[] };
 export type DataType = {
   type: "DataType";
   name: string;
-  constructor: string;
-  fields: TypeNode[];
+  constructors: { name: string; fields: TypeNode[] }[];
 };
 export type IfTheElseType = {
   type: "IfTheElseType";
@@ -144,11 +193,3 @@ export type TypeNode =
   | TupleType
   | DataType
   | IfTheElseType;
-
-export interface FunctionTypeSignature {
-  type: "TypeSignature";
-  name: SymbolPrimitive;
-  constraints: Constraint[],
-  inputTypes: TypeNode[];
-  returnType: TypeNode;
-}

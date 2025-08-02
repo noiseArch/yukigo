@@ -1,12 +1,11 @@
 import fs from "fs";
-import { parse } from "../parser/parser";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
-import ASTAnalyzer, { InspectionRule } from "../ast/inspector";
-import { translateMulangToInspectionRules } from "../utils/mulangToYukigo";
-import { traverse } from "../ast/visitor";
-import { FunctionGroup } from "../parser/paradigms/functional";
-import { TypeChecker } from "./infer";
+import ASTAnalyzer, { InspectionRule } from "./ast/inspector";
+import { traverse } from "./ast/visitor";
+import { FunctionGroup } from "../yukigo-core/paradigms/functional";
+import { translateMulangToInspectionRules } from "./utils/helpers";
+import { YukigoHaskellParser } from "../yukigo-haskell-parser";
 
 const argv = yargs(hideBin(process.argv))
   .usage("Usage: yukigo analyse <filepath> [options]")
@@ -33,13 +32,24 @@ const argv = yargs(hideBin(process.argv))
     type: "string",
     demandOption: true,
   })
+  .option("l", {
+    alias: "language",
+    describe: "Language to parse",
+    type: "string",
+    demandOption: true,
+  })
   .demandCommand(1, "You must provide a file to analyse")
   .help()
   .parseSync();
 
 const filePath = argv._[0] as string;
 const code = fs.readFileSync(filePath, "utf-8");
-const ast = parse(code);
+
+const parsers: { [key: string]: YukigoHaskellParser } = {
+  haskell: new YukigoHaskellParser(),
+};
+const parser: YukigoHaskellParser = parsers[argv.l];
+const ast = parser.parse(code);
 
 const analyzer = new ASTAnalyzer(ast);
 
@@ -94,8 +104,3 @@ if (argv.o) {
     console.log(analysisResults);
   }
 }
-
-console.log("-------- Type Errors --------")
-const typeChecker = new TypeChecker();
-const errors = typeChecker.check(ast);
-console.log(errors)

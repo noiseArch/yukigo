@@ -15,7 +15,7 @@
   "scripts": {
     "parse": "nearleyc ./src/parser/langs/haskell/grammar.ne -o ./src/parser/langs/haskell/grammar.ts && npx tsc && node ./dist/parser/parser.js",
     "lex": "npx tsc && node ./dist/parser/lexer.js",
-    "analyse": "nearleyc ./src/parser/langs/haskell/grammar.ne -o ./src/parser/langs/haskell/grammar.ts && npx tsc && node ./dist/analyser/analyse.js",
+    "analyse": "nearleyc ./yukigo-haskell-parser/parser/grammar.ne -o ./yukigo-haskell-parser/parser/grammar.ts && npx tsc && node ./dist/src/index.js",
     "mulang": "npx tsc && node ./dist/parser/mulang.js",
     "test": "npx tsc && node ./dist/tester/test.js",
     "infer": "nearleyc ./src/parser/langs/haskell/grammar.ne -o ./src/parser/langs/haskell/grammar.ts && npx tsc && node ./dist/analyser/infer.js"

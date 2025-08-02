@@ -13,7 +13,7 @@ import {
     parseTypeAlias, 
     parseFunctionType, 
     parseLambda
-} from "./parser";
+} from "../utils/helpers";
 import util from "util";
 
 const filter = d => {
@@ -43,8 +43,8 @@ expression -> cons_expression {% (d) => parseExpression(d[0]) %}
 cons_expression ->
     concatenation _ ":" _ cons_expression {% (d) => ({
         type: "ConsExpression",
-        head: d[0],
-        tail: d[4]
+        head: {type: "Expression", body: d[0]},
+        tail: {type: "Expression", body: d[4]}
     }) %}
     | concatenation {% (d) => d[0] %}
 
@@ -84,7 +84,7 @@ primary ->
     | constr {% (d) => d[0] %}
     | tuple_expression {% (d) => d[0] %}
     | "(" _ expression _ ")" {% (d) => d[2] %}
-    | list_literal {% (d) => parsePrimary({type: "list", body: d[0]}) %}
+    | list_literal {% (d) => parsePrimary({type: "list", body: d.length === 0 ? [] : d[0]}) %}
     | composition_expression {% (d) => d[0] %}
     | lambda_expression {% (d) => d[0] %}
     | if_expression {% d => d[0] %}
@@ -102,13 +102,13 @@ lambda_expression ->
 
 tuple_expression -> "(" _ expression (_ "," _ expression):+ _ ")" {% (d) => ({ type: "TupleExpression", elements: [d[2], ...d[3].map(x => x[3])] }) %}
 
-data_expression -> constr _ %lbracket _ fields_expressions _ %rbracket {% (d) => parseDataExpression([d[0], d[3]]) %}
+data_expression -> constr _ %lbracket _ fields_expressions _ %rbracket {% (d) => parseDataExpression([d[0], d[4]]) %}
 
 fields_expressions -> field_exp (_ "," _ field_exp):* {% (d) => [d[0], ...d[1].map(x => x[3])] %}
 
 field_exp -> variable _ "=" _ expression {% (d) => ({type: "FieldExpression", name: d[0], expression: d[4]}) %}
 
-if_expression -> "if" _ expression _ (%NL):? _ "then" _ expression _ (%NL):? _ "else" _ expression {% (d) => parseConditional([d[2], d[6], d[10]]) %}
+if_expression -> "if" _ expression _ (%NL):? _ "then" _ expression _ (%NL):? _ "else" _ expression {% (d) => parseConditional([d[2], d[8], d[14]]) %}
 
 # Data rules
 
@@ -116,9 +116,9 @@ data_declaration -> "data" __ constr (__ type_variable):? _ "=" _ constructor_de
 
 constructor_def ->
   constr _ (%NL __):? %lbracket _ (%NL _):? field_list _ (%NL _):? %rbracket {% (d) => ({name: d[0].value, fields: d[6]}) %}
-  | constr (__ simple_type):* {% (d) => ({name: d[0].value, fields: d[1].map(x => x[1])}) %}
+  | constr (__ simple_type):* {% (d) => ({name: d[0].value, fields: d[1].map(x => ({type: "Field", name: undefined, value: x[1]}) )}) %}
 
-field_list -> field (_ "," _ (%NL _):? field):* {% (d) => d[1][5] ? ([d[0], ...d[1].map(x => x[5])]) : [d[0]]%}
+field_list -> field (_ "," _ (%NL _):? field):* {% (d) => [d[0], ...d[1].map(x => x[4])]%}
 
 field -> variable _ %typeEquals _ type {% (d) => ({type: "Field", name: d[0], value: d[4]}) %}
 
@@ -130,9 +130,9 @@ function_declaration ->
     variable __ parameter_list:? _ (%NL __):? guarded_rhs {% (d) => parseFunction({type: "function", name: d[0], params: d[2] ? d[2] : [], body: d[5], return: d[5], attributes: ["GuardedBody"]}) %}
     | variable __ parameter_list:? _ %assign _ (%NL __):? expression _ (%NL | %EOF) {% (d) => parseFunction({type: "function", name: d[0], params: d[2] ? d[2] : [], body: d[7], return: d[7], attributes: ["UnguardedBody"]}) %}
 
-guarded_rhs -> guarded_branch {% (d) => d[0] %}
+guarded_rhs -> guarded_branch:+ {% (d) => d[0] %}
 
-guarded_branch -> "|" _ expression _ "=" _ expression _ ((%NL __ guarded_branch) | %NL | %EOF) {% (d) => ({ condition: d[2], body: d[6], return: d[6] }) %}
+guarded_branch -> "|" _ expression _ "=" _ expression _ ((%NL __) | %NL | %EOF) {% (d) => ({ condition: d[2], body: d[6], return: d[6] }) %}
 
 parameter_list -> pattern (__ pattern):* {% (d) => [d[0], ...d[1].map(x => x[1])] %}
 
@@ -166,12 +166,12 @@ wildcard_pattern -> %anonymousVariable {% (d) => ({
 
 paren_pattern -> "(" _ pattern _ ")" {% (d) => d[2] %}
 
-variable_pattern -> variable {% (d) => d[0] %}
+variable_pattern -> variable {% (d) => ({type: "VariablePattern", name: d[0]}) %}
 
 literal_pattern -> 
-  (%number | %char | %string | %bool) {% (d) => parsePrimary(d[0][0]) %} 
+  (%number | %char | %string | %bool) {% (d) => ({type: "LiteralPattern", value: parsePrimary(d[0][0])}) %} 
 
-as_pattern -> (variable_pattern | wildcard_pattern) _ "@" _ pattern {% (d) => ({type: "AsPattern", alias: d[0], pattern: d[4]}) %}
+as_pattern -> (variable_pattern | wildcard_pattern) _ "@" _ pattern {% (d) => ({type: "AsPattern", alias: d[0][0], pattern: d[4]}) %}
 
 constructor_pattern -> 
   constr (_ pattern):* {% (d) => ({
@@ -290,7 +290,7 @@ list_literal ->
   "[" _ "]" {% () => [] %}
   | "[" _ expression_list _ "]" {% (d) => d[2] %}
 
-expression_list -> expression (_ "," _ expression):* {% (d) => [d[0], d[1].map(x => x[3])] %}
+expression_list -> expression (_ "," _ expression):* {% (d) => [d[0], ...d[1].map(x => x[3])] %}
 
 comparison_operator -> 
     "==" | "/=" | "<" | ">" | "<=" | ">=" {% (d) => d[0].value %}

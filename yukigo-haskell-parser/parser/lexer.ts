@@ -1,5 +1,5 @@
 import moo from "moo";
-import { keywords } from "./definition";
+import { keywords } from "../utils/types";
 import { makeLexer } from "moo-ignore";
 export const HaskellLexerConfig = {
   EOF: "*__EOF__*",

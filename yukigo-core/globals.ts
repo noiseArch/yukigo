@@ -13,6 +13,7 @@ import {
 export type Modify<T, R> = Omit<T, keyof R> & R;
 
 // Universal primitive value types
+
 export type YukigoPrimitive =
   | "YuNumber"
   | "YuString"
@@ -22,19 +23,19 @@ export type YukigoPrimitive =
   | "YuNull"
   | "YuUndefined"
   | "YuSymbol";
+
 export type PrimitiveValue =
   | number
   | boolean
   | string
-  | bigint
   | symbol
   | null
   | undefined;
 
+// Primitives
+
 /**
  * Base interface for all primitive values
- * - Includes location information for source mapping
- * - Language-agnostic representation
  */
 export interface BasePrimitive {
   type: YukigoPrimitive;
@@ -42,30 +43,17 @@ export interface BasePrimitive {
   //loc: SourceLocation;
 }
 
-/**
- * Numeric values (integers, floats, etc.)
- * - Represents all numeric types across languages
- */
 export interface NumberPrimitive extends BasePrimitive {
   type: "YuNumber";
   numericType: string;
   value: number;
 }
 
-/**
- * Boolean values (true/false)
- * - Universal truth values
- */
 export interface BooleanPrimitive extends BasePrimitive {
   type: "YuBoolean";
   value: string;
 }
 
-/**
- * String values
- * - Represents textual data
- * - Includes encoding information when relevant
- */
 export interface CharPrimitive extends BasePrimitive {
   type: "YuChar";
   value: string;
@@ -75,44 +63,28 @@ export interface StringPrimitive extends BasePrimitive {
   value: string;
 }
 
-/**
- * Null value
- * - Explicit absence of value
- */
 export interface NullPrimitive extends BasePrimitive {
   type: "YuNull";
   value: null;
 }
 
-/**
- * Undefined value
- * - Represents uninitialized state
- */
 export interface UndefinedPrimitive extends BasePrimitive {
   type: "YuUndefined";
   value: undefined;
 }
 
-/**
- * Symbol primitive
- * - Unique identifier primitive
- */
 export interface SymbolPrimitive extends BasePrimitive {
   type: "YuSymbol";
   value: string;
   description?: string;
 }
-/**
- * Symbol primitive
- * - Unique identifier primitive
- */
+
 export interface ListPrimitive {
   type: "YuList";
   elements: Expression[];
   //loc: SourceLocation;
 }
 
-// Union export type for all primitives
 export type Primitive =
   | NumberPrimitive
   | BooleanPrimitive
@@ -123,12 +95,13 @@ export type Primitive =
   | SymbolPrimitive
   | ListPrimitive;
 
-// Source location information
+/**
+ * Source location information
+ */
 export interface SourceLocation {
+  offset: number;
   start: Position;
   end: Position;
-  filePath: string;
-  language: string;
 }
 
 export interface Position {
@@ -137,7 +110,7 @@ export interface Position {
   offset: number;
 }
 
-// OPERATORS
+// Operators
 
 /**
  * Base interface for all operations
@@ -150,46 +123,26 @@ export interface BaseOperation {
   //loc: SourceLocation;
 }
 
-/**
- * Arithmetic operations
- * - Common across all languages
- */
 export interface ArithmeticOperation extends BaseOperation {
   type: "Arithmetic";
   operator: "+" | "-" | "*" | "/" | "%" | "**";
 }
 
-/**
- * Comparison operations
- * - Universal comparison semantics
- */
 export interface ComparisonOperation extends BaseOperation {
   type: "Comparison";
   operator: "==" | "!=" | "===" | "!==" | "<" | ">" | "<=" | ">=";
 }
 
-/**
- * Logical operations
- * - Boolean logic fundamentals
- */
 export interface LogicalOperation extends BaseOperation {
   type: "logical";
   operator: "&&" | "||" | "??"; // AND, OR, nullish coalescing
 }
 
-/**
- * Bitwise operations
- * - Low-level bit manipulation
- */
 export interface BitwiseOperation extends BaseOperation {
   type: "bitwise";
   operator: "&" | "|" | "^" | "~" | "<<" | ">>" | ">>>";
 }
-/**
- * Transform operations
- * - Higher-order functions map-like
- * - Used for transforming collections
- */
+
 export interface TransformOperation {
   type: "Transform";
   operator: "map";
@@ -221,9 +174,7 @@ export type Operation =
   | BitwiseOperation
   | StringOperation;
 
-/* 
-### COLLECTIONS
-*/
+// Collections
 
 /**
  * Base collection interface
@@ -234,31 +185,26 @@ export interface BaseCollection {
   //loc: SourceLocation;
 }
 
-/**
- * Array-like collection
- * - Ordered sequence of values
- */
 export interface ArrayCollection extends BaseCollection {
   type: "array";
 }
 
-/**
- * Set collection
- * - Unique value collection
- */
+// Not implemented yet
 export interface SetCollection extends BaseCollection {
   type: "set";
 }
-
-/**
- * Key-value mapping
- * - Represents objects, maps, dictionaries
- */
+// Not implemented yet
 export interface MapCollection {
   type: "map";
   entries: MapEntry[];
   loc: SourceLocation;
 }
+export interface MapEntry {
+  key: Expression;
+  value: Expression;
+}
+
+// Expressions
 
 export interface TupleExpression {
   type: "TupleExpression";
@@ -276,10 +222,10 @@ export interface DataExpression {
   name: SymbolPrimitive;
   contents: FieldExpression[];
 }
-
-export interface MapEntry {
-  key: Expression;
-  value: Expression;
+export interface ConsExpression {
+  type: "ConsExpression";
+  head: Expression;
+  tail: Expression;
 }
 
 export interface ControlFlowConditional {
@@ -294,7 +240,7 @@ export type BodyExpression =
   | Operation
   | TupleExpression
   | ControlFlowConditional
-  // Functional expressions
+  | ConsExpression
   | DataExpression
   | CompositionExpression
   | LambdaExpression
@@ -308,25 +254,24 @@ export type Expression = {
 
 export interface Field {
   type: "Field";
-  name: SymbolPrimitive;
+  name: SymbolPrimitive | undefined;
   value: TypeNode;
 }
 
+export interface Constructor {
+  name: string;
+  fields: Field[];
+}
 
 export interface Record {
   type: "Record";
   name: SymbolPrimitive;
-  contents: Field[];
+  contents: Constructor[];
 }
-
-export type Type =
-  | { kind: "primitive"; name: string }
-  | { kind: "function"; parameters: Type[]; return: Type }
-  | { kind: "list"; elementType: Type }
-  | { kind: "tuple"; elements: Type[] }
-  | { kind: "variable"; id: number }; // For generics/inference
-
-export type Environment = Map<string, Type>;
 
 export type AST = (TypeAlias | FunctionTypeSignature | FunctionDeclaration)[];
 export type ASTGrouped = (TypeAlias | FunctionTypeSignature | FunctionGroup)[];
+
+export interface YukigoParser {
+  parse: (code: string) => ASTGrouped;
+}

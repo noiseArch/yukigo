@@ -1,20 +1,21 @@
-import { inspect } from "util";
 import {
+  AST,
+  ASTGrouped,
   BodyExpression,
   BooleanPrimitive,
   CharPrimitive,
+  Constructor,
   ControlFlowConditional,
   DataExpression,
   Expression,
-  Field,
   FieldExpression,
   ListPrimitive,
   NumberPrimitive,
   Primitive,
-  Record,
+  Record as RecordNode,
   StringPrimitive,
   SymbolPrimitive,
-} from "../../globals";
+} from "../../yukigo-core/globals";
 import {
   CompositionExpression,
   ApplicationExpression,
@@ -26,7 +27,8 @@ import {
   FunctionDeclaration,
   InfixApplicationExpression,
   Constraint,
-} from "../../paradigms/functional";
+  FunctionGroup,
+} from "../../yukigo-core/paradigms/functional";
 
 interface BaseMooToken {
   type: string;
@@ -41,29 +43,7 @@ interface BaseMooToken {
 
 interface ListToken {
   type: "list";
-  body: [
-    {
-      type: "lsquare";
-      value: "[";
-      text: "[";
-      toString: () => string;
-      offset: 1143;
-      lineBreaks: 0;
-      line: 55;
-      col: 13;
-    },
-    Expression[],
-    {
-      type: "rsquare";
-      value: "]";
-      text: "]";
-      toString: [() => string];
-      offset: 1157;
-      lineBreaks: 0;
-      line: 55;
-      col: 27;
-    }
-  ];
+  body: Expression[];
 }
 
 type Token = BaseMooToken | ListToken;
@@ -178,9 +158,7 @@ function parseDataExpression(
   return { type: "DataExpression", name: token[0], contents: token[1] };
 }
 
-function parseDataDeclaration(
-  token: [SymbolPrimitive, Field[]]
-): Record {
+function parseDataDeclaration(token: [SymbolPrimitive, Constructor[]]): RecordNode {
   return {
     type: "Record",
     name: token[0],
@@ -199,7 +177,7 @@ function parseConditional(
 }
 
 function parsePrimary(token: Token): Primitive {
-  //console.log("Primary", token);
+  console.log("Primary", token);
   switch (token.type) {
     case "constructor":
     case "variable": {
@@ -234,7 +212,10 @@ function parsePrimary(token: Token): Primitive {
     case "list": {
       const listPrimitive: ListPrimitive = {
         type: "YuList",
-        elements: (token as ListToken).body[1],
+        elements:
+          (token as ListToken).body.length === 0
+            ? []
+            : (token as ListToken).body,
       };
       return listPrimitive;
     }
@@ -250,6 +231,35 @@ function parsePrimary(token: Token): Primitive {
         `Error parsing Primary. Unknown token type: ${token.type}`
       );
   }
+}
+
+export function groupFunctionDeclarations(ast: AST): ASTGrouped {
+  const groups: Record<string, FunctionDeclaration[]> = {};
+  const others: ASTGrouped = []; // Cumple ASTGrouped porque no tiene objetos FunctionDeclaration
+
+  for (const node of ast) {
+    if (node.type == "function") {
+      const name = node.name.value;
+      if (!groups[name]) groups[name] = [];
+      groups[name].push(node);
+    } else {
+      others.push(node);
+    }
+  }
+  const functionGroups: FunctionGroup[] = Object.entries(groups).map(
+    ([, contents]) => ({
+      type: "function",
+      name: contents[0].name,
+      contents: contents.map((func: FunctionDeclaration) => ({
+        parameters: func.parameters,
+        body: func.body,
+        return: func.return,
+        attributes: func.attributes,
+      })),
+    })
+  );
+
+  return [...others, ...functionGroups];
 }
 
 export {

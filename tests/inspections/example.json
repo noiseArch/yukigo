@@ -1,12 +1,12 @@
 [
   {
     "inspection": "HasBinding",
-    "args": { "name": "composeTransformers" },
+    "args": { "name": "factorial" },
     "expected": true
   },
   {
     "inspection": "HasComposition",
-    "args": { "name": "composeTransformers" },
-    "expected": true
+    "args": { "name": "factorial" },
+    "expected": false
   }
 ]

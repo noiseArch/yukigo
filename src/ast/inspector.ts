@@ -1,9 +1,9 @@
-import { ASTGrouped } from "../parser/globals";
+import { ASTGrouped, Record as RecordNode } from "../../yukigo-core/globals";
 import {
   FunctionGroup,
   FunctionTypeSignature,
   TypeAlias,
-} from "../parser/paradigms/functional";
+} from "../../yukigo-core/paradigms/functional";
 import { traverse } from "./visitor";
 
 export type InspectionRule = {
@@ -58,7 +58,7 @@ class ASTAnalyzer {
             found = true;
           }
         },
-        Record: (node: any) => {
+        Record: (node: RecordNode) => {
           if (node.name && node.name.value === bindingName) {
             found = true;
           }
@@ -213,11 +213,11 @@ class ASTAnalyzer {
 
   /**
    * Registers a new custom inspection handler.
-   * @param name The name of the inspection (e.g., "CustomCheck").
+   * @param name The name of the inspection (e.g., "HasArithmetic").
    * @param handler The function that implements the inspection logic.
    *
    * @example
-   * // Create HasArithmetic inspection
+   * // Implementation of HasArithmetic inspection
    * const analyzer = new ASTAnalyzer(ast);
    * analyzer.registerInspection("HasArithmetic", (ast, args) => {
    *   let hasArithmetic = false;
@@ -265,7 +265,7 @@ class ASTAnalyzer {
         passed,
         actual: result,
       };
-    } catch (error: any) {
+    } catch (error) {
       console.log(error);
 
       return {
