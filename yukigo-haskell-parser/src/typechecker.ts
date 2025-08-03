@@ -1,5 +1,4 @@
-import { ASTGrouped, BodyExpression, Record } from "../yukigo-core/globals";
-import { traverse } from "../src/ast/visitor";
+import { ASTGrouped, BodyExpression, Record, traverse } from "yukigo-core";
 import {
   DataType,
   FunctionGroup,
@@ -9,10 +8,10 @@ import {
   TypeAlias,
   TypeNode,
   TypeVar,
-} from "../yukigo-core/paradigms/functional";
+} from "yukigo-core";
 import { typeMappings } from "./utils/types";
 import assert from "assert";
-import { isGuardedBody, isUnguardedBody } from "../src/utils/helpers";
+import { isGuardedBody, isUnguardedBody } from "./utils/helpers";
 
 type Substitution = Map<string, TypeNode>;
 

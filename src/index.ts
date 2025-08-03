@@ -2,10 +2,11 @@ import fs from "fs";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 import ASTAnalyzer, { InspectionRule } from "./ast/inspector";
-import { traverse } from "./ast/visitor";
-import { FunctionGroup } from "../yukigo-core/paradigms/functional";
+import { FunctionGroup } from "yukigo-core";
 import { translateMulangToInspectionRules } from "./utils/helpers";
-import { YukigoHaskellParser } from "../yukigo-haskell-parser";
+import { YukigoHaskellParser } from "yukigo-haskell-parser";
+import { traverse } from "yukigo-core";
+
 
 const argv = yargs(hideBin(process.argv))
   .usage("Usage: yukigo analyse <filepath> [options]")

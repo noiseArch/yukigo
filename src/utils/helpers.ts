@@ -1,9 +1,3 @@
-import {
-  FunctionDeclaration,
-  GuardedFunctionDeclaration,
-  UnguardedFunctionDeclaration,
-} from "../../yukigo-core/paradigms/functional";
-
 import { parseDocument } from "yaml";
 import { InspectionRule } from "../ast/inspector";
 
@@ -66,16 +60,4 @@ export function translateMulangToInspectionRules(
   }
 
   return inspectionRules;
-}
-
-export function isGuardedBody(
-  declaration: Omit<FunctionDeclaration, "name" | "type">
-): declaration is GuardedFunctionDeclaration {
-  return declaration.attributes.includes("GuardedBody");
-}
-
-export function isUnguardedBody(
-  declaration: Omit<FunctionDeclaration, "name" | "type">
-): declaration is UnguardedFunctionDeclaration {
-  return declaration.attributes.includes("UnguardedBody");
 }

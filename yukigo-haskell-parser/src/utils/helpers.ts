@@ -15,7 +15,7 @@ import {
   Record as RecordNode,
   StringPrimitive,
   SymbolPrimitive,
-} from "../../yukigo-core/globals";
+} from "yukigo-core";
 import {
   CompositionExpression,
   ApplicationExpression,
@@ -28,7 +28,9 @@ import {
   InfixApplicationExpression,
   Constraint,
   FunctionGroup,
-} from "../../yukigo-core/paradigms/functional";
+  GuardedFunctionDeclaration,
+  UnguardedFunctionDeclaration,
+} from "yukigo-core";
 
 interface BaseMooToken {
   type: string;
@@ -260,6 +262,18 @@ export function groupFunctionDeclarations(ast: AST): ASTGrouped {
   );
 
   return [...others, ...functionGroups];
+}
+
+export function isGuardedBody(
+  declaration: Omit<FunctionDeclaration, "name" | "type">
+): declaration is GuardedFunctionDeclaration {
+  return declaration.attributes.includes("GuardedBody");
+}
+
+export function isUnguardedBody(
+  declaration: Omit<FunctionDeclaration, "name" | "type">
+): declaration is UnguardedFunctionDeclaration {
+  return declaration.attributes.includes("UnguardedBody");
 }
 
 export {

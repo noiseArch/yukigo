@@ -2,7 +2,7 @@ import grammar from "./parser/grammar";
 import nearley from "nearley";
 import { groupFunctionDeclarations } from "./utils/helpers";
 import { TypeChecker } from "./typechecker";
-import { ASTGrouped, YukigoParser } from "../yukigo-core/globals";
+import { ASTGrouped, YukigoParser } from "yukigo-core";
 
 // This is the final parser that Yukigo accepts. 
 // every parser NEEDS to expose a 'parse' method/function

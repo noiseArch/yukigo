@@ -1,5 +1,5 @@
-import { YukigoPrimitive } from "../../yukigo-core/globals";
-import { TypeNode } from "../../yukigo-core/paradigms/functional";
+import { YukigoPrimitive } from "yukigo-core";
+import { TypeNode } from "yukigo-core";
 
 export const keywords = [
   "type",

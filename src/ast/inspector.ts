@@ -1,10 +1,10 @@
-import { ASTGrouped, Record as RecordNode } from "../../yukigo-core/globals";
+import { ASTGrouped, Record as RecordNode } from "yukigo-core";
 import {
   FunctionGroup,
   FunctionTypeSignature,
   TypeAlias,
-} from "../../yukigo-core/paradigms/functional";
-import { traverse } from "./visitor";
+} from "yukigo-core";
+import { traverse } from "yukigo-core";
 
 export type InspectionRule = {
   inspection: string;
