@@ -6,36 +6,43 @@
 
 ### **Abstract Semantic Tree:**
 
-A parser that generates a generic AST. This is the intermediate representation of any language. Allows us to analyse the semantics of the code independently of the paradigm.
+This is the intermediate representation of any language. Allows us to analyse the semantics of the code independently of the paradigm or the language.
 
-### **Inspections & EDL (WIP):**
+### **Inspector:**
 
-A set of built-in expectations for analysing code and a language for defining custom expectations. Also allows to define custom expectations at runtime.
+We provide a set of built-in expectations for analysing code. Also allows to define custom expectations at runtime.
 
-> TODO: Compatibility with mulang's expectations
+### **Translator:**
+> This is a concept, not implemented yet
 
-### **Testing: (WIP)**
+Translation AST-to-Typescript, this allows us to have an equivalent code to run input-output tests everywhere.
 
-A tester for running tests on the AST
+### **Tester:**
+> This is a concept, not implemented yet
 
-# Usage as NPM package
+Runs tests on the Typescript translated code using ...
+
+# Usage
 
 ## Installation
 
+We will be using Haskell as the target language in this example.
+
 ```
-npm install yukigo
+npm install yukigo yukigo-haskell-parser
 ```
 
 or
 
 ```
-yarn add yukigo
+yarn add yukigo yukigo-haskell-parser
 ```
 
-## Usage
+## Example
 
 ```ts
 import yukigo from "yukigo";
+import HaskellParser from "yukigo-haskell-parser"
 
 const code = "doble num = num * 2";
 const expectations = [
@@ -50,7 +57,10 @@ const expectations = [
     expected: true,
   },
 ];
-const result = yukigo.analyse(code, expectations);
+
+const analyser = new yukigo.ASTAnalyser({ parsers: { haskell: new HaskellParser() }})
+
+const result = analyser.analyse(code, "haskell", expectations);
 
 console.log(results);
 // [
@@ -75,7 +85,7 @@ console.log(results);
 // ];
 ```
 
-## Usage with Mulang's Inspections (in a YAML file)
+## Example with Mulang's Inspections (in a YAML file)
 
 ```ts
 import yukigo from "yukigo";
@@ -157,25 +167,14 @@ console.log(results);
 // ];
 ```
 
-# How to use CLI (WIP)
+# How to make a parser
 
-You can parse code to Yukigo's AST with:
-
-```
-yarn parse <filepath>
-```
-
-Run analysis by using
-
-```
-yarn analyse <filepath> <expectations>
+A yukigo's parser is a class that implements the interface `YukigoParser` which exposes a public method called `parse` like this:
+```ts
+parse: (code: string) => AST
 ```
 
-> Note: This feature is still in development,
-> Run tests by using
+The package `yukigo-core` has all the current supported AST nodes.
+For the grammar, you can use a tool like Jison or Nearley.
 
-```
-yarn test <filepath> <tests>
-```
-
-> Note: This feature is still in development,
+Here's a tutorial for implementing a small custom language.
