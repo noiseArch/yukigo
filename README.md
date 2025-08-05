@@ -1,9 +1,9 @@
 # ❄️ Yukigo (WIP)
+A universal, multi-language, multi-paradigm code analyzer highly inspired in [mulang](https://github.com/mumuki/mulang)
 
 > [!WARNING]
 > This project is still in a "work in progress" state. Everything is subject to change :)
 
-> A universal, multi-language, multi-paradigm code analyzer highly inspired in [mulang](https://github.com/mumuki/mulang)
 
 ## Components
 
