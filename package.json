@@ -1,32 +1,20 @@
 {
   "name": "yukigo",
-  "packageManager": "yarn@4.6.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js",
+    "./package.json": "./package.json"
+  },
   "dependencies": {
-    "@types/yargs": "^17.0.33",
-    "fs": "^0.0.1-security",
-    "js-yaml": "^4.1.0",
-    "moo": "^0.5.2",
-    "moo-ignore": "^2.5.3",
-    "mulang": "^6.0.6",
-    "nearley": "^2.20.1",
     "yaml": "^2.8.0",
-    "yargs": "^18.0.0"
+    "yukigo-core": "file:../yukigo-core"
   },
   "scripts": {
-    "parse": "nearleyc ./src/parser/langs/haskell/grammar.ne -o ./src/parser/langs/haskell/grammar.ts && npx tsc && node ./dist/parser/parser.js",
-    "lex": "npx tsc && node ./dist/parser/lexer.js",
-    "analyse": "npx tsc && node ./dist/src/index.js",
-    "mulang": "npx tsc && node ./dist/parser/mulang.js",
-    "test": "npx tsc && node ./dist/tester/test.js",
-    "infer": "nearleyc ./src/parser/langs/haskell/grammar.ne -o ./src/parser/langs/haskell/grammar.ts && npx tsc && node ./dist/analyser/infer.js"
+    "build": "tsc"
   },
   "devDependencies": {
-    "@eslint/js": "^9.28.0",
-    "@types/js-yaml": "^4",
-    "@types/nearley": "^2",
-    "@types/node": "^22.15.29",
-    "eslint": "^9.28.0",
-    "globals": "^16.2.0",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.33.1"
   }

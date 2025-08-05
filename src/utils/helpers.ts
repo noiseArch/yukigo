@@ -1,5 +1,5 @@
 import { parseDocument } from "yaml";
-import { InspectionRule } from "../ast/inspector";
+import { InspectionRule } from "../ast/inspector.js";
 
 /**
  * Translates Mulang inspections (YAML format) to an array of `InspectionRule` objects.
@@ -16,10 +16,9 @@ export function translateMulangToInspectionRules(
     !parsedYaml.expectations ||
     !Array.isArray(parsedYaml.expectations)
   ) {
-    console.warn(
-      "Invalid Mulang YAML structure. Expected 'expectations' array."
+    throw Error(
+      "Invalid Mulang YAML structure. Expected 'expectations' to be an array."
     );
-    return [];
   }
 
   const inspectionRules: InspectionRule[] = [];
@@ -30,11 +29,9 @@ export function translateMulangToInspectionRules(
       typeof mulangInspection.inspection !== "string" ||
       typeof mulangInspection.binding !== "string"
     ) {
-      console.warn(
-        "Skipping malformed Mulang inspection entry:",
-        mulangInspection
+      throw Error(
+        `Skipping malformed Mulang inspection entry: ${mulangInspection}`
       );
-      continue;
     }
 
     let inspectionName = mulangInspection.inspection;

@@ -1,9 +1,5 @@
 import { ASTGrouped, Record as RecordNode } from "yukigo-core";
-import {
-  FunctionGroup,
-  FunctionTypeSignature,
-  TypeAlias,
-} from "yukigo-core";
+import { FunctionGroup, FunctionTypeSignature, TypeAlias } from "yukigo-core";
 import { traverse } from "yukigo-core";
 
 export type InspectionRule = {
@@ -26,9 +22,7 @@ type InspectionHandlerMap = {
   ) => { result: boolean };
 };
 
-// type SupportedLanguage = "haskell";
-
-class ASTAnalyzer {
+export class ASTAnalyzer {
   private ast: ASTGrouped;
   private typeCheckers: Map<string, (ast: ASTGrouped) => TypeError[]> =
     new Map();
@@ -266,8 +260,6 @@ class ASTAnalyzer {
         actual: result,
       };
     } catch (error) {
-      console.log(error);
-
       return {
         rule,
         passed: false,
@@ -303,5 +295,3 @@ class ASTAnalyzer {
     return results;
   }
 }
-
-export default ASTAnalyzer;
