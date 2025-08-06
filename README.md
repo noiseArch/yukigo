@@ -65,7 +65,7 @@ const parser = new YukigoHaskellParser();
 const ast = parser.parse(code);
 
 const analyser = new ASTAnalyzer(ast);
-const result = analyser.analyse(code, "haskell", expectations);
+const result = analyser.analyse(expectations);
 
 console.log(results);
 // [
@@ -136,7 +136,7 @@ const parser = new YukigoHaskellParser();
 const ast = parser.parse(code);
 
 const analyser = new ASTAnalyzer(ast);
-const result = analyser.analyse(code, "haskell", expectations);
+const result = analyser.analyse(expectations);
 
 console.log(results);
 // [
