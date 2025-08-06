@@ -44,8 +44,8 @@ yarn add yukigo yukigo-haskell-parser
 ## Example
 
 ```ts
-import yukigo from "yukigo";
-import HaskellParser from "yukigo-haskell-parser"
+import { ASTAnalyzer } from "yukigo";
+import { YukigoHaskellParser } from "yukigo-haskell-parser";
 
 const code = "doble num = num * 2";
 const expectations = [
@@ -61,8 +61,10 @@ const expectations = [
   },
 ];
 
-const analyser = new yukigo.ASTAnalyser({ parsers: { haskell: new HaskellParser() }})
+const parser = new YukigoHaskellParser();
+const ast = parser.parse(code);
 
+const analyser = new ASTAnalyzer(ast);
 const result = analyser.analyse(code, "haskell", expectations);
 
 console.log(results);
@@ -91,7 +93,8 @@ console.log(results);
 ## Example with Mulang's Inspections (in a YAML file)
 
 ```ts
-import yukigo from "yukigo";
+import { ASTAnalyzer, translateMulangToInspectionRules } from "yukigo";
+import { YukigoHaskellParser } from "yukigo-haskell-parser";
 
 const code = `
 squareList :: [Int] -> [Int]
@@ -129,7 +132,11 @@ expectations:
 
 const expectations = translateMulangToInspectionRules(mulangInspections);
 
-const result = yukigo.analyse(code, expectations);
+const parser = new YukigoHaskellParser();
+const ast = parser.parse(code);
+
+const analyser = new ASTAnalyzer(ast);
+const result = analyser.analyse(code, "haskell", expectations);
 
 console.log(results);
 // [
@@ -170,11 +177,22 @@ console.log(results);
 // ];
 ```
 
+# Relevant tools
+- [yukigo-core](https://github.com/noiseArch/yukigo-core): A library of AST's node definitions
+  
+## Tools
+- [yukigo-cli](https://github.com/noiseArch/yukigo-cli)
+- [yukigo-demo-web](https://github.com/noiseArch/yukigo-demo-web/)
+  
+## Parsers
+- [yukigo-haskell-parser](https://github.com/noiseArch/yukigo-haskell-parser)
+
 # How to make a parser
 
-A yukigo's parser is a class that implements the interface `YukigoParser` which exposes a public method called `parse` like this:
+A yukigo's parser is a class that implements the interface `YukigoParser` which exposes a public method called `parse` and an `errors` array like this:
 ```ts
-parse: (code: string) => AST
+errors: string[];
+parse: (code: string) => AST;
 ```
 
 The package `yukigo-core` has all the current supported AST nodes.
