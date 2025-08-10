@@ -16,14 +16,12 @@ This is the intermediate representation of any language. Allows us to analyse th
 We provide a set of built-in expectations for analysing code. Also allows to define custom expectations at runtime.
 
 ### **Translator:**
-> This is a concept, not implemented yet
 
 Translation AST-to-Typescript, this allows us to have an equivalent code to run input-output tests everywhere.
 
 ### **Tester:**
-> This is a concept, not implemented yet
 
-Runs tests on the Typescript translated code using ...
+Runs tests for the Typescript translated code on an isolated enviroment.
 
 # Usage
 
