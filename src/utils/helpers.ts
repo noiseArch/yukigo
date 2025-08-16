@@ -65,8 +65,11 @@ export const yukigoTsMappings: { [key in YukigoPrimitive]: string } = {
   YuString: "string",
   YuChar: "char",
   YuBoolean: "boolean",
-  YuNull: "null",
-  YuUndefined: "undefined",
+  YuNil: "null",
+  // Below some missing mappigs
   YuList: "YuList",
+  YuObject: "YuObject",
+  YuDict: "YuDict",
+  YuTuple: "YuTuple",
   YuSymbol: "YuSymbol",
 };

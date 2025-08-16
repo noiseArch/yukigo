@@ -1,6 +1,9 @@
-import { ASTGrouped, Record as RecordNode } from "yukigo-core";
-import { FunctionGroup, FunctionTypeSignature, TypeAlias } from "yukigo-core";
-import { traverse } from "yukigo-core";
+import { AST } from "yukigo-core";
+import { genericInspections } from "../inspections/generic.js";
+import { functionalInspections } from "../inspections/functional.js";
+import { logicInspections } from "../inspections/logic.js";
+import { objectInspections } from "../inspections/object.js";
+import { imperativeInspections } from "../inspections/imperative.js";
 
 export type InspectionRule = {
   inspection: string;
@@ -15,186 +18,23 @@ export type AnalysisResult = {
   error?: string;
 };
 
-type InspectionHandlerMap = {
-  [key: string]: (
-    ast: ASTGrouped,
-    args: Record<string, any>
-  ) => { result: boolean };
+export type InspectionMap = {
+  [key: string]: (ast: AST, args: Record<string, any>) => { result: boolean };
 };
 
 export class ASTAnalyzer {
-  private ast: ASTGrouped;
+  private ast: AST;
 
-  constructor(ast: ASTGrouped) {
+  constructor(ast: AST) {
     this.ast = ast;
   }
 
-  private inspectionHandlers: InspectionHandlerMap = {
-    HasBinding: (ast, args) => {
-      const bindingName = args.name;
-      let found = false;
-      traverse(ast, {
-        function: (node: FunctionGroup) => {
-          if (node.name && node.name.value === bindingName) {
-            found = true;
-          }
-        },
-        TypeAlias: (node: TypeAlias) => {
-          if (node.name && node.name.value === bindingName) {
-            found = true;
-          }
-        },
-        Record: (node: RecordNode) => {
-          if (node.name && node.name.value === bindingName) {
-            found = true;
-          }
-        },
-        TypeSignature: (node: FunctionTypeSignature) => {
-          if (node.name && node.name.value === bindingName) {
-            found = true;
-          }
-        },
-      });
-      return {
-        result: found,
-      };
-    },
-    UsesGuards: (ast, args) => {
-      const functionName = args.name;
-      let usesGuards = false;
-      traverse(ast, {
-        function: (node: FunctionGroup) => {
-          if (node.name && node.name.value === functionName) {
-            if (Array.isArray(node.contents)) {
-              for (const content of node.contents) {
-                if (
-                  content.attributes &&
-                  content.attributes.includes("GuardedBody")
-                ) {
-                  usesGuards = true;
-                  break;
-                }
-              }
-            }
-          }
-        },
-      });
-      return {
-        result: usesGuards,
-      };
-    },
-
-    UsesAnonymousVariable: (ast, args) => {
-      const functionName = args.name;
-      let usesAnonymous = false;
-      traverse(ast, {
-        function: (node: FunctionGroup) => {
-          if (node.name && node.name.value === functionName) {
-            traverse(node, {
-              WildcardPattern() {
-                usesAnonymous = true;
-              },
-            });
-          }
-        },
-      });
-      return {
-        result: usesAnonymous,
-      };
-    },
-
-    HasPatternMathing: (ast, args) => {
-      const functionName = args.name;
-      let hasPatternMathing = false;
-      traverse(ast, {
-        function: (node: FunctionGroup) => {
-          if (node.name.value === functionName && node.contents.length > 1) {
-            hasPatternMathing = true;
-          }
-        },
-      });
-      return {
-        result: hasPatternMathing,
-      };
-    },
-
-    Uses: (ast, args) => {
-      const functionName = args.name;
-      const usageName = args.usage;
-      let uses = false;
-      traverse(ast, {
-        function: (node: FunctionGroup) => {
-          if (node.name.value === functionName) {
-            traverse(node, {
-              "*"(symbolNode) {
-                if (symbolNode.value && symbolNode.value === usageName)
-                  uses = true;
-              },
-            });
-          }
-        },
-      });
-      return {
-        result: uses,
-      };
-    },
-
-    HasLambdaExpression: (ast, args) => {
-      const functionName = args.name;
-      let hasLambdaExpression = false;
-      traverse(ast, {
-        function: (node: FunctionGroup) => {
-          if (node.name.value === functionName) {
-            traverse(node, {
-              LambdaExpression() {
-                hasLambdaExpression = true;
-              },
-            });
-          }
-        },
-      });
-      return {
-        result: hasLambdaExpression,
-      };
-    },
-
-    HasArithmetic: (ast, args) => {
-      const functionName = args.name;
-      let hasArithmetic = false;
-      traverse(ast, {
-        function: (node: FunctionGroup) => {
-          if (node.name.value === functionName) {
-            traverse(node, {
-              Arithmetic() {
-                hasArithmetic = true;
-              },
-            });
-          }
-        },
-      });
-      return {
-        result: hasArithmetic,
-      };
-    },
-
-    HasComposition: (ast, args) => {
-      const functionName = args.name;
-      let hasComposition = false;
-      traverse(ast, {
-        function: (node: FunctionGroup) => {
-          if (node.name && node.name.value === functionName) {
-            traverse(node, {
-              CompositionExpression() {
-                hasComposition = true;
-              },
-            });
-          }
-        },
-      });
-      return {
-        result: hasComposition,
-      };
-    },
+  private inspectionHandlers: InspectionMap = {
+    ...genericInspections,
+    ...functionalInspections,
+    ...logicInspections,
+    ...objectInspections,
+    ...imperativeInspections,
   };
 
   /**
@@ -208,7 +48,7 @@ export class ASTAnalyzer {
    * analyzer.registerInspection("HasArithmetic", (ast, args) => {
    *   let hasArithmetic = false;
    *   traverse(ast, {
-   *     function: (node: FunctionGroup) => {
+   *     Function: (node: FunctionGroup) => {
    *       if (node.name.value === args.name) {
    *         traverse(node, {
    *           Arithmetic() {
@@ -226,7 +66,7 @@ export class ASTAnalyzer {
   public registerInspection(
     name: string,
     handler: (
-      ast: ASTGrouped,
+      ast: AST,
       args: Record<string, any>
     ) => { result: boolean; details?: string }
   ) {

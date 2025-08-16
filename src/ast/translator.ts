@@ -1,44 +1,43 @@
 import { Project, SourceFile } from "ts-morph";
 import {
-  ASTGrouped,
+  AST,
   ArithmeticOperation,
-  FunctionGroup,
-  FunctionTypeSignature,
+  Function,
+  TypeSignature,
   LiteralPattern,
   SymbolPrimitive,
   NumberPrimitive,
-  ApplicationExpression,
-  TypeNode,
+  Application,
+  Type,
   VariablePattern,
-  FunctionDeclaration,
   StringPrimitive,
   BooleanPrimitive,
   CharPrimitive,
-  ConcatOperation,
+  //ConcatOperation,
   Primitive,
   ListPrimitive,
   traverse,
   TypeAlias,
   Record as RecordNode,
   DataExpression,
-  LambdaExpression,
-  ControlFlowConditional,
-  UnguardedFunctionDeclaration,
+  Lambda,
+  If,
   ComparisonOperation,
   InfixApplicationExpression,
   CompositionExpression,
+  Equation,
 } from "yukigo-core";
 
 export class Translator {
-  private ast: ASTGrouped;
+  private ast: AST;
   private project: Project;
   private sourceFile: SourceFile;
   private recordSignature: Map<string, RecordNode> = new Map();
-  private typeSignatures: Map<string, FunctionTypeSignature> = new Map();
+  private typeSignatures: Map<string, TypeSignature> = new Map();
 
-  constructor(ast: ASTGrouped) {
+  constructor(ast: AST) {
     this.ast = ast;
-    this.project = new Project();
+    this.project = new Project({ useInMemoryFileSystem: true });
     this.sourceFile = this.project.createSourceFile("output.ts", "", {
       overwrite: true,
     });
@@ -48,7 +47,7 @@ export class Translator {
     traverse(this.ast, {
       TypeAlias: (node: TypeAlias) => {
         this.sourceFile.addTypeAlias({
-          name: node.name.value,
+          name: node.identifier.value,
           type: this.translateTypeNode(node.value),
         });
       },
@@ -87,11 +86,11 @@ export class Translator {
           });
         });
       },
-      TypeSignature: (node: FunctionTypeSignature) => {
-        this.typeSignatures.set(node.name.value, node);
+      TypeSignature: (node: TypeSignature) => {
+        this.typeSignatures.set(node.identifier.value, node);
       },
-      function: (node: FunctionGroup) => {
-        const functionName = node.name.value;
+      function: (node: Function) => {
+        const functionName = node.identifier.value;
         const signature = this.typeSignatures.get(functionName);
         if (!signature) {
           throw new Error(
@@ -100,42 +99,45 @@ export class Translator {
         }
 
         const genericClause =
-          node.contents.find((c) =>
-            c.parameters.every((p) => p.type === "VariablePattern")
-          ) || node.contents[node.contents.length - 1];
-        const paramNames = genericClause.parameters.map((p, i) =>
+          node.equations.find((c) =>
+            c.patterns.every((p) => p.type === "VariablePattern")
+          ) || node.equations[node.equations.length - 1];
+        const paramNames = genericClause.patterns.map((p, i) =>
           p.type === "WildcardPattern" ? `p${i}` : this.translateNode(p)
         );
         const func = this.sourceFile.addFunction({
           name: functionName,
         });
-
-        signature.inputTypes.forEach((type, i) => {
-          func.addParameter({
-            name: paramNames[i],
-            type: this.translateTypeNode(type),
+        if (signature.body.type === "ParameterizedType") {
+          signature.body.inputs.forEach((type, i) => {
+            func.addParameter({
+              name: paramNames[i],
+              type: this.translateTypeNode(type),
+            });
           });
-        });
-        func.setReturnType(this.translateTypeNode(signature.returnType));
+          func.setReturnType(this.translateTypeNode(signature.body.return));
+        } else if (signature.body.type === "SimpleType") {
+          func.setReturnType(this.translateTypeNode(signature.body));
+        } else if (signature.body.type === "ListType") {
+          func.setReturnType(this.translateTypeNode(signature.body));
+        }
 
-        node.contents.forEach((clause) => {
+        node.equations.forEach((clause) => {
           // The general case (VariablePattern) acts as the final 'else'
           if (
-            clause.parameters.every(
+            clause.patterns.every(
               (p) =>
                 p.type === "VariablePattern" || p.type === "WildcardPattern"
             )
           ) {
-            if (
-              (clause as unknown as UnguardedFunctionDeclaration).body.body &&
-              (clause as unknown as UnguardedFunctionDeclaration).body.body
-                .type === "IfThenElse"
-            ) {
-              const body = this.translateNode(clause.body);
-              func.addStatements(`${body};`);
-            } else {
-              const body = this.translateNode(clause.body);
-              func.addStatements(`return ${body};`);
+            if (!Array.isArray(clause.body)) {
+              if (clause.body.expression.body.type === "If") {
+                const body = this.translateNode(clause.body);
+                func.addStatements(`${body};`);
+              } else {
+                const body = this.translateNode(clause.body);
+                func.addStatements(`return ${body};`);
+              }
             }
           } else {
             // Specific literal patterns become 'if' statements
@@ -163,7 +165,7 @@ export class Translator {
           node as InfixApplicationExpression
         );
       case "Application":
-        return this.translateApplication(node as ApplicationExpression);
+        return this.translateApplication(node as Application);
       case "CompositionExpression":
         return this.translateCompositionExpression(
           node as CompositionExpression
@@ -171,11 +173,11 @@ export class Translator {
       case "DataExpression":
         return this.translateDataExpression(node as DataExpression);
       case "LambdaExpression":
-        return this.translateLambdaExpression(node as LambdaExpression);
+        return this.translateLambdaExpression(node as Lambda);
       case "IfThenElse":
-        return this.translateIfThenElse(node as ControlFlowConditional);
-      case "Concat":
-        return this.translateConcat(node as ConcatOperation);
+        return this.translateIfThenElse(node as If);
+      //case "Concat":
+      //  return this.translateConcat(node as ConcatOperation);
       case "Comparison":
         return this.translateComparison(node as ComparisonOperation);
       case "YuSymbol":
@@ -195,12 +197,9 @@ export class Translator {
     }
   }
 
-  private buildCondition(
-    clause: Omit<FunctionDeclaration, "name" | "type">,
-    paramNames: string[]
-  ): string {
+  private buildCondition(clause: Equation, paramNames: string[]): string {
     const conditions: string[] = [];
-    clause.parameters.forEach((param, i) => {
+    clause.patterns.forEach((param, i) => {
       if (param.type === "LiteralPattern") {
         const literalValue = this.translateNode(param.name);
         conditions.push(`${paramNames[i]} === ${literalValue}`);
@@ -209,10 +208,10 @@ export class Translator {
     return conditions.join(" && ");
   }
 
-  private translateTypeNode(typeNode: TypeNode): string {
+  private translateTypeNode(typeNode: Type): string {
     switch (typeNode.type) {
-      case "TypeConstructor":
-        switch (typeNode.name) {
+      case "SimpleType":
+        switch (typeNode.value) {
           case "Double":
           case "Float":
           case "Int":
@@ -224,13 +223,13 @@ export class Translator {
           case "Boolean":
             return "boolean";
           default:
-            return typeNode.name;
+            return typeNode.value;
         }
-      case "FunctionType":
-        return `(${typeNode.from
+      case "ParameterizedType":
+        return `(${typeNode.inputs
           .map((type, i) => `p${i}: ${this.translateTypeNode(type)}`)
-          .join(", ")}) => ${this.translateTypeNode(typeNode.to)}`;
-      case "TypeVar":
+          .join(", ")}) => ${this.translateTypeNode(typeNode.return)}`;
+
       default:
         return "any";
     }
@@ -242,13 +241,13 @@ export class Translator {
       .join(", ")})`;
   }
 
-  private translateLambdaExpression(node: LambdaExpression) {
+  private translateLambdaExpression(node: Lambda) {
     return `((${node.parameters
       .map((p) => this.translateNode(p))
       .join(", ")}) => ${this.translateNode(node.body)})`;
   }
 
-  private translateIfThenElse(node: ControlFlowConditional) {
+  private translateIfThenElse(node: If) {
     let IfStatement = `if (${this.translateNode(
       node.condition.body
     )}) {\n    return ${this.translateNode(node.then.body)};\n}`;
@@ -269,11 +268,11 @@ export class Translator {
     const right = this.translateNode(node.right);
     return `${left} ${node.operator} ${right}`;
   }
-  private translateConcat(node: ConcatOperation): string {
-    const left = this.translateNode(node.left);
-    const right = this.translateNode(node.right);
-    return `${left} + ${right}`;
-  }
+  //private translateConcat(node: ConcatOperation): string {
+  //  const left = this.translateNode(node.left);
+  //  const right = this.translateNode(node.right);
+  //  return `${left} + ${right}`;
+  //}
 
   private translateCompositionExpression(node: CompositionExpression): string {
     const left = this.translateNode(node.left);
@@ -281,7 +280,7 @@ export class Translator {
     return `${left}(${right})`;
   }
 
-  private translateApplication(node: ApplicationExpression): string {
+  private translateApplication(node: Application): string {
     const args: string[] = [];
     let current: any = node;
 
