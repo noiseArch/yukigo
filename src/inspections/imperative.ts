@@ -3,21 +3,27 @@ import { InspectionMap } from "../ast/inspector.js";
 
 export const imperativeInspections: InspectionMap = {
   DeclaresEnumeration: (ast, args) => {
-    const enumName = args.name;
+    const enumName = args[0];
     let declares = false;
     traverse(ast, {
       Enumeration: (node: Enumeration) => {
-        if (node.identifier.value === enumName) declares = true;
+        if (node.identifier.value === enumName) {
+          declares = true;
+          return true;
+        }
       },
     });
     return { result: declares };
   },
   DeclaresProcedure: (ast, args) => {
-    const procedureName = args.name;
+    const procedureName = args[0];
     let declares = false;
     traverse(ast, {
       Procedure: (node: Procedure) => {
-        if (node.identifier.value === procedureName) declares = true;
+        if (node.identifier.value === procedureName) {
+          declares = true;
+          return true;
+        }
       },
     });
     return { result: declares };
@@ -30,6 +36,7 @@ export const imperativeInspections: InspectionMap = {
     traverse(ast, {
       ForLoop: () => {
         uses = true;
+        return true;
       },
     });
     return { result: uses };
@@ -39,6 +46,7 @@ export const imperativeInspections: InspectionMap = {
     traverse(ast, {
       "ForEach, While, Repeat, ForLoop": () => {
         uses = true;
+        return true;
       },
     });
     return { result: uses };
@@ -48,6 +56,7 @@ export const imperativeInspections: InspectionMap = {
     traverse(ast, {
       Repeat: () => {
         uses = true;
+        return true;
       },
     });
     return { result: uses };
@@ -57,6 +66,7 @@ export const imperativeInspections: InspectionMap = {
     traverse(ast, {
       Switch: () => {
         uses = true;
+        return true;
       },
     });
     return { result: uses };
@@ -66,6 +76,7 @@ export const imperativeInspections: InspectionMap = {
     traverse(ast, {
       While: () => {
         uses = true;
+        return true;
       },
     });
     return { result: uses };

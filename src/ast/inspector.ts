@@ -7,27 +7,24 @@ import { imperativeInspections } from "../inspections/imperative.js";
 
 export type InspectionRule = {
   inspection: string;
-  args?: Record<string, any>;
+  binding?: string;
+  args: string[];
   expected: boolean;
 };
 
 export type AnalysisResult = {
   rule: InspectionRule;
   passed: boolean;
-  actual?: any;
+  actual: boolean;
   error?: string;
 };
 
 export type InspectionMap = {
-  [key: string]: (ast: AST, args: Record<string, any>) => { result: boolean };
+  [key: string]: (ast: AST, args: string[], binding?: string) => { result: boolean };
 };
 
-export class ASTAnalyzer {
+export class Analyzer {
   private ast: AST;
-
-  constructor(ast: AST) {
-    this.ast = ast;
-  }
 
   private inspectionHandlers: InspectionMap = {
     ...genericInspections,
@@ -79,12 +76,13 @@ export class ASTAnalyzer {
       return {
         rule,
         passed: false,
+        actual: false,
         error: "Unknown inspection",
       };
     }
 
     try {
-      const { result } = handler(this.ast, rule.args || {});
+      const { result } = handler(this.ast, rule.args, rule.binding);
       const passed = result === rule.expected;
       return {
         rule,
@@ -95,12 +93,15 @@ export class ASTAnalyzer {
       return {
         rule,
         passed: false,
+        actual: false,
+        error,
       };
     }
   }
 
   /**
    * Runs a list of inspection rules against the AST.
+   * @param ast The parsed AST.
    * @param rules The array of inspection rules to run.
    * @returns An array of analysis results.
    * @example
@@ -119,8 +120,9 @@ export class ASTAnalyzer {
    * const analyzer = new ASTAnalyzer(ast);
    * const analysisResults = analyzer.analyze(expectations);
    */
-  public analyze(rules: InspectionRule[]): AnalysisResult[] {
+  public analyze(ast: AST, rules: InspectionRule[]): AnalysisResult[] {
     const results: AnalysisResult[] = [];
+    this.ast = ast;
     for (const rule of rules) {
       results.push(this.runInspection(rule));
     }

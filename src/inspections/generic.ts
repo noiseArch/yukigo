@@ -1,4 +1,5 @@
 import {
+  AST,
   Attribute,
   EntryPoint,
   Fact,
@@ -14,14 +15,71 @@ import {
 } from "yukigo-core";
 import { InspectionMap } from "../ast/inspector.js";
 
+const declaresComputationWithArity = (
+  ast: AST,
+  binding: string,
+  arity: number
+) => {
+  let declares = false;
+  traverse(ast, {
+    Method: (node: Method) => {
+      if (
+        node.identifier.value === binding &&
+        node.equations.every((eq) => eq.patterns.length === arity)
+      ) {
+        declares = true;
+        return true;
+      }
+    },
+    Function: (node: Function) => {
+      if (
+        node.identifier.value === binding &&
+        node.equations.every((eq) => eq.patterns.length === arity)
+      ) {
+        declares = true;
+        return true;
+      }
+    },
+    Rule: (node: Rule) => {
+      if (node.identifier.value === binding && node.patterns.length === arity) {
+        declares = true;
+        return true;
+      }
+    },
+    Fact: (node: Fact) => {
+      if (node.identifier.value === binding && node.patterns.length === arity) {
+        declares = true;
+        return true;
+      }
+    },
+    Procedure: (node: Procedure) => {
+      if (
+        node.identifier.value === binding &&
+        node.expressions.every((expr) => expr.patterns.length === arity)
+      ) {
+        declares = true;
+        return true;
+      }
+    },
+  });
+  return declares;
+};
+
 export const genericInspections: InspectionMap = {
   Assigns: (ast, args) => {
-    const bindingName = args.name;
+    const bindingName = args[0];
     let found = false;
     traverse(ast, {
-      "Variable, Attribute": (node: Variable | Attribute) => {
+      Variable: (node: Variable) => {
         if (node.identifier.value === bindingName) {
           found = true;
+          return true;
+        }
+      },
+      Attribute: (node: Attribute) => {
+        if (node.identifier.value === bindingName) {
+          found = true;
+          return true;
         }
       },
     });
@@ -30,12 +88,25 @@ export const genericInspections: InspectionMap = {
     };
   },
   Calls: (ast, args) => {
-    const callName = args.call;
+    const callName = args[0];
     let uses = false;
     traverse(ast, {
-      "Function, Method, Procedure": (node: Function | Method | Procedure) => {
+      Function: (node: Function) => {
         if (node.identifier.value === callName) {
           uses = true;
+          return true;
+        }
+      },
+      Method: (node: Method) => {
+        if (node.identifier.value === callName) {
+          uses = true;
+          return true;
+        }
+      },
+      Procedure: (node: Procedure) => {
+        if (node.identifier.value === callName) {
+          uses = true;
+          return true;
         }
       },
     });
@@ -44,12 +115,13 @@ export const genericInspections: InspectionMap = {
     };
   },
   Declares: (ast, args) => {
-    const elementName = args.usage;
+    const elementName = args[0];
     let declares = false;
     traverse(ast, {
       "*": (node: any) => {
         if (node.identifier.value === elementName) {
           declares = true;
+          return true;
         }
       },
     });
@@ -58,7 +130,7 @@ export const genericInspections: InspectionMap = {
     };
   },
   DeclaresComputation: (ast, args) => {
-    const elementName = args.usage;
+    const elementName = args[0];
     let declares = false;
     traverse(ast, {
       "Method, Rule, Fact, Function, Procedure": (
@@ -66,6 +138,7 @@ export const genericInspections: InspectionMap = {
       ) => {
         if (node.identifier.value === elementName) {
           declares = true;
+          return true;
         }
       },
     });
@@ -73,202 +146,40 @@ export const genericInspections: InspectionMap = {
       result: declares,
     };
   },
-  DeclaresComputationWithArity0: (ast, args) => {
-    const elementName = args.usage;
-    let declares = false;
-    traverse(ast, {
-      "Method, Function": (node: Method | Function) => {
-        if (
-          node.identifier.value === elementName &&
-          node.equations.every((eq) => eq.patterns.length === 0)
-        ) {
-          declares = true;
-        }
-      },
-      "Rule, Fact": (node: Rule | Fact) => {
-        if (
-          node.identifier.value === elementName &&
-          node.patterns.length === 0
-        ) {
-          declares = true;
-        }
-      },
-      Procedure: (node: Procedure) => {
-        if (
-          node.identifier.value === elementName &&
-          node.expressions.every((expr) => expr.patterns.length === 0)
-        ) {
-          declares = true;
-        }
-      },
-    });
+  DeclaresComputationWithArity0: (ast, args, binding) => {
     return {
-      result: declares,
+      result: declaresComputationWithArity(ast, binding, 0),
     };
   },
-  DeclaresComputationWithArity1: (ast, args) => {
-    const elementName = args.usage;
-    let declares = false;
-    traverse(ast, {
-      "Method, Function": (node: Method | Function) => {
-        if (
-          node.identifier.value === elementName &&
-          node.equations.every((eq) => eq.patterns.length === 1)
-        ) {
-          declares = true;
-        }
-      },
-      "Rule, Fact": (node: Rule | Fact) => {
-        if (
-          node.identifier.value === elementName &&
-          node.patterns.length === 1
-        ) {
-          declares = true;
-        }
-      },
-      Procedure: (node: Procedure) => {
-        if (
-          node.identifier.value === elementName &&
-          node.expressions.every((expr) => expr.patterns.length === 1)
-        ) {
-          declares = true;
-        }
-      },
-    });
+  DeclaresComputationWithArity1: (ast, args, binding) => {
     return {
-      result: declares,
+      result: declaresComputationWithArity(ast, binding, 1),
     };
   },
-  DeclaresComputationWithArity2: (ast, args) => {
-    const elementName = args.usage;
-    let declares = false;
-    traverse(ast, {
-      "Method, Function": (node: Method | Function) => {
-        if (
-          node.identifier.value === elementName &&
-          node.equations.every((eq) => eq.patterns.length === 2)
-        ) {
-          declares = true;
-        }
-      },
-      "Rule, Fact": (node: Rule | Fact) => {
-        if (
-          node.identifier.value === elementName &&
-          node.patterns.length === 2
-        ) {
-          declares = true;
-        }
-      },
-      Procedure: (node: Procedure) => {
-        if (
-          node.identifier.value === elementName &&
-          node.expressions.every((expr) => expr.patterns.length === 2)
-        ) {
-          declares = true;
-        }
-      },
-    });
+  DeclaresComputationWithArity2: (ast, args, binding) => {
     return {
-      result: declares,
+      result: declaresComputationWithArity(ast, binding, 2),
     };
   },
-  DeclaresComputationWithArity3: (ast, args) => {
-    const elementName = args.usage;
-    let declares = false;
-    traverse(ast, {
-      "Method, Function": (node: Method | Function) => {
-        if (
-          node.identifier.value === elementName &&
-          node.equations.every((eq) => eq.patterns.length === 3)
-        ) {
-          declares = true;
-        }
-      },
-      "Rule, Fact": (node: Rule | Fact) => {
-        if (
-          node.identifier.value === elementName &&
-          node.patterns.length === 3
-        ) {
-          declares = true;
-        }
-      },
-      Procedure: (node: Procedure) => {
-        if (
-          node.identifier.value === elementName &&
-          node.expressions.every((expr) => expr.patterns.length === 3)
-        ) {
-          declares = true;
-        }
-      },
-    });
+  DeclaresComputationWithArity3: (ast, args, binding) => {
     return {
-      result: declares,
+      result: declaresComputationWithArity(ast, binding, 3),
     };
   },
-  DeclaresComputationWithArity4: (ast, args) => {
-    const elementName = args.usage;
-    let declares = false;
-    traverse(ast, {
-      "Method, Function": (node: Method | Function) => {
-        if (
-          node.identifier.value === elementName &&
-          node.equations.every((eq) => eq.patterns.length === 4)
-        ) {
-          declares = true;
-        }
-      },
-      "Rule, Fact": (node: Rule | Fact) => {
-        if (
-          node.identifier.value === elementName &&
-          node.patterns.length === 4
-        ) {
-          declares = true;
-        }
-      },
-      Procedure: (node: Procedure) => {
-        if (
-          node.identifier.value === elementName &&
-          node.expressions.every((expr) => expr.patterns.length === 4)
-        ) {
-          declares = true;
-        }
-      },
-    });
+  DeclaresComputationWithArity4: (ast, args, binding) => {
     return {
-      result: declares,
+      result: declaresComputationWithArity(ast, binding, 4),
     };
   },
-  DeclaresComputationWithArity5: (ast, args) => {
-    const elementName = args.usage;
-    let declares = false;
-    traverse(ast, {
-      "Method, Function": (node: Method | Function) => {
-        if (
-          node.identifier.value === elementName &&
-          node.equations.every((eq) => eq.patterns.length === 5)
-        ) {
-          declares = true;
-        }
-      },
-      "Rule, Fact": (node: Rule | Fact) => {
-        if (
-          node.identifier.value === elementName &&
-          node.patterns.length === 5
-        ) {
-          declares = true;
-        }
-      },
-      Procedure: (node: Procedure) => {
-        if (
-          node.identifier.value === elementName &&
-          node.expressions.every((expr) => expr.patterns.length === 5)
-        ) {
-          declares = true;
-        }
-      },
-    });
+  DeclaresComputationWithArity5: (ast, args, binding) => {
     return {
-      result: declares,
+      result: declaresComputationWithArity(ast, binding, 5),
+    };
+  },
+  DeclaresComputationWithArity: (ast, args, binding) => {
+    const arity = Number(args[0]);
+    return {
+      result: declaresComputationWithArity(ast, binding, arity),
     };
   },
   DeclaresEntryPoint: (ast, args) => {
@@ -276,6 +187,7 @@ export const genericInspections: InspectionMap = {
     traverse(ast, {
       Entrypoint: (node: EntryPoint) => {
         declares = true;
+        return true;
       },
     });
     return {
@@ -283,11 +195,14 @@ export const genericInspections: InspectionMap = {
     };
   },
   DeclaresFunction: (ast, args) => {
-    const functionName = args.name;
+    const functionName = args[0];
     let declares = false;
     traverse(ast, {
       Function: (node: Function) => {
-        if (node.identifier.value === functionName) declares = true;
+        if (node.identifier.value === functionName) {
+          declares = true;
+          return true;
+        }
       },
     });
     return {
@@ -295,7 +210,7 @@ export const genericInspections: InspectionMap = {
     };
   },
   DeclaresRecursively: (ast, args) => {
-    const computationName = args.name;
+    const computationName = args[0];
     let declares = false;
     traverse(ast, {
       "Method, Function, Rule, Fact, Procedure": (
@@ -304,9 +219,16 @@ export const genericInspections: InspectionMap = {
         if (node.identifier.value === computationName) {
           traverse(node, {
             "*": (node2) => {
-              if (node2.identifier.value === computationName) declares = true;
+              if (
+                "identifier" in node2 &&
+                node2.identifier.value === computationName
+              ) {
+                declares = true;
+                return true;
+              }
             },
           });
+          if (declares) return true;
         }
       },
     });
@@ -315,12 +237,13 @@ export const genericInspections: InspectionMap = {
     };
   },
   DeclaresTypeAlias: (ast, args) => {
-    const typeAliasName = args.name;
+    const typeAliasName = args[0];
     let declares = false;
     traverse(ast, {
       TypeAlias: (node: TypeAlias) => {
         if (node.identifier.value === typeAliasName) {
           declares = true;
+          return true;
         }
       },
     });
@@ -329,12 +252,13 @@ export const genericInspections: InspectionMap = {
     };
   },
   DeclaresTypeSignature: (ast, args) => {
-    const typeSignName = args.name;
+    const typeSignName = args[0];
     let declares = false;
     traverse(ast, {
       TypeSignature: (node: TypeSignature) => {
         if (node.identifier.value === typeSignName) {
           declares = true;
+          return true;
         }
       },
     });
@@ -343,12 +267,13 @@ export const genericInspections: InspectionMap = {
     };
   },
   DeclaresVariable: (ast, args) => {
-    const variableName = args.name;
+    const variableName = args[0];
     let declares = false;
     traverse(ast, {
       Variable: (node: Variable) => {
         if (node.identifier.value === variableName) {
           declares = true;
+          return true;
         }
       },
     });
@@ -359,7 +284,7 @@ export const genericInspections: InspectionMap = {
   Delegates: (ast, args) => {
     const declares = genericInspections.Declares(ast, args);
     const calls = genericInspections.Calls(ast, args);
-    return {result: declares.result && calls.result};
+    return { result: declares.result && calls.result };
   },
   Raises: (ast, args) => {
     throw Error("Inspection not implemented");
@@ -382,28 +307,46 @@ export const genericInspections: InspectionMap = {
   TypesReturnAs: (ast, args) => {
     throw Error("Inspection not implemented");
   },
-  Uses: (ast, args) => {
-    const functionName = args.name;
-    const usageName = args.usage;
+  Uses: (ast, args, binding) => {
+    const usageName = args[0];
     let uses = false;
-    traverse(ast, {
-      Function: (node: Function) => {
-        if (node.identifier.value === functionName) {
-          traverse(node, {
-            "*"(symbolNode) {
-              if (symbolNode.value && symbolNode.value === usageName)
-                uses = true;
-            },
-          });
-        }
-      },
-    });
+
+    const usesFunc = (node) => {
+      if (node.identifier.value === binding) {
+        traverse(node, {
+          YuSymbol: (symbolNode) => {
+            if ("value" in symbolNode && symbolNode.value === usageName) {
+              uses = true;
+              return true;
+            }
+          },
+        });
+        if (uses) return true;
+      }
+    };
+    if (binding) {
+      traverse(ast, {
+        Function: (node: Function) => usesFunc(node),
+        Method: (node: Method) => usesFunc(node),
+        Rule: (node: Rule) => usesFunc(node),
+        Procedure: (node: Procedure) => usesFunc(node),
+      });
+    } else {
+      traverse(ast, {
+        YuSymbol: (symbolNode) => {
+          if ("value" in symbolNode && symbolNode.value === usageName) {
+            uses = true;
+            return true;
+          }
+        },
+      });
+    }
     return {
       result: uses,
     };
   },
   UsesArithmetic: (ast, args) => {
-    const functionName = args.name;
+    const functionName = args[0];
     let hasArithmetic = false;
     traverse(ast, {
       Function: (node: Function) => {
@@ -411,8 +354,10 @@ export const genericInspections: InspectionMap = {
           traverse(node, {
             Arithmetic() {
               hasArithmetic = true;
+              return true;
             },
           });
+          if (hasArithmetic) return true;
         }
       },
     });
@@ -421,7 +366,7 @@ export const genericInspections: InspectionMap = {
     };
   },
   UsesConditional: (ast, args) => {
-    const functionName = args.name;
+    const functionName = args[0];
     let hasConditional = false;
     traverse(ast, {
       Function: (node: Function) => {
@@ -429,8 +374,10 @@ export const genericInspections: InspectionMap = {
           traverse(node, {
             If() {
               hasConditional = true;
+              return true;
             },
           });
+          if (hasConditional) return true;
         }
       },
     });
@@ -445,7 +392,7 @@ export const genericInspections: InspectionMap = {
     throw Error("Inspection not implemented");
   },
   UsesIf: (ast, args) => {
-    const functionName = args.name;
+    const functionName = args[0];
     let hasIf = false;
     traverse(ast, {
       Function: (node: Function) => {
@@ -453,8 +400,10 @@ export const genericInspections: InspectionMap = {
           traverse(node, {
             If() {
               hasIf = true;
+              return true;
             },
           });
+          if (hasIf) return true;
         }
       },
     });
@@ -463,7 +412,7 @@ export const genericInspections: InspectionMap = {
     };
   },
   UsesLogic: (ast, args) => {
-    const functionName = args.name;
+    const functionName = args[0];
     let usesLogic = false;
     traverse(ast, {
       "Method, Function, Procedure": (node: Method | Function | Procedure) => {
@@ -471,8 +420,10 @@ export const genericInspections: InspectionMap = {
           traverse(node, {
             LogicalOperation() {
               usesLogic = true;
+              return true;
             },
           });
+          if (usesLogic) return true;
         }
       },
     });
@@ -481,7 +432,7 @@ export const genericInspections: InspectionMap = {
     };
   },
   UsesMath: (ast, args) => {
-    const functionName = args.name;
+    const functionName = args[0];
     let hasMath = false;
     traverse(ast, {
       "Method, Function, Procedure": (node: Method | Function | Procedure) => {
@@ -489,8 +440,10 @@ export const genericInspections: InspectionMap = {
           traverse(node, {
             Arithmetic() {
               hasMath = true;
+              return true;
             },
           });
+          if (hasMath) return true;
         }
       },
     });
@@ -499,7 +452,7 @@ export const genericInspections: InspectionMap = {
     };
   },
   UsesPrint: (ast, args) => {
-    const functionName = args.name;
+    const functionName = args[0];
     let usesPrint = false;
     traverse(ast, {
       "Method, Function, Procedure": (node: Method | Function | Procedure) => {
@@ -507,8 +460,10 @@ export const genericInspections: InspectionMap = {
           traverse(node, {
             Print() {
               usesPrint = true;
+              return true;
             },
           });
+          if (usesPrint) return true;
         }
       },
     });
@@ -517,7 +472,7 @@ export const genericInspections: InspectionMap = {
     };
   },
   UsesType: (ast, args) => {
-    const typeName = args.name;
+    const typeName = args[0];
     let usesType = false;
     traverse(ast, {
       TypeSignature: (node: TypeSignature) => {
@@ -525,9 +480,11 @@ export const genericInspections: InspectionMap = {
           "*"() {
             if (node.identifier.value === typeName) {
               usesType = true;
+              return true;
             }
           },
         });
+        if (usesType) return true;
       },
     });
     return {
@@ -535,7 +492,7 @@ export const genericInspections: InspectionMap = {
     };
   },
   HasBinding: (ast, args) => {
-    const bindingName = args.name;
+    const bindingName = args[0];
     let found = false;
     traverse(ast, {
       "Function, TypeAlias, TypeSignature": (
@@ -543,11 +500,13 @@ export const genericInspections: InspectionMap = {
       ) => {
         if (node.identifier.value === bindingName) {
           found = true;
+          return true;
         }
       },
       Record: (node: RecordNode) => {
         if (node.name.value === bindingName) {
           found = true;
+          return true;
         }
       },
     });

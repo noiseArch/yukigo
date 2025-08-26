@@ -116,9 +116,7 @@ export class Translator {
             });
           });
           func.setReturnType(this.translateTypeNode(signature.body.return));
-        } else if (signature.body.type === "SimpleType") {
-          func.setReturnType(this.translateTypeNode(signature.body));
-        } else if (signature.body.type === "ListType") {
+        } else if (signature.body.type === "SimpleType" || signature.body.type === "TupleType") {
           func.setReturnType(this.translateTypeNode(signature.body));
         }
 

@@ -21,9 +21,13 @@
     "yukigo-core": "file:../yukigo-core"
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "test": "mocha"
   },
   "devDependencies": {
-    "typescript-eslint": "^8.33.1"
+    "ts-node": "^10.9.2",
+    "typescript-eslint": "^8.33.1",
+    "yukigo-haskell-parser": "file:../yukigo-haskell-parser",
+    "yukigo-prolog-parser": "file:../yukigo-prolog-parser"
   }
 }

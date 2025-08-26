@@ -7,7 +7,7 @@ import { YukigoPrimitive } from "yukigo-core";
  * @param mulangYamlString The Mulang inspection syntax as a YAML string.
  * @returns An array of InspectionRule objects.
  */
-export function translateMulangToInspectionRules(
+export function translateMulangExpectations(
   mulangYamlString: string
 ): InspectionRule[] {
   const parsedYaml = parseDocument(mulangYamlString).toJS();
@@ -34,30 +34,36 @@ export function translateMulangToInspectionRules(
         `Skipping malformed Mulang inspection entry: ${mulangInspection}`
       );
     }
-
-    let inspectionName = mulangInspection.inspection;
-    let expected = true;
-    const args: Record<string, unknown> = { name: mulangInspection.binding };
-
-    if (inspectionName.startsWith("Not:")) {
-      expected = false;
-      inspectionName = inspectionName.substring(4);
-    }
-
-    if (inspectionName.startsWith("Uses:")) {
-      const usageArg = inspectionName.substring("Uses:".length);
-      inspectionName = "Uses";
-      args.usage = usageArg;
-    }
+    const inspection: string[] = mulangInspection.inspection.split(":");
+    const expected: boolean = inspection[0] !== "Not";
+    const args: string[] = inspection.slice(expected ? 1 : 2);
 
     inspectionRules.push({
-      inspection: inspectionName,
+      inspection: expected ? inspection[0] : inspection[1],
+      binding: mulangInspection.binding,
       args: args,
       expected: expected,
     });
   }
 
   return inspectionRules;
+}
+
+const PrimitiveValues: YukigoPrimitive[] = [
+  "YuNumber",
+  "YuString",
+  "YuChar",
+  "YuBoolean",
+  "YuTuple",
+  "YuList",
+  "YuNil",
+  "YuDict",
+  "YuObject",
+  "YuSymbol",
+];
+
+export function isYukigoPrimitive(keyInput: string): keyInput is YukigoPrimitive {
+  return PrimitiveValues.includes(keyInput as YukigoPrimitive);
 }
 
 export const yukigoTsMappings: { [key in YukigoPrimitive]: string } = {
