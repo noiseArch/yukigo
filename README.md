@@ -179,12 +179,12 @@ console.log(results);
 - [yukigo-core](https://github.com/noiseArch/yukigo-core): A library of AST's node definitions
   
 ## Tools
-- [yukigo-cli](https://github.com/noiseArch/yukigo-cli)
-- [yukigo-demo-web](https://github.com/noiseArch/yukigo-demo-web/)
+- [CLI](https://github.com/noiseArch/yukigo-cli)
+- [Demo web](https://github.com/noiseArch/yukigo-demo-web/)
   
 ## Parsers
-- [yukigo-haskell-parser](https://github.com/noiseArch/yukigo-haskell-parser)
-
+- [Haskell](https://github.com/noiseArch/yukigo-haskell-parser)
+- [Prolog](https://github.com/noiseArch/yukigo-prolog-parser)
 # How to make a parser
 
 A yukigo's parser is a class that implements the interface `YukigoParser` which exposes a public method called `parse` and an `errors` array like this:
