@@ -11,7 +11,7 @@ import {
   UnifyOperation,
 } from "yukigo-core";
 import { InspectionMap } from "../ast/inspector.js";
-import { isYukigoPrimitive } from "../utils/helpers.js";
+import { isYukigoPrimitive } from "yukigo-core";
 
 export const logicInspections: InspectionMap = {
   DeclaresFact: (ast, args, binding) => {

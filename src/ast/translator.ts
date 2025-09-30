@@ -1,21 +1,15 @@
 import { Project, SourceFile } from "ts-morph";
 import {
   AST,
-  ArithmeticOperation,
+  ArithmeticBinaryOperation,
   Function,
   TypeSignature,
   LiteralPattern,
-  SymbolPrimitive,
-  NumberPrimitive,
   Application,
   Type,
   VariablePattern,
-  StringPrimitive,
-  BooleanPrimitive,
-  CharPrimitive,
   //ConcatOperation,
   Primitive,
-  ListPrimitive,
   traverse,
   TypeAlias,
   Record as RecordNode,
@@ -26,6 +20,7 @@ import {
   InfixApplicationExpression,
   CompositionExpression,
   Equation,
+  Fact,
 } from "yukigo-core";
 
 export class Translator {
@@ -44,6 +39,7 @@ export class Translator {
   }
 
   public translate(): string {
+    console.log("first");
     traverse(this.ast, {
       TypeAlias: (node: TypeAlias) => {
         this.sourceFile.addTypeAlias({
@@ -89,7 +85,7 @@ export class Translator {
       TypeSignature: (node: TypeSignature) => {
         this.typeSignatures.set(node.identifier.value, node);
       },
-      function: (node: Function) => {
+      Function: (node: Function) => {
         const functionName = node.identifier.value;
         const signature = this.typeSignatures.get(functionName);
         if (!signature) {
@@ -116,7 +112,10 @@ export class Translator {
             });
           });
           func.setReturnType(this.translateTypeNode(signature.body.return));
-        } else if (signature.body.type === "SimpleType" || signature.body.type === "TupleType") {
+        } else if (
+          signature.body.type === "SimpleType" ||
+          signature.body.type === "TupleType"
+        ) {
           func.setReturnType(this.translateTypeNode(signature.body));
         }
 
@@ -145,6 +144,21 @@ export class Translator {
           }
         });
       },
+      // Program: (program: Program) => {
+      //   const prologFacts = new Map<string, Fact[]>();
+      //   // Group all facts by their predicate name
+      //   traverse(program, {
+      //     Fact: (fact: Fact) => {
+      //       const predicateName = fact.identifier.value;
+      //       const groupedFact = prologFacts.get(predicateName);
+      //       if (!groupedFact) {
+      //         prologFacts.set(predicateName, []);
+      //       }
+      //       groupedFact.push(fact);
+      //     },
+      //   });
+      //   console.log(prologFacts);
+      // },
     });
     this.sourceFile.formatText();
     return this.sourceFile.getFullText();
@@ -157,7 +171,7 @@ export class Translator {
       case "Expression":
         return this.translateNode(node.body);
       case "Arithmetic":
-        return this.translateArithmetic(node as ArithmeticOperation);
+        return this.translateArithmetic(node as ArithmeticBinaryOperation);
       case "InfixApplication":
         return this.translateInfixApplication(
           node as InfixApplicationExpression
@@ -256,7 +270,7 @@ export class Translator {
     return IfStatement;
   }
 
-  private translateArithmetic(node: ArithmeticOperation): string {
+  private translateArithmetic(node: ArithmeticBinaryOperation): string {
     const left = this.translateNode(node.left);
     const right = this.translateNode(node.right);
     return `${left} ${node.operator} ${right}`;

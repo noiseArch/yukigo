@@ -7,24 +7,9 @@ import { YukigoPrimitive } from "yukigo-core";
  * @param mulangYamlString The Mulang inspection syntax as a YAML string.
  * @returns An array of InspectionRule objects.
  */
-export function translateMulangExpectations(
-  mulangYamlString: string
-): InspectionRule[] {
-  const parsedYaml = parseDocument(mulangYamlString).toJS();
 
-  if (
-    !parsedYaml ||
-    !parsedYaml.expectations ||
-    !Array.isArray(parsedYaml.expectations)
-  ) {
-    throw Error(
-      "Invalid Mulang YAML structure. Expected 'expectations' to be an array."
-    );
-  }
-
-  const inspectionRules: InspectionRule[] = [];
-
-  for (const mulangInspection of parsedYaml.expectations) {
+export class MulangAdapter {
+  public translateMulangInspection(mulangInspection: any): InspectionRule {
     if (
       !mulangInspection ||
       typeof mulangInspection.inspection !== "string" ||
@@ -34,36 +19,43 @@ export function translateMulangExpectations(
         `Skipping malformed Mulang inspection entry: ${mulangInspection}`
       );
     }
+
     const inspection: string[] = mulangInspection.inspection.split(":");
     const expected: boolean = inspection[0] !== "Not";
     const args: string[] = inspection.slice(expected ? 1 : 2);
 
-    inspectionRules.push({
+    return {
       inspection: expected ? inspection[0] : inspection[1],
+      expected,
+      args,
       binding: mulangInspection.binding,
-      args: args,
-      expected: expected,
-    });
+    };
   }
 
-  return inspectionRules;
-}
+  public translateMulangExpectations(
+    mulangYamlString: string
+  ): InspectionRule[] {
+    const parsedYaml = parseDocument(mulangYamlString).toJS();
 
-const PrimitiveValues: YukigoPrimitive[] = [
-  "YuNumber",
-  "YuString",
-  "YuChar",
-  "YuBoolean",
-  "YuTuple",
-  "YuList",
-  "YuNil",
-  "YuDict",
-  "YuObject",
-  "YuSymbol",
-];
+    if (
+      !parsedYaml ||
+      !parsedYaml.expectations ||
+      !Array.isArray(parsedYaml.expectations)
+    ) {
+      throw Error(
+        "Invalid Mulang YAML structure. Expected 'expectations' to be an array."
+      );
+    }
 
-export function isYukigoPrimitive(keyInput: string): keyInput is YukigoPrimitive {
-  return PrimitiveValues.includes(keyInput as YukigoPrimitive);
+    const inspectionRules: InspectionRule[] = [];
+
+    for (const mulangInspection of parsedYaml.expectations) {
+      const inspection = this.translateMulangInspection(mulangInspection);
+      inspectionRules.push(inspection);
+    }
+
+    return inspectionRules;
+  }
 }
 
 export const yukigoTsMappings: { [key in YukigoPrimitive]: string } = {

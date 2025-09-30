@@ -1,8 +1,10 @@
-import { isYukigoPrimitive, translateMulangExpectations } from "../src/index.js";
+import { MulangAdapter } from "../src/index.js";
+import { isYukigoPrimitive } from "yukigo-core";
 import { assert } from "chai";
 
 describe("Helpers Spec", () => {
   it("translates correctly mulang's expectations", () => {
+    const mulangAdapter = new MulangAdapter();
     const mulangExpectations = `
 expectations:
   - !ruby/hash:ActiveSupport::HashWithIndifferentAccess
@@ -27,7 +29,8 @@ expectations:
     binding: squareList
     inspection: Not:Uses:map`;
 
-    const yukigoExpectations = translateMulangExpectations(mulangExpectations);
+    const yukigoExpectations =
+      mulangAdapter.translateMulangExpectations(mulangExpectations);
     assert.deepEqual(yukigoExpectations, [
       {
         inspection: "HasBinding",
@@ -74,11 +77,8 @@ expectations:
     ]);
   });
   it("detects correctly YukigoPrimitive", () => {
-    const isPrimitive1 = isYukigoPrimitive("not a match")
-    const isPrimitive2 = isYukigoPrimitive("YuNumber")
-    const isPrimitive3 = isYukigoPrimitive("yustring")
-    assert.isFalse(isPrimitive1);
-    assert.isTrue(isPrimitive2);
-    assert.isFalse(isPrimitive3);
+    assert.isFalse(isYukigoPrimitive("not a match"));
+    assert.isFalse(isYukigoPrimitive("yustring"));
+    assert.isTrue(isYukigoPrimitive("YuNumber"));
   });
 });
