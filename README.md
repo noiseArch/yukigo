@@ -1,27 +1,19 @@
 # ❄️ Yukigo (WIP)
 A universal, multi-language, multi-paradigm code analyzer highly inspired in [mulang](https://github.com/mumuki/mulang)
 
-> [!WARNING]
-> This project is still in a "work in progress" state. Everything is subject to change :)
-
-
 ## Components
 
 ### **Abstract Semantic Tree:**
 
 This is the intermediate representation of any language. Allows us to analyse the semantics of the code independently of the paradigm or the language.
 
-### **Inspector:**
+### **Analyzer:**
 
-We provide a set of built-in expectations for analysing code. Also allows to define custom expectations at runtime.
+The Analyzer is the component that traverses the AST and runs the specified inspections.
 
-### **Translator:**
+### **Interpreter:**
 
-Translation AST-to-Typescript, this allows us to have an equivalent code to run input-output tests everywhere.
-
-### **Tester:**
-
-Runs tests for the Typescript translated code on an isolated enviroment.
+The Interpreter is the component that evaluates provided Expression nodes and returns the resultant PrimitiveValue 
 
 # Usage
 
@@ -42,7 +34,7 @@ yarn add yukigo yukigo-haskell-parser
 ## Example
 
 ```ts
-import { ASTAnalyzer } from "yukigo";
+import { Analyzer } from "yukigo";
 import { YukigoHaskellParser } from "yukigo-haskell-parser";
 
 const code = "doble num = num * 2";
@@ -91,7 +83,7 @@ console.log(results);
 ## Example with Mulang's Inspections (in a YAML file)
 
 ```ts
-import { ASTAnalyzer, translateMulangToInspectionRules } from "yukigo";
+import { Analyzer, translateMulangToInspectionRules } from "yukigo";
 import { YukigoHaskellParser } from "yukigo-haskell-parser";
 
 const code = `
@@ -176,7 +168,7 @@ console.log(results);
 ```
 
 # Relevant tools
-- [yukigo-core](https://github.com/noiseArch/yukigo-core): A library of AST's node definitions
+- [yukigo-core](https://github.com/noiseArch/yukigo-core): A library of AST's node definitions and utilities for making yukigo parsers
   
 ## Tools
 - [CLI](https://github.com/noiseArch/yukigo-cli)
@@ -185,6 +177,7 @@ console.log(results);
 ## Parsers
 - [Haskell](https://github.com/noiseArch/yukigo-haskell-parser)
 - [Prolog](https://github.com/noiseArch/yukigo-prolog-parser)
+
 # How to make a parser
 
 A yukigo's parser is a class that implements the interface `YukigoParser` which exposes a public method called `parse` and an `errors` array like this:
