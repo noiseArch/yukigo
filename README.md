@@ -1,3 +1,6 @@
+> [!CAUTION]
+> ## This repository is outdated and discontinued. The development continued [here](https://github.com/miyukiproject/yukigo).
+
 # ❄️ Yukigo (WIP)
 A universal, multi-language, multi-paradigm code analyzer highly inspired in [mulang](https://github.com/mumuki/mulang)
 
